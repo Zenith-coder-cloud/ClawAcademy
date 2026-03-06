@@ -20,11 +20,10 @@ declare global {
 }
 
 export default function TelegramLoginButton() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const hiddenRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   useEffect(() => {
-    // Define callback before script loads
     window.onTelegramAuth = async (user: TelegramUser) => {
       try {
         const res = await fetch("/api/auth/telegram", {
@@ -35,7 +34,6 @@ export default function TelegramLoginButton() {
 
         if (res.ok) {
           const data = await res.json();
-          // Save to localStorage
           localStorage.setItem("tg_user", JSON.stringify(data.user));
           router.push("/dashboard");
         } else {
@@ -46,7 +44,7 @@ export default function TelegramLoginButton() {
       }
     };
 
-    // Inject Telegram widget script
+    // Inject hidden Telegram widget for OAuth
     const script = document.createElement("script");
     script.src = "https://telegram.org/js/telegram-widget.js?22";
     script.setAttribute("data-telegram-login", "ClawAcademyBot");
@@ -55,22 +53,47 @@ export default function TelegramLoginButton() {
     script.setAttribute("data-request-access", "write");
     script.async = true;
 
-    if (containerRef.current) {
-      containerRef.current.innerHTML = "";
-      containerRef.current.appendChild(script);
+    if (hiddenRef.current) {
+      hiddenRef.current.innerHTML = "";
+      hiddenRef.current.appendChild(script);
     }
 
     return () => {
-      if (containerRef.current) {
-        containerRef.current.innerHTML = "";
+      if (hiddenRef.current) {
+        hiddenRef.current.innerHTML = "";
       }
     };
   }, [router]);
 
+  const handleClick = () => {
+    // Try to click the hidden Telegram widget iframe button
+    const iframe = hiddenRef.current?.querySelector("iframe");
+    if (iframe) {
+      iframe.click();
+    } else {
+      // Fallback: open Telegram OAuth directly
+      const botName = "ClawAcademyBot";
+      const origin = window.location.origin;
+      window.open(
+        `https://oauth.telegram.org/auth?bot_id=&scope=write&public_key=&nonce=&origin=${encodeURIComponent(origin)}&request_access=write&bot_id=&return_to=${encodeURIComponent(origin)}/login`,
+        "telegram_oauth",
+        "width=550,height=470,toolbar=no,menubar=no"
+      );
+    }
+  };
+
   return (
-    <div
-      ref={containerRef}
-      className="flex justify-center items-center min-h-[54px]"
-    />
+    <>
+      {/* Hidden widget container */}
+      <div ref={hiddenRef} className="hidden" />
+      {/* Custom styled button */}
+      <button
+        onClick={handleClick}
+        className="w-full py-4 bg-[#1a1a1a] border border-[#333] text-white font-semibold rounded-xl hover:border-[#FF4422] transition-colors text-base flex items-center justify-center gap-3"
+      >
+        <span className="text-xl">✈️</span>
+        Войти через Telegram
+      </button>
+    </>
   );
 }

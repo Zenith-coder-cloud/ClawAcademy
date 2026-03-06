@@ -41,43 +41,39 @@ export default function LoginPage() {
     <main className="min-h-screen bg-[#0d0d0d] flex flex-col items-center justify-center px-4">
       <Link
         href="/"
-        className="text-[#888888] hover:text-white mb-12 transition-colors"
+        className="text-[#888888] hover:text-white mb-10 transition-colors"
       >
         ← Назад
       </Link>
-      <h1 className="text-3xl md:text-4xl font-bold mb-4 text-white">
-        Войти в Claw Academy
+
+      {/* Logo */}
+      <div className="text-5xl mb-4">🦅</div>
+
+      <h1 className="text-3xl md:text-4xl font-bold mb-2 text-white">
+        Добро пожаловать
       </h1>
       <p className="text-[#888888] mb-10 text-center max-w-md">
-        Выберите способ входа. После авторизации вы получите доступ к своим
-        модулям.
+        Выберите способ входа
       </p>
 
-      <div className="flex flex-col gap-4 w-full max-w-sm">
-
-        {/* Вариант 1: Telegram Widget */}
+      <div className="flex flex-col gap-3 w-full max-w-sm">
+        {/* Button 1: Telegram (custom styled, hidden widget behind) */}
         <TelegramLoginButton />
 
-        {/* Вариант 2: Кошелёк */}
+        {/* Button 2: Wallet */}
         <ConnectWalletButton />
 
-        {/* Разделитель */}
-        <div className="flex items-center gap-3 my-1">
-          <div className="flex-1 h-px bg-[#333]" />
-          <span className="text-[#555] text-sm">или без номера</span>
-          <div className="flex-1 h-px bg-[#333]" />
-        </div>
-
-        {/* Вариант 3: Через бота (без номера) */}
+        {/* Button 3: Bot code */}
         {!showCodeForm ? (
           <button
             onClick={() => setShowCodeForm(true)}
-            className="w-full py-4 border border-[#444] text-[#888] font-semibold rounded-lg hover:border-[#FF4422] hover:text-white transition-colors text-base"
+            className="w-full py-4 bg-[#1a1a1a] border border-[#333] text-white font-semibold rounded-xl hover:border-[#FF4422] transition-colors text-base flex items-center justify-center gap-3"
           >
+            <span className="text-xl">🤖</span>
             Войти через @ClawAcademyBot
           </button>
         ) : (
-          <div className="flex flex-col gap-3 p-5 bg-[#1a1a1a] border border-[#333] rounded-xl">
+          <div className="flex flex-col gap-3 p-5 bg-[#1a1a1a] border border-[#FF4422] rounded-xl">
             <p className="text-white font-semibold text-sm">Шаги:</p>
             <ol className="text-[#888888] text-sm space-y-1 list-decimal list-inside">
               <li>Напишите боту в Telegram</li>
@@ -103,7 +99,7 @@ export default function LoginPage() {
                 setCode(v);
                 setError("");
               }}
-              className="w-full py-3 px-4 bg-[#0d0d0d] border border-[#444] rounded-lg text-white text-center text-2xl tracking-widest font-mono focus:outline-none focus:border-[#FF4422]"
+              className="w-full py-3 px-4 bg-[#0d0d0d] border border-[#444] rounded-lg text-white text-center text-3xl tracking-[0.5em] font-mono focus:outline-none focus:border-[#FF4422]"
             />
             {error && (
               <p className="text-red-400 text-sm text-center">{error}</p>
