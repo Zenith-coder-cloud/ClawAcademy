@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const modules = [
-  { id: 0, title: "Блок 0 — Введение в ИИ-агентов", locked: false },
-  { id: 1, title: "Блок 1 — Настройка OpenClaw", locked: false },
-  { id: 2, title: "Блок 2 — Первый агент", locked: false },
-  { id: 3, title: "Блок 3 — Монетизация", locked: false },
-  { id: 4, title: "Блок 4 — Продвинутые стратегии", locked: true },
-  { id: 5, title: "Блок 5 — Масштабирование", locked: true },
+  { id: 0, title: "Блок 0 — Вход: что такое ИИ-агент и OpenClaw", locked: false },
+  { id: 1, title: "Блок 1 — Установка и первый агент за 15 минут", locked: false },
+  { id: 2, title: "Блок 2 — Быстрый заработок: первые схемы", locked: false },
+  { id: 3, title: "Блок 3 — Средний уровень: мультиагент и автоматизация", locked: false },
+  { id: 4, title: "Блок 4 — Продвинутые схемы: SaaS и аутстаффинг", locked: true },
+  { id: 5, title: "Блок 5 — Бизнес-модель: упаковка, клиенты, прайсинг", locked: true },
 ];
 
 interface TgUser {
