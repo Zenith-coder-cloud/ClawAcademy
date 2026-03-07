@@ -1,8 +1,8 @@
-import { Fragment } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import CourseProgram from "@/components/CourseProgram";
 import FAQ from "@/components/FAQ";
+import HowItWorks from "@/components/HowItWorks";
 
 const tiers = [
   {
@@ -124,34 +124,7 @@ export default function Home() {
       </section>
 
       {/* How it works */}
-      <section className="max-w-5xl mx-auto px-4 py-20">
-        <h2 className="text-3xl font-bold text-white text-center mb-12">Как это работает</h2>
-        
-        {/* Mobile: vertical stack with arrows. Desktop: horizontal with arrows */}
-        <div className="flex flex-col md:flex-row items-center gap-0">
-          {[
-            { num: "01", title: "Выбери тариф", desc: "Оплата один раз — доступ пожизненно. Выбери уровень под свои цели." },
-            { num: "02", title: "Запусти агента", desc: "15 минут до первого результата. Пошаговые инструкции для любого уровня." },
-            { num: "03", title: "Делегируй и живи", desc: "Твои агенты работают 24/7 пока ты занимаешься тем что важно." },
-          ].map((step, i) => (
-            <Fragment key={i}>
-              <div className="flex-1 bg-zinc-900 border border-zinc-800 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-start gap-4 w-full">
-                <span className="text-5xl font-bold text-[#FF4422] leading-none">{step.num}</span>
-                <div>
-                  <h3 className="text-white font-semibold text-lg mb-1">{step.title}</h3>
-                  <p className="text-zinc-400 text-sm leading-relaxed">{step.desc}</p>
-                </div>
-              </div>
-              {i < 2 && (
-                <div className="flex items-center justify-center py-2 md:py-0 md:px-2 text-zinc-600">
-                  <span className="block md:hidden text-2xl">↓</span>
-                  <span className="hidden md:block text-2xl">→</span>
-                </div>
-              )}
-            </Fragment>
-          ))}
-        </div>
-      </section>
+      <HowItWorks />
 
       {/* For who */}
       <section className="max-w-5xl mx-auto px-4 py-20">
