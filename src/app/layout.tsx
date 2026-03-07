@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
+import Web3Provider from "@/components/Web3Provider";
 
 export const metadata: Metadata = {
   title: "Claw Academy — Курс по ИИ-агентам | Заработок с искусственным интеллектом",
@@ -58,7 +59,7 @@ export default function RootLayout({
     <html lang="ru">
       <body className="bg-[#0d0d0d] text-white antialiased">
         <Header />
-        {children}
+        <Web3Provider>{children}</Web3Provider>
       </body>
     </html>
   );
