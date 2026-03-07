@@ -23,7 +23,6 @@ const BOT_ID = "8663052035";
 
 export default function TelegramLoginButton() {
   const hiddenRef = useRef<HTMLDivElement>(null);
-  const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -60,46 +59,24 @@ export default function TelegramLoginButton() {
     if (container) {
       container.innerHTML = "";
       container.appendChild(script);
-
-      // Wait for the widget script to create its iframe, then store a ref
-      const findIframe = (attempts: number) => {
-        const iframe = container.querySelector("iframe");
-        if (iframe) {
-          iframeRef.current = iframe;
-        } else if (attempts > 0) {
-          setTimeout(() => findIframe(attempts - 1), 150);
-        }
-      };
-      script.onload = () => findIframe(20);
     }
 
     return () => {
       if (container) container.innerHTML = "";
-      iframeRef.current = null;
     };
   }, [router]);
 
   const handleClick = () => {
+    const origin = window.location.origin;
+    const returnTo = `${origin}/login`;
+    const oauthUrl = `https://oauth.telegram.org/auth?bot_id=${BOT_ID}&scope=write&origin=${encodeURIComponent(origin)}&return_to=${encodeURIComponent(returnTo)}&request_access=write`;
+
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
     if (isMobile) {
-      const origin = window.location.origin;
-      const returnTo = `${origin}/login`;
-      const oauthUrl = `https://oauth.telegram.org/auth?bot_id=${BOT_ID}&scope=write&origin=${encodeURIComponent(origin)}&return_to=${encodeURIComponent(returnTo)}&request_access=write`;
       window.location.href = oauthUrl;
     } else {
-      // Desktop: click the widget's iframe — it opens the OAuth popup
-      // and handles postMessage callback to call onTelegramAuth automatically
-      const iframe = iframeRef.current || hiddenRef.current?.querySelector("iframe");
-      if (iframe) {
-        iframe.click();
-      } else {
-        // Fallback: if iframe not found, open OAuth popup and listen for postMessage
-        const origin = window.location.origin;
-        const returnTo = `${origin}/login`;
-        const oauthUrl = `https://oauth.telegram.org/auth?bot_id=${BOT_ID}&scope=write&origin=${encodeURIComponent(origin)}&return_to=${encodeURIComponent(returnTo)}&request_access=write`;
-        window.location.href = oauthUrl;
-      }
+      window.open(oauthUrl, "telegram_oauth", "width=550,height=470");
     }
   };
 
