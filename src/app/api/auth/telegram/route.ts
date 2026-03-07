@@ -10,8 +10,8 @@ export const dynamic = "force-dynamic";
 const telegramAuthSchema = z
   .object({
     hash: z.string(),
-    id: z.number(),
-    auth_date: z.number(),
+    id: z.coerce.number(),
+    auth_date: z.coerce.number(),
     first_name: z.string(),
   })
   .passthrough(); // Allow additional Telegram fields like last_name, username, photo_url

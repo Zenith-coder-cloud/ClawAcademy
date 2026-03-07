@@ -1,88 +1,53 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
-
-interface TelegramUser {
-  id: number;
-  first_name: string;
-  last_name?: string;
-  username?: string;
-  photo_url?: string;
-  auth_date: number;
-  hash: string;
-}
-
-declare global {
-  interface Window {
-    onTelegramAuth: (user: TelegramUser) => void;
-  }
-}
-
-const BOT_ID = "8663052035";
 
 export default function TelegramLoginButton() {
-  const hiddenRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
+  const widgetRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    window.onTelegramAuth = async (user: TelegramUser) => {
-      try {
-        const res = await fetch("/api/auth/telegram", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(user),
-        });
-        if (res.ok) {
-          const data = await res.json();
-          localStorage.setItem("tg_user", JSON.stringify({ ...data.user, auth_at: Date.now() }));
-          localStorage.setItem("telegram_id", String(user.id));
-          router.push("/dashboard");
-        } else {
-          alert("Ошибка авторизации. Попробуйте снова.");
-        }
-      } catch {
-        alert("Ошибка подключения.");
-      }
-    };
+    const container = widgetRef.current;
+    if (!container) return;
 
-    // Load hidden Telegram widget (handles OAuth callback via postMessage)
+    // Load visible Telegram widget (handles OAuth)
     const script = document.createElement("script");
     script.src = "https://telegram.org/js/telegram-widget.js?22";
     script.setAttribute("data-telegram-login", "ClawAcademyBot");
     script.setAttribute("data-size", "large");
-    script.setAttribute("data-onauth", "onTelegramAuth(user)");
     script.setAttribute("data-request-access", "write");
+    script.setAttribute("data-auth-url", `${window.location.origin}/login`);
+    script.setAttribute("data-radius", "12");
     script.async = true;
 
-    const container = hiddenRef.current;
-    if (container) {
-      container.innerHTML = "";
-      container.appendChild(script);
+    container.innerHTML = "";
+    container.appendChild(script);
+
+    let checkTimer: number | undefined;
+    if (process.env.NODE_ENV === "development") {
+      checkTimer = window.setTimeout(() => {
+        const iframe = container.querySelector("iframe");
+        if (!iframe) {
+          console.warn("[TG Widget] iframe not found after load");
+        } else {
+          console.log("[TG Widget] iframe loaded");
+        }
+      }, 1200);
     }
 
     return () => {
-      if (container) container.innerHTML = "";
+      if (checkTimer) window.clearTimeout(checkTimer);
+      container.innerHTML = "";
     };
-  }, [router]);
-
-  const handleClick = () => {
-    const origin = window.location.origin;
-    const returnTo = origin + '/login';
-    window.location.href = 'https://oauth.telegram.org/auth?bot_id=' + BOT_ID + '&scope=write&origin=' + encodeURIComponent(origin) + '&return_to=' + encodeURIComponent(returnTo) + '&request_access=write';
-  };
+  }, []);
 
   return (
     <>
-      {/* Telegram widget — visually hidden but rendered so iframe is created */}
-      <div ref={hiddenRef} className="absolute overflow-hidden" style={{ width: 0, height: 0, opacity: 0 }} />
-      {/* Styled button — works on all platforms */}
-      <button
-        onClick={handleClick}
-        className="w-full py-4 bg-zinc-800 border border-zinc-700 text-white font-semibold rounded-xl hover:border-[#FF4422] transition-colors text-sm flex items-center justify-center"
-      >
-        Войти по номеру телефона
-      </button>
+      {/* Telegram widget — visible (required for reliable OAuth) */}
+      <div
+        ref={widgetRef}
+        className="w-full flex items-center justify-center py-1"
+        aria-label="Telegram login"
+      />
     </>
   );
 }

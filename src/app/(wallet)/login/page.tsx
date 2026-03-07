@@ -14,11 +14,39 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [hashLoading, setHashLoading] = useState(false);
 
+  const decodeTelegramAuthResult = (encoded: string) => {
+    const decoded = decodeURIComponent(encoded);
+    const base64 = decoded.replace(/-/g, "+").replace(/_/g, "/");
+    const padding = "=".repeat((4 - (base64.length % 4)) % 4);
+    return JSON.parse(atob(base64 + padding)) as Record<string, unknown>;
+  };
+
+  const normalizeTelegramUser = (user: Record<string, unknown>) => {
+    if (typeof user.id === "string" && !Number.isNaN(Number(user.id))) {
+      user.id = Number(user.id);
+    }
+    if (typeof user.auth_date === "string" && !Number.isNaN(Number(user.auth_date))) {
+      user.auth_date = Number(user.auth_date);
+    }
+    return user;
+  };
+
   // Handle Telegram mobile OAuth redirect:
   // - Hash format:  #tgAuthResult=BASE64_JSON
   // - Query format: ?tgAuthResult=BASE64_JSON (some Telegram versions)
   // - Flat params:  ?id=...&first_name=...&hash=... (Telegram web)
   useEffect(() => {
+    const hostname = window.location.hostname;
+    if (hostname === "clawacademy.io") {
+      const target =
+        "https://www.clawacademy.io" +
+        window.location.pathname +
+        window.location.search +
+        window.location.hash;
+      window.location.replace(target);
+      return;
+    }
+
     const hash = window.location.hash;
     const search = window.location.search;
 
@@ -28,14 +56,16 @@ export default function LoginPage() {
     let parsedUser: Record<string, unknown> | null = null;
 
     // 1. Check hash: #tgAuthResult=BASE64
-    const hashPrefix = "#tgAuthResult=";
-    if (hash.startsWith(hashPrefix)) {
-      const encoded = hash.slice(hashPrefix.length);
-      try {
-        parsedUser = JSON.parse(atob(decodeURIComponent(encoded)));
-      } catch {
-        setError("Ошибка обработки данных Telegram (hash)");
-        return;
+    if (hash) {
+      const hashParams = new URLSearchParams(hash.startsWith("#") ? hash.slice(1) : hash);
+      const tgHash = hashParams.get("tgAuthResult");
+      if (tgHash) {
+        try {
+          parsedUser = decodeTelegramAuthResult(tgHash);
+        } catch {
+          setError("Ошибка обработки данных Telegram (hash)");
+          return;
+        }
       }
     }
 
@@ -45,7 +75,7 @@ export default function LoginPage() {
       const tgResult = params.get("tgAuthResult");
       if (tgResult) {
         try {
-          parsedUser = JSON.parse(atob(decodeURIComponent(tgResult)));
+          parsedUser = decodeTelegramAuthResult(tgResult);
         } catch {
           setError("Ошибка обработки данных Telegram (query)");
           return;
@@ -55,14 +85,12 @@ export default function LoginPage() {
       // 3. Flat params: ?id=...&first_name=...&hash=...
       if (!parsedUser && params.has("id") && params.has("hash")) {
         parsedUser = Object.fromEntries(params.entries());
-        // Ensure id is a number if possible
-        if (parsedUser.id && !isNaN(Number(parsedUser.id))) {
-          parsedUser.id = Number(parsedUser.id);
-        }
+        parsedUser = normalizeTelegramUser(parsedUser);
       }
     }
 
     if (!parsedUser) return;
+    parsedUser = normalizeTelegramUser(parsedUser);
 
     // Clear hash and query params
     window.history.replaceState(null, "", window.location.pathname);
