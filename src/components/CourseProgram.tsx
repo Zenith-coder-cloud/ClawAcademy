@@ -194,7 +194,7 @@ function BlockCard({ block }: { block: Block }) {
         alt={block.title}
         width={800}
         height={400}
-        className="w-full h-48 object-cover"
+        className="w-full h-64 object-cover"
       />
       <div className="p-6">
         <div className="flex items-center gap-2 flex-wrap">
