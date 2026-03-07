@@ -81,11 +81,10 @@ export default function LoginPage() {
               </button>
             ) : (
               <div className="flex flex-col gap-3 p-5 bg-zinc-800 border border-[#FF4422] rounded-xl">
-                <p className="text-white font-semibold text-sm">Шаги:</p>
-                <ol className="text-zinc-400 text-sm space-y-1 list-decimal list-inside">
-                  <li>Нажмите кнопку ниже — бот откроется автоматически</li>
-                  <li>Нажмите <b className="text-white">СТАРТ</b> в боте чтобы получить код</li>
-                  <li>Введите полученный код в поле ниже</li>
+                <ol className="text-zinc-400 text-sm space-y-2">
+                  <li><span className="text-white font-medium">1.</span> Откройте @ClawAcademyBot</li>
+                  <li><span className="text-white font-medium">2.</span> Нажмите <span className="text-white font-semibold">Start</span> чтобы получить код</li>
+                  <li><span className="text-white font-medium">3.</span> Введите полученный код в поле ниже</li>
                 </ol>
                 <a
                   href="https://t.me/ClawAcademyBot?start=login"
