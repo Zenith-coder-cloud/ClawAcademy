@@ -83,12 +83,12 @@ export default function LoginPage() {
               <div className="flex flex-col gap-3 p-5 bg-zinc-800 border border-[#FF4422] rounded-xl">
                 <p className="text-white font-semibold text-sm">Шаги:</p>
                 <ol className="text-zinc-400 text-sm space-y-1 list-decimal list-inside">
-                  <li>Напишите боту в Telegram</li>
-                  <li>Получите 4-значный код</li>
-                  <li>Введите его ниже</li>
+                  <li>Нажмите кнопку ниже — бот откроется автоматически</li>
+                  <li>Нажмите <b className="text-white">СТАРТ</b> в боте чтобы получить код</li>
+                  <li>Введите полученный код в поле ниже</li>
                 </ol>
                 <a
-                  href="https://t.me/ClawAcademyBot"
+                  href="https://t.me/ClawAcademyBot?start=login"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-center py-2 px-4 bg-[#229ED9] text-white rounded-lg text-sm font-semibold hover:bg-[#1a8abf] transition-colors"
@@ -99,14 +99,14 @@ export default function LoginPage() {
                   type="text"
                   inputMode="numeric"
                   maxLength={4}
-                  placeholder="Введите код (4 цифры)"
+                  placeholder="Введите код"
                   value={code}
                   onChange={(e) => {
                     const v = e.target.value.replace(/\D/g, "");
                     setCode(v);
                     setError("");
                   }}
-                  className="w-full py-3 px-4 bg-[#0d0d0d] border border-zinc-700 rounded-lg text-white text-center text-3xl tracking-[0.5em] font-mono focus:outline-none focus:border-[#FF4422]"
+                  className="w-full py-3 px-4 bg-[#0d0d0d] border border-zinc-700 rounded-lg text-white text-center text-xl tracking-[0.4em] font-mono focus:outline-none focus:border-[#FF4422]"
                 />
                 {error && <p className="text-red-400 text-sm text-center">{error}</p>}
                 <button
