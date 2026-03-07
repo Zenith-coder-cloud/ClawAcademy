@@ -35,7 +35,7 @@ export default function TelegramLoginButton() {
         });
         if (res.ok) {
           const data = await res.json();
-          localStorage.setItem("tg_user", JSON.stringify(data.user));
+          localStorage.setItem("tg_user", JSON.stringify({ ...data.user, auth_at: Date.now() }));
           router.push("/dashboard");
         } else {
           alert("Ошибка авторизации. Попробуйте снова.");

@@ -14,12 +14,38 @@ const modules = [
   { id: 5, title: "Бизнес-модель: упаковка, клиенты, прайсинг", cover: "/covers/block5.png", locked: true },
 ];
 
+const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+
 interface TgUser {
-  id: number;
+  id?: number;
+  wallet_address?: string;
   first_name: string;
   last_name?: string;
   username?: string;
   photo_url?: string;
+  auth_at?: number;
+}
+
+// S5 — Validate stored user has required fields and is not expired
+function validateStoredUser(stored: string): TgUser | null {
+  try {
+    const user = JSON.parse(stored) as TgUser;
+
+    // Must have at least one identifier
+    if (!user.id && !user.wallet_address) return null;
+
+    // Must have first_name
+    if (!user.first_name || typeof user.first_name !== "string") return null;
+
+    // Check session expiry (7 days)
+    if (user.auth_at) {
+      if (Date.now() - user.auth_at > SEVEN_DAYS_MS) return null;
+    }
+
+    return user;
+  } catch {
+    return null;
+  }
 }
 
 export default function DashboardPage() {
@@ -32,7 +58,16 @@ export default function DashboardPage() {
       router.push("/login");
       return;
     }
-    setUser(JSON.parse(stored));
+
+    const validUser = validateStoredUser(stored);
+    if (!validUser) {
+      // S5 — Invalid or expired session → clear and redirect
+      localStorage.removeItem("tg_user");
+      router.push("/login");
+      return;
+    }
+
+    setUser(validUser);
   }, [router]);
 
   const handleLogout = () => {

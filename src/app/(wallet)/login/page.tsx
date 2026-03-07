@@ -14,7 +14,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
 
   const handleVerifyCode = async () => {
-    if (code.length !== 4) return;
+    if (code.length !== 6) return;
     setLoading(true);
     setError("");
     try {
@@ -25,7 +25,7 @@ export default function LoginPage() {
       });
       const data = await res.json();
       if (res.ok && data.ok) {
-        localStorage.setItem("tg_user", JSON.stringify(data.user));
+        localStorage.setItem("tg_user", JSON.stringify({ ...data.user, auth_at: Date.now() }));
         router.push("/dashboard");
       } else {
         setError(data.error || "Неверный код");
@@ -97,7 +97,7 @@ export default function LoginPage() {
                 <input
                   type="text"
                   inputMode="numeric"
-                  maxLength={4}
+                  maxLength={6}
                   placeholder="Введите код"
                   value={code}
                   onChange={(e) => {
@@ -110,7 +110,7 @@ export default function LoginPage() {
                 {error && <p className="text-red-400 text-sm text-center">{error}</p>}
                 <button
                   onClick={handleVerifyCode}
-                  disabled={code.length !== 4 || loading}
+                  disabled={code.length !== 6 || loading}
                   className="w-full py-3 bg-[#FF4422] text-white font-semibold rounded-lg hover:bg-[#e63d1e] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {loading ? "Проверяем..." : "Подтвердить код"}
