@@ -38,11 +38,11 @@ export default function Home() {
       {/* Hero */}
       <section className="flex flex-col items-center justify-center text-center px-4 pt-32 pb-24">
         <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-          Зарабатывай с{" "}
-          <span className="text-[#FF4422]">ИИ-агентами</span>
+          <span className="text-[#FF4422]">Claw Academy:</span>{" "}
+          Возьми интеллект под свой контроль
         </h1>
-        <p className="text-[#888888] text-lg md:text-xl max-w-2xl mb-10">
-          Первая русскоязычная платформа. Построена агентом на OpenClaw.
+        <p className="text-zinc-400 text-lg md:text-xl max-w-2xl mb-10">
+          Первая русскоязычная школа ИИ-агентов на OpenClaw
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
           <Link
