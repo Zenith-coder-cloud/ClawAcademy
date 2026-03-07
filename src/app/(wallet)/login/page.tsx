@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import TelegramLoginButton from "@/components/TelegramLoginButton";
 import ConnectWalletButton from "@/components/ConnectWalletButton";
@@ -12,6 +12,48 @@ export default function LoginPage() {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [hashLoading, setHashLoading] = useState(false);
+
+  // Handle Telegram mobile OAuth redirect: #tgAuthResult=BASE64_JSON
+  useEffect(() => {
+    const hash = window.location.hash;
+    const prefix = "#tgAuthResult=";
+    if (!hash.startsWith(prefix)) return;
+
+    const encoded = hash.slice(prefix.length);
+    window.history.replaceState(null, "", window.location.pathname);
+
+    let parsedUser: Record<string, unknown>;
+    try {
+      parsedUser = JSON.parse(atob(encoded));
+    } catch {
+      setError("Ошибка обработки данных Telegram");
+      return;
+    }
+
+    setHashLoading(true);
+    fetch("/api/auth/telegram", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(parsedUser),
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        if (res.ok && data.ok) {
+          localStorage.setItem("tg_user", JSON.stringify({ ...data.user, auth_at: Date.now() }));
+          localStorage.setItem("telegram_id", String(parsedUser.id));
+          router.push("/dashboard");
+        } else {
+          setError(data.error || "Ошибка авторизации Telegram");
+        }
+      })
+      .catch(() => {
+        setError("Ошибка подключения");
+      })
+      .finally(() => {
+        setHashLoading(false);
+      });
+  }, [router]);
 
   const handleVerifyCode = async () => {
     if (code.length !== 6) return;
@@ -40,6 +82,12 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen bg-[#0d0d0d] flex flex-col items-center justify-center px-4 py-16">
+      {hashLoading && (
+        <div className="fixed inset-0 z-50 bg-[#0d0d0d] flex flex-col items-center justify-center gap-4">
+          <div className="w-8 h-8 border-2 border-zinc-600 border-t-[#FF4422] rounded-full animate-spin" />
+          <p className="text-zinc-400 text-sm">Авторизация через Telegram...</p>
+        </div>
+      )}
       {/* Logo */}
       <a href="/" className="mb-10">
         <Image
