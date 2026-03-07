@@ -1,4 +1,4 @@
-import { createHmac } from "crypto";
+import { createHmac, createHash } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -6,10 +6,10 @@ export const dynamic = "force-dynamic";
 export async function POST(req: NextRequest) {
   const data = await req.json();
 
-  // Verify Telegram hash
+  // Verify Telegram hash (Login Widget uses SHA256 of bot token as secret)
   const { hash, ...userData } = data;
   const botToken = process.env.TELEGRAM_BOT_TOKEN!;
-  const secret = createHmac("sha256", "WebAppData").update(botToken).digest();
+  const secret = createHash("sha256").update(botToken).digest();
 
   const checkString = Object.keys(userData)
     .sort()
