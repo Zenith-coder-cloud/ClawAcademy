@@ -14,22 +14,58 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [hashLoading, setHashLoading] = useState(false);
 
-  // Handle Telegram mobile OAuth redirect: #tgAuthResult=BASE64_JSON
+  // Handle Telegram mobile OAuth redirect:
+  // - Hash format:  #tgAuthResult=BASE64_JSON
+  // - Query format: ?tgAuthResult=BASE64_JSON (some Telegram versions)
+  // - Flat params:  ?id=...&first_name=...&hash=... (Telegram web)
   useEffect(() => {
     const hash = window.location.hash;
-    const prefix = "#tgAuthResult=";
-    if (!hash.startsWith(prefix)) return;
+    const search = window.location.search;
 
-    const encoded = hash.slice(prefix.length);
-    window.history.replaceState(null, "", window.location.pathname);
+    console.log("[TG OAuth] hash:", hash);
+    console.log("[TG OAuth] search:", search);
 
-    let parsedUser: Record<string, unknown>;
-    try {
-      parsedUser = JSON.parse(atob(encoded));
-    } catch {
-      setError("Ошибка обработки данных Telegram");
-      return;
+    let parsedUser: Record<string, unknown> | null = null;
+
+    // 1. Check hash: #tgAuthResult=BASE64
+    const hashPrefix = "#tgAuthResult=";
+    if (hash.startsWith(hashPrefix)) {
+      const encoded = hash.slice(hashPrefix.length);
+      try {
+        parsedUser = JSON.parse(atob(decodeURIComponent(encoded)));
+      } catch {
+        setError("Ошибка обработки данных Telegram (hash)");
+        return;
+      }
     }
+
+    // 2. Check query: ?tgAuthResult=BASE64
+    if (!parsedUser && search) {
+      const params = new URLSearchParams(search);
+      const tgResult = params.get("tgAuthResult");
+      if (tgResult) {
+        try {
+          parsedUser = JSON.parse(atob(decodeURIComponent(tgResult)));
+        } catch {
+          setError("Ошибка обработки данных Telegram (query)");
+          return;
+        }
+      }
+
+      // 3. Flat params: ?id=...&first_name=...&hash=...
+      if (!parsedUser && params.has("id") && params.has("hash")) {
+        parsedUser = Object.fromEntries(params.entries());
+        // Ensure id is a number if possible
+        if (parsedUser.id && !isNaN(Number(parsedUser.id))) {
+          parsedUser.id = Number(parsedUser.id);
+        }
+      }
+    }
+
+    if (!parsedUser) return;
+
+    // Clear hash and query params
+    window.history.replaceState(null, "", window.location.pathname);
 
     setHashLoading(true);
     fetch("/api/auth/telegram", {
@@ -41,7 +77,7 @@ export default function LoginPage() {
         const data = await res.json();
         if (res.ok && data.ok) {
           localStorage.setItem("tg_user", JSON.stringify({ ...data.user, auth_at: Date.now() }));
-          localStorage.setItem("telegram_id", String(parsedUser.id));
+          localStorage.setItem("telegram_id", String(parsedUser!.id));
           router.push("/dashboard");
         } else {
           setError(data.error || "Ошибка авторизации Telegram");
@@ -86,6 +122,12 @@ export default function LoginPage() {
         <div className="fixed inset-0 z-50 bg-[#0d0d0d] flex flex-col items-center justify-center gap-4">
           <div className="w-8 h-8 border-2 border-zinc-600 border-t-[#FF4422] rounded-full animate-spin" />
           <p className="text-zinc-400 text-sm">Авторизация через Telegram...</p>
+        </div>
+      )}
+      {process.env.NODE_ENV === "development" && (
+        <div className="fixed top-2 left-2 z-50 bg-black/80 text-green-400 text-[10px] font-mono p-2 rounded max-w-[90vw] break-all">
+          <div>hash: {typeof window !== "undefined" ? window.location.hash : ""}</div>
+          <div>search: {typeof window !== "undefined" ? window.location.search : ""}</div>
         </div>
       )}
       {/* Logo */}
