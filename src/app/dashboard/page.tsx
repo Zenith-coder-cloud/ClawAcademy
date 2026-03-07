@@ -9,7 +9,7 @@ const modules = [
   { id: 0, title: "Вход — что такое ИИ-агент", cover: "/covers/block0.png", locked: false },
   { id: 1, title: "Установка и первый агент", cover: "/covers/block1.png", locked: false },
   { id: 2, title: "Быстрый заработок: первые схемы", cover: "/covers/block2.png", locked: false },
-  { id: 3, title: "Мультиагент и автоматизация", cover: "/covers/block3.png", locked: false },
+  { id: 3, title: "Мультиагент и автоматизация", cover: "/covers/block3.png", locked: true },
   { id: 4, title: "Продвинутые схемы: SaaS и аутстаффинг", cover: "/covers/block4.png", locked: true },
   { id: 5, title: "Бизнес-модель: упаковка, клиенты, прайсинг", cover: "/covers/block5.png", locked: true },
 ];
