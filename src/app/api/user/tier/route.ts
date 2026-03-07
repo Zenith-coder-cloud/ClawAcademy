@@ -1,15 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/server/supabaseAdmin";
 import { TIERS, type TierKey } from "@/lib/paymentConfig";
+import { verifySession, SESSION_COOKIE } from "@/lib/server/session";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   try {
-    const walletAddress = req.headers.get("x-wallet-address");
-    const telegramId = req.headers.get("x-telegram-id");
+    const sessionToken = req.cookies.get(SESSION_COOKIE)?.value;
+    if (!sessionToken) {
+      return NextResponse.json(
+        { tier: "free", blocks: [0, 1, 2] },
+        { status: 200 }
+      );
+    }
 
-    if (!walletAddress && !telegramId) {
+    const session = await verifySession(sessionToken);
+    if (!session) {
       return NextResponse.json(
         { tier: "free", blocks: [0, 1, 2] },
         { status: 200 }
@@ -20,10 +27,15 @@ export async function GET(req: NextRequest) {
 
     let query = db.from("users").select("tier, wallet_address, telegram_id");
 
-    if (walletAddress) {
-      query = query.eq("wallet_address", walletAddress.toLowerCase());
-    } else if (telegramId) {
-      query = query.eq("telegram_id", telegramId);
+    if (session.walletAddress) {
+      query = query.eq("wallet_address", session.walletAddress.toLowerCase());
+    } else if (session.telegramId) {
+      query = query.eq("telegram_id", session.telegramId);
+    } else {
+      return NextResponse.json(
+        { tier: "free", blocks: [0, 1, 2] },
+        { status: 200 }
+      );
     }
 
     const { data: user, error } = await query.single();

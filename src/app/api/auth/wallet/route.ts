@@ -4,6 +4,7 @@ import { verifyMessage } from "viem";
 import { z } from "zod";
 import { supabaseAdmin } from "@/lib/server/supabaseAdmin";
 import { checkRateLimit } from "@/lib/server/rateLimit";
+import { createSession, SESSION_COOKIE, MAX_AGE } from "@/lib/server/session";
 
 export const dynamic = "force-dynamic";
 
@@ -168,7 +169,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Server error" }, { status: 500 });
     }
 
-    return NextResponse.json({
+    const sessionToken = await createSession({
+      userId: user?.id,
+      walletAddress: address.toLowerCase(),
+      tier: (user?.tier as string) || "free",
+    });
+    const response = NextResponse.json({
       ok: true,
       user: {
         id: user?.id,
@@ -177,6 +183,14 @@ export async function POST(req: NextRequest) {
         tier: user?.tier || "free",
       },
     });
+    response.cookies.set(SESSION_COOKIE, sessionToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      maxAge: MAX_AGE,
+      path: "/",
+    });
+    return response;
   } catch (err) {
     console.error("POST /api/auth/wallet error:", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

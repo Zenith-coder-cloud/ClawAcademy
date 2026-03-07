@@ -62,37 +62,44 @@ export default function DashboardPage() {
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem("tg_user");
-    if (!stored) {
-      router.push("/login");
-      return;
-    }
-
-    const validUser = validateStoredUser(stored);
-    if (!validUser) {
-      localStorage.removeItem("tg_user");
-      router.push("/login");
-      return;
-    }
-
-    setUser(validUser);
-
-    // Fetch user tier from API
-    const headers: Record<string, string> = {};
-    const walletAddress = localStorage.getItem("wallet_address");
-    const telegramId = localStorage.getItem("telegram_id");
-    if (walletAddress) headers["x-wallet-address"] = walletAddress;
-    else if (telegramId) headers["x-telegram-id"] = telegramId;
-
-    fetch("/api/user/tier", { headers })
+    // Validate session via httpOnly cookie (server-side check)
+    fetch("/api/auth/session")
       .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        if (!data?.ok) {
+          localStorage.removeItem("tg_user");
+          router.push("/login");
+          return;
+        }
+
+        // Use localStorage for UX display only, auth is cookie-based
+        const stored = localStorage.getItem("tg_user");
+        const displayUser = stored ? validateStoredUser(stored) : null;
+        if (displayUser) {
+          setUser(displayUser);
+        } else {
+          // Fallback: build display from session
+          setUser({
+            id: data.session.telegramId,
+            wallet_address: data.session.walletAddress,
+            first_name: data.session.walletAddress
+              ? data.session.walletAddress.slice(0, 6) + "..." + data.session.walletAddress.slice(-4)
+              : "User",
+          });
+        }
+
+        // Fetch tier — cookie sent automatically
+        return fetch("/api/user/tier");
+      })
+      .then((res) => res?.ok ? res.json() : null)
       .then((data) => {
         if (data?.tier) setTierData({ tier: data.tier, blocks: data.blocks ?? [0, 1, 2] });
       })
       .catch(() => {});
   }, [router]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
     localStorage.removeItem("tg_user");
     localStorage.removeItem("wallet_address");
     localStorage.removeItem("telegram_id");
