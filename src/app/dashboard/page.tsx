@@ -66,9 +66,8 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="px-4 py-2 bg-[#1a1a1a] border border-[#333] rounded-lg text-[#888888] text-sm">
-              Тариф:{" "}
-              <span className="text-[#FF4422] font-medium">Genesis</span>
+            <div className="px-4 py-2 bg-[#1a1a1a] border border-[#333] rounded-lg text-[#888888] text-sm whitespace-nowrap">
+              Тариф: <span className="text-[#FF4422] font-medium">Genesis</span>
             </div>
             <button
               onClick={handleLogout}
