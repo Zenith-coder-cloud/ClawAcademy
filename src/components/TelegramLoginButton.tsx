@@ -19,6 +19,8 @@ declare global {
   }
 }
 
+const BOT_ID = "8663052035";
+
 export default function TelegramLoginButton() {
   const hiddenRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -31,7 +33,6 @@ export default function TelegramLoginButton() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(user),
         });
-
         if (res.ok) {
           const data = await res.json();
           localStorage.setItem("tg_user", JSON.stringify(data.user));
@@ -44,7 +45,7 @@ export default function TelegramLoginButton() {
       }
     };
 
-    // Inject hidden Telegram widget for OAuth
+    // Load hidden Telegram widget (handles OAuth callback on desktop)
     const script = document.createElement("script");
     script.src = "https://telegram.org/js/telegram-widget.js?22";
     script.setAttribute("data-telegram-login", "ClawAcademyBot");
@@ -59,35 +60,41 @@ export default function TelegramLoginButton() {
     }
 
     return () => {
-      if (hiddenRef.current) {
-        hiddenRef.current.innerHTML = "";
-      }
+      if (hiddenRef.current) hiddenRef.current.innerHTML = "";
     };
   }, [router]);
 
   const handleClick = () => {
-    // Try to click the hidden Telegram widget iframe button
-    const iframe = hiddenRef.current?.querySelector("iframe");
-    if (iframe) {
-      iframe.click();
+    const origin = window.location.origin;
+    const returnTo = `${origin}/login`;
+    const oauthUrl = `https://oauth.telegram.org/auth?bot_id=${BOT_ID}&scope=write&origin=${encodeURIComponent(origin)}&return_to=${encodeURIComponent(returnTo)}&request_access=write`;
+
+    // iOS / Android — redirect (popups blocked by default)
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      // On mobile: direct redirect to Telegram OAuth
+      window.location.href = oauthUrl;
     } else {
-      // Fallback: open Telegram OAuth directly with correct bot_id
-      const origin = window.location.origin;
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      const url = `https://oauth.telegram.org/auth?bot_id=8663052035&scope=write&origin=${encodeURIComponent(origin)}&return_to=${encodeURIComponent(origin + "/login")}&request_access=write`;
-      if (isMobile) {
-        window.location.href = url;
+      // On desktop (Windows / Mac / Linux): try iframe click first, fallback to popup
+      const iframe = hiddenRef.current?.querySelector("iframe");
+      if (iframe) {
+        iframe.click();
       } else {
-        window.open(url, "telegram_oauth", "width=550,height=470,toolbar=no,menubar=no");
+        const popup = window.open(oauthUrl, "telegram_oauth", "width=550,height=470,toolbar=no,menubar=no,scrollbars=yes");
+        // If popup blocked (some browsers), fallback to redirect
+        if (!popup || popup.closed) {
+          window.location.href = oauthUrl;
+        }
       }
     }
   };
 
   return (
     <>
-      {/* Hidden widget container */}
+      {/* Hidden Telegram widget — handles OAuth on desktop */}
       <div ref={hiddenRef} className="hidden" />
-      {/* Custom styled button */}
+      {/* Styled button — works on all platforms */}
       <button
         onClick={handleClick}
         className="w-full py-4 bg-zinc-800 border border-zinc-700 text-white font-semibold rounded-xl hover:border-[#FF4422] transition-colors text-sm flex items-center justify-center"
