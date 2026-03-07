@@ -76,16 +76,11 @@ export default function TelegramLoginButton() {
       // On mobile: direct redirect to Telegram OAuth
       window.location.href = oauthUrl;
     } else {
-      // On desktop (Windows / Mac / Linux): try iframe click first, fallback to popup
-      const iframe = hiddenRef.current?.querySelector("iframe");
-      if (iframe) {
-        iframe.click();
-      } else {
-        const popup = window.open(oauthUrl, "telegram_oauth", "width=550,height=470,toolbar=no,menubar=no,scrollbars=yes");
-        // If popup blocked (some browsers), fallback to redirect
-        if (!popup || popup.closed) {
-          window.location.href = oauthUrl;
-        }
+      // On desktop: open popup directly (iframe.click() doesn't work in modern browsers)
+      const popup = window.open(oauthUrl, "telegram_oauth", "width=550,height=470,toolbar=no,menubar=no,scrollbars=yes");
+      // If popup blocked, fallback to redirect
+      if (!popup || popup.closed) {
+        window.location.href = oauthUrl;
       }
     }
   };

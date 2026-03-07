@@ -47,6 +47,7 @@ export default function ConnectWalletButton() {
             "tg_user",
             JSON.stringify({ ...data.user, auth_at: Date.now() })
           );
+          localStorage.setItem("wallet_address", address);
           router.push("/dashboard");
         } else {
           console.error("Wallet auth failed:", data.error);
