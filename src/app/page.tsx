@@ -157,7 +157,9 @@ export default function Home() {
       <section className="max-w-5xl mx-auto px-4 py-20">
         <h2 className="text-3xl font-bold text-white text-center mb-4">Ты в правильном месте, если...</h2>
         <p className="text-zinc-400 text-center mb-12">Claw Academy подходит для любой сферы и любого уровня</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        {/* Desktop: 3x3 grid | Mobile: horizontal scroll */}
+        <div className="hidden md:grid grid-cols-3 gap-4">
           {[
             { title: "Бизнес", desc: "Хочешь автоматизировать рутину без найма команды" },
             { title: "Кодер", desc: "Хочешь делегировать монотонные задачи агентам и создавать свои проекты" },
@@ -170,6 +172,24 @@ export default function Home() {
             { title: "Инвестор", desc: "Хочешь использовать агентов для анализа рынков, сигналов и мониторинга портфеля" },
           ].map((item) => (
             <div key={item.title} className="bg-zinc-900 rounded-2xl p-6 border-t-2 border-[#FF4422] hover:bg-zinc-800 transition-colors">
+              <h3 className="text-white font-semibold text-base mb-2">{item.title}</h3>
+              <p className="text-zinc-400 text-sm leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+        <div className="flex md:hidden gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide -mx-4 px-4">
+          {[
+            { title: "Бизнес", desc: "Хочешь автоматизировать рутину без найма команды" },
+            { title: "Кодер", desc: "Хочешь делегировать монотонные задачи агентам и создавать свои проекты" },
+            { title: "Творец", desc: "Хочешь освободить время для главного, а не для рутины" },
+            { title: "Соцсети", desc: "Устал тратить часы на контент и ответы подписчикам" },
+            { title: "Фрилансер", desc: "Хочешь брать больше клиентов без увеличения рабочих часов" },
+            { title: "Студент", desc: "Хочешь умного помощника который работает пока ты спишь" },
+            { title: "Быт", desc: "Хочешь меньше делать руками — агенты берут на себя расписание, напоминания и повседневную рутину" },
+            { title: "Доход", desc: "Хочешь новый источник дохода на базе ИИ-агентов" },
+            { title: "Инвестор", desc: "Хочешь использовать агентов для анализа рынков, сигналов и мониторинга портфеля" },
+          ].map((item) => (
+            <div key={item.title} className="snap-center flex-shrink-0 w-72 bg-zinc-900 rounded-2xl p-6 border-t-2 border-[#FF4422]">
               <h3 className="text-white font-semibold text-base mb-2">{item.title}</h3>
               <p className="text-zinc-400 text-sm leading-relaxed">{item.desc}</p>
             </div>
