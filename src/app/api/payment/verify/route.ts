@@ -98,6 +98,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // 1.5) Check tx_hash uniqueness
+    const { data: existingPayment } = await db
+      .from("payments")
+      .select("id")
+      .eq("tx_hash", tx_hash)
+      .eq("status", "confirmed")
+      .limit(1)
+      .maybeSingle();
+
+    if (existingPayment) {
+      return NextResponse.json(
+        { error: "Transaction already used" },
+        { status: 400 }
+      );
+    }
+
     // 2) Get chain config
     const chain = SUPPORTED_CHAINS.find((c) => c.id === payment.chain_id);
     if (!chain) {
@@ -164,6 +180,18 @@ export async function POST(req: NextRequest) {
         );
       }
 
+      // Verify Transfer.from matches wallet_address
+      if (
+        !matchingLog.topics[1] ||
+        ("0x" + matchingLog.topics[1].slice(26)).toLowerCase() !==
+          wallet_address.toLowerCase()
+      ) {
+        return NextResponse.json(
+          { success: false, error: "Transaction sender does not match wallet address" },
+          { status: 400 }
+        );
+      }
+
       const transferredAmount = BigInt(matchingLog.data);
       // USDT uses 6 decimals on most chains
       const expectedAmount = BigInt(
@@ -177,7 +205,14 @@ export async function POST(req: NextRequest) {
         );
       }
     } else {
-      // Native token
+      // Native token — verify sender matches wallet_address
+      if (tx.from.toLowerCase() !== wallet_address.toLowerCase()) {
+        return NextResponse.json(
+          { success: false, error: "Transaction sender does not match wallet address" },
+          { status: 400 }
+        );
+      }
+
       if (tx.to?.toLowerCase() !== PAYMENT_ADDRESS.toLowerCase()) {
         return NextResponse.json(
           { success: false, error: "Invalid recipient" },
