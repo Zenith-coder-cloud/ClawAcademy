@@ -8,7 +8,7 @@ const tiers = [
   {
     name: "Genesis",
     price: "$49",
-    description: "Все модули 0–3, базовый доступ",
+    description: "Блоки 0–2, базовый доступ",
     button: "Купить Genesis",
     highlighted: false,
   },
