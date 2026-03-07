@@ -175,14 +175,14 @@ export default function Home() {
 
       {/* Guarantee */}
       <section className="max-w-5xl mx-auto px-4 py-20">
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-8">
-          <div className="flex-shrink-0 w-20 h-20 rounded-full bg-[#FF4422]/10 flex items-center justify-center text-4xl">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 md:p-12 flex flex-col items-center text-center gap-6">
+          <div className="flex-shrink-0 w-24 h-24 rounded-full bg-[#FF4422]/10 flex items-center justify-center text-5xl">
             🛡
           </div>
           <div>
             <h2 className="text-2xl font-bold text-white mb-2">Гарантия результата</h2>
             <p className="text-[#FF4422] font-medium italic mb-4">«Мы гарантируем — если ты гарантируешь»</p>
-            <p className="text-zinc-400 leading-relaxed">
+            <p className="text-zinc-400 leading-relaxed max-w-xl mx-auto">
               Курс работает. Но только если ты работаешь. Наша гарантия простая: пройди Block 0 и Block 1 до конца, попробуй запустить агента, и если что-то не получается — мы разберём это вместе в поддержке и доведём до результата.
             </p>
             <p className="text-zinc-500 mt-3 text-sm">
