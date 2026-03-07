@@ -1,7 +1,7 @@
 import { createHmac, createHash, timingSafeEqual } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { checkRateLimit } from "@/lib/server/rateLimit";
+import { checkRateLimit, getClientIp } from "@/lib/server/rateLimit";
 import { createSession, SESSION_COOKIE, MAX_AGE } from "@/lib/server/session";
 
 export const dynamic = "force-dynamic";
@@ -19,10 +19,7 @@ const telegramAuthSchema = z
 export async function POST(req: NextRequest) {
   try {
     // S6 — Rate limiting: 10 requests per minute per IP
-    const ip =
-      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-      req.headers.get("x-real-ip") ||
-      "unknown";
+    const ip = getClientIp(req);
     const rateLimitKey = `telegram-auth:${ip}`;
 
     const allowed = await checkRateLimit(rateLimitKey, 10, 1);

@@ -22,7 +22,7 @@ const IS_MOCK_MODE = process.env.PAYMENT_TEST_MODE === "true";
 function withinTolerance(actual: bigint, expected: bigint): boolean {
   const diff =
     actual > expected ? actual - expected : expected - actual;
-  return diff * 100n <= expected; // 1% tolerance
+  return diff * BigInt(100) <= expected; // 1% tolerance
 }
 
 export async function POST(req: NextRequest) {

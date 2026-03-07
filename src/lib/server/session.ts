@@ -1,9 +1,11 @@
 import 'server-only'
 import { SignJWT, jwtVerify } from 'jose'
 
-const SESSION_SECRET = new TextEncoder().encode(
-  process.env.SESSION_SECRET ?? 'fallback-dev-secret-32-chars-min'
-)
+const rawSecret = process.env.SESSION_SECRET
+if (!rawSecret && process.env.NODE_ENV === 'production') {
+  throw new Error('SESSION_SECRET environment variable is required in production')
+}
+const SESSION_SECRET = new TextEncoder().encode(rawSecret ?? 'fallback-dev-secret-32-chars-min-xx')
 const SESSION_COOKIE = 'ca_session'
 const MAX_AGE = 60 * 60 * 24 * 7 // 7 days
 

@@ -116,6 +116,12 @@ export async function POST(req: NextRequest) {
     const from = message.from;
 
     if (text.startsWith("/start") && chatId && from) {
+      const botToken = process.env.TELEGRAM_BOT_TOKEN;
+      if (!botToken) {
+        console.error("TELEGRAM_BOT_TOKEN not set — cannot send code");
+        return NextResponse.json({ ok: true }); // ack to Telegram but skip
+      }
+
       const code = generateCode();
       const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
 

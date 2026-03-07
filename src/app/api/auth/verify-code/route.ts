@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { supabaseAdmin } from "@/lib/server/supabaseAdmin";
-import { checkRateLimit } from "@/lib/server/rateLimit";
+import { checkRateLimit, getClientIp } from "@/lib/server/rateLimit";
 import { createSession, SESSION_COOKIE, MAX_AGE } from "@/lib/server/session";
 
 export const dynamic = "force-dynamic";

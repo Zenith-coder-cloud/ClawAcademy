@@ -41,7 +41,7 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
 
   const [step, setStep] = useState(initialTier ? 2 : 1);
   const [selectedTier, setSelectedTier] = useState<TierKey | null>(initialTier ?? null);
-  const [selectedChain, setSelectedChain] = useState(SUPPORTED_CHAINS[0]);
+  const [selectedChain, setSelectedChain] = useState<(typeof SUPPORTED_CHAINS)[number]>(SUPPORTED_CHAINS[0]);
   const [selectedToken, setSelectedToken] = useState<'usdt' | 'native'>('usdt');
   const [txHash, setTxHash] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);

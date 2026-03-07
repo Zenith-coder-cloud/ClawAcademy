@@ -46,17 +46,24 @@ export default function Home() {
   const router = useRouter();
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [selectedTier, setSelectedTier] = useState<TierKey>("genesis");
+  const [checkingSession, setCheckingSession] = useState<string | null>(null);
 
-  const handleBuyClick = (tierName: string) => {
+  const handleBuyClick = async (tierName: string) => {
     const tierKey = tierName.toLowerCase() as TierKey;
-    const hasWallet = typeof window !== "undefined" && localStorage.getItem("wallet_address");
-    const hasTelegram = typeof window !== "undefined" && localStorage.getItem("telegram_id");
-
-    if (hasWallet || hasTelegram) {
-      setSelectedTier(tierKey);
-      setIsPaymentOpen(true);
-    } else {
+    setCheckingSession(tierKey);
+    try {
+      const res = await fetch("/api/auth/session");
+      const data = await res.json();
+      if (res.ok && data.ok === true) {
+        setSelectedTier(tierKey);
+        setIsPaymentOpen(true);
+      } else {
+        router.push("/login");
+      }
+    } catch {
       router.push("/login");
+    } finally {
+      setCheckingSession(null);
     }
   };
 
@@ -118,13 +125,14 @@ export default function Home() {
               </p>
               <button
                 onClick={() => handleBuyClick(tier.name)}
+                disabled={checkingSession === tier.name.toLowerCase()}
                 className={`mt-auto py-3 px-6 rounded-lg font-semibold transition-colors ${
                   tier.highlighted
                     ? "bg-white text-[#FF4422] hover:bg-gray-100"
                     : "bg-[#FF4422] text-white hover:bg-[#e63d1e]"
-                }`}
+                } disabled:opacity-60`}
               >
-                {tier.button}
+                {checkingSession === tier.name.toLowerCase() ? "Загрузка..." : tier.button}
               </button>
             </div>
           ))}

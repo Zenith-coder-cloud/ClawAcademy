@@ -1,5 +1,25 @@
 import "server-only";
+import { NextRequest } from "next/server";
 import { supabaseAdmin } from "./supabaseAdmin";
+
+/**
+ * Extract client IP in a spoof-resistant way.
+ * 1. req.ip (platform-provided, not spoofable on Vercel)
+ * 2. x-forwarded-for LAST entry (rightmost is set by the trusted proxy)
+ * 3. x-real-ip
+ * 4. 'unknown'
+ */
+export function getClientIp(req: NextRequest): string {
+  if (req.ip) return req.ip;
+
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const ips = forwarded.split(",").map((s) => s.trim());
+    return ips[ips.length - 1] ?? "unknown";
+  }
+
+  return req.headers.get("x-real-ip") ?? "unknown";
+}
 
 /**
  * Check IP-based rate limit using Supabase `rate_limits` table.
