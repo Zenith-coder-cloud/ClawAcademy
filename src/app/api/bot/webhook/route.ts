@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { z } from "zod";
 import { supabaseAdmin } from "@/lib/server/supabaseAdmin";
-import { checkRateLimit } from "@/lib/server/rateLimit";
+import { checkRateLimit, getClientIp } from "@/lib/server/rateLimit";
 
 export const dynamic = "force-dynamic";
 
@@ -64,10 +64,7 @@ async function sendTelegramMessage(chatId: number, text: string) {
 export async function POST(req: NextRequest) {
   try {
     // Rate limiting
-    const ip =
-      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-      req.headers.get("x-real-ip") ||
-      "unknown";
+    const ip = getClientIp(req);
     const allowed = await checkRateLimit(`webhook-${ip}`, 60, 1);
     if (!allowed) {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });

@@ -3,7 +3,7 @@ import crypto from "crypto";
 import { verifyMessage } from "viem";
 import { z } from "zod";
 import { supabaseAdmin } from "@/lib/server/supabaseAdmin";
-import { checkRateLimit } from "@/lib/server/rateLimit";
+import { checkRateLimit, getClientIp } from "@/lib/server/rateLimit";
 import { createSession, SESSION_COOKIE, MAX_AGE } from "@/lib/server/session";
 
 export const dynamic = "force-dynamic";
@@ -21,7 +21,7 @@ const walletAuthSchema = z.object({
 // GET — generate nonce
 export async function GET(req: NextRequest) {
   try {
-    const ip = req.headers.get("x-forwarded-for")?.split(",")[0] ?? req.headers.get("x-real-ip") ?? "unknown";
+    const ip = getClientIp(req);
     const allowed = await checkRateLimit(`wallet-nonce:${ip}`, 20, 1);
     if (!allowed) {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });
@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
 // POST — verify signature, authenticate user
 export async function POST(req: NextRequest) {
   try {
-    const ip = req.headers.get("x-forwarded-for")?.split(",")[0] ?? req.headers.get("x-real-ip") ?? "unknown";
+    const ip = getClientIp(req);
     const allowed = await checkRateLimit(`wallet-verify:${ip}`, 10, 1);
     if (!allowed) {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });

@@ -8,7 +8,7 @@ import {
   TIERS,
   type TierKey,
 } from "@/lib/paymentConfig";
-import { checkRateLimit } from "@/lib/server/rateLimit";
+import { checkRateLimit, getClientIp } from "@/lib/server/rateLimit";
 
 export const dynamic = "force-dynamic";
 
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const ip = req.headers.get("x-forwarded-for")?.split(",")[0] ?? req.headers.get("x-real-ip") ?? "unknown";
+    const ip = getClientIp(req);
     const rateLimitKey = `payment-verify:${wallet_address || ip}`;
     const allowed = await checkRateLimit(rateLimitKey, 10, 5);
     if (!allowed) {

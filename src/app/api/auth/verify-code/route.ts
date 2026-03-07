@@ -17,10 +17,7 @@ const verifyCodeSchema = z.object({
 export async function POST(req: NextRequest) {
   try {
     // S6 — Rate limiting: 5 requests per 15 minutes per IP
-    const ip =
-      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-      req.headers.get("x-real-ip") ||
-      "unknown";
+    const ip = getClientIp(req);
     const rateLimitKey = `verify-code:${ip}`;
 
     const allowed = await checkRateLimit(rateLimitKey, 5, 15);
