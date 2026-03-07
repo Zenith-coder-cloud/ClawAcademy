@@ -84,7 +84,7 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
         body: JSON.stringify({
           tier: selectedTier,
           chain_id: selectedChain.id,
-          token: selectedToken,
+          token: selectedToken === 'usdt' ? 'USDT' : 'native',
           wallet_address: address,
         }),
       });
