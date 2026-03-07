@@ -27,7 +27,7 @@ const tiers = [
 ];
 
 const features = [
-  { icon: "/stickers/sticker-robot.png", title: "AI агент внутри", description: "Настоящий ИИ-агент на базе OpenClaw — думает, действует и работает за тебя 24/7" },
+  { icon: "/stickers/sticker-robot.png", title: "AI ментор внутри", description: "Твой личный AI-эксперт по OpenClaw — отвечает на вопросы, помогает разобраться и ведёт тебя на каждом шагу" },
   { icon: "/stickers/sticker-nft.png", title: "NFT доступ навсегда", description: "Доступ хранится в блокчейне. Никто не может его отозвать — он всегда твой" },
   { icon: "/stickers/sticker-books.png", title: "6 блоков курса", description: "От первого агента до полноценного бизнеса — пошаговая программа для любого уровня" },
   { icon: "/stickers/sticker-coins.png", title: "Реальные схемы", description: "Рабочие схемы монетизации, автоматизации и внедрения ИИ в любую сферу жизни" },
