@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { verifyMessage } from "viem";
+import { z } from "zod";
 import { supabaseAdmin } from "@/lib/server/supabaseAdmin";
 
 export const dynamic = "force-dynamic";
+
+// S8 — Input validation for wallet auth
+const walletAuthSchema = z.object({
+  address: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
+  message: z.string().min(1).max(500),
+  signature: z.string().regex(/^0x[a-fA-F0-9]+$/),
+});
 
 // GET — generate nonce
 export async function GET() {
@@ -32,14 +40,18 @@ export async function GET() {
 // POST — verify signature, authenticate user
 export async function POST(req: NextRequest) {
   try {
-    const { address, message, signature } = await req.json();
+    const body = await req.json();
 
-    if (!address || !message || !signature) {
+    // S8 — Validate input
+    const parsed = walletAuthSchema.safeParse(body);
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "Missing address, message, or signature" },
+        { error: "Invalid request data" },
         { status: 400 }
       );
     }
+
+    const { address, message, signature } = parsed.data;
 
     // Extract nonce from message
     const nonceMatch = message.match(/Nonce: ([a-f0-9]+)/);
