@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import CourseProgram from "@/components/CourseProgram";
@@ -124,23 +125,30 @@ export default function Home() {
 
       {/* How it works */}
       <section className="max-w-5xl mx-auto px-4 py-20">
-        <h2 className="text-3xl font-bold text-white text-center mb-16">Как это работает</h2>
-        <div className="relative flex flex-col md:flex-row items-start justify-between gap-8">
-          {/* Connecting line - desktop only */}
-          <div className="hidden md:block absolute top-8 left-[16.66%] right-[16.66%] h-px bg-zinc-700" />
-
+        <h2 className="text-3xl font-bold text-white text-center mb-12">Как это работает</h2>
+        
+        {/* Mobile: vertical stack with arrows. Desktop: horizontal with arrows */}
+        <div className="flex flex-col md:flex-row items-center gap-0">
           {[
-            { num: "01", title: "Выбери тариф", desc: "Оплата один раз, доступ пожизненно" },
-            { num: "02", title: "Запусти агента", desc: "15 минут до первого результата" },
-            { num: "03", title: "Делегируй и живи", desc: "Твои агенты работают 24/7 пока ты живёшь" },
-          ].map((step) => (
-            <div key={step.num} className="flex-1 flex flex-col items-center text-center gap-3 relative z-10">
-              <div className="w-16 h-16 rounded-full bg-zinc-900 border-2 border-zinc-700 flex items-center justify-center">
-                <span className="text-2xl font-bold text-[#FF4422]">{step.num}</span>
+            { num: "01", title: "Выбери тариф", desc: "Оплата один раз — доступ пожизненно. Выбери уровень под свои цели." },
+            { num: "02", title: "Запусти агента", desc: "15 минут до первого результата. Пошаговые инструкции для любого уровня." },
+            { num: "03", title: "Делегируй и живи", desc: "Твои агенты работают 24/7 пока ты занимаешься тем что важно." },
+          ].map((step, i) => (
+            <Fragment key={i}>
+              <div className="flex-1 bg-zinc-900 border border-zinc-800 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-start gap-4 w-full">
+                <span className="text-5xl font-bold text-[#FF4422] leading-none">{step.num}</span>
+                <div>
+                  <h3 className="text-white font-semibold text-lg mb-1">{step.title}</h3>
+                  <p className="text-zinc-400 text-sm leading-relaxed">{step.desc}</p>
+                </div>
               </div>
-              <h3 className="text-white font-semibold text-lg">{step.title}</h3>
-              <p className="text-zinc-400 text-sm">{step.desc}</p>
-            </div>
+              {i < 2 && (
+                <div className="flex items-center justify-center py-2 md:py-0 md:px-2 text-zinc-600">
+                  <span className="block md:hidden text-2xl">↓</span>
+                  <span className="hidden md:block text-2xl">→</span>
+                </div>
+              )}
+            </Fragment>
           ))}
         </div>
       </section>
