@@ -68,16 +68,8 @@ export default function TelegramLoginButton() {
 
   const handleClick = () => {
     const origin = window.location.origin;
-    const returnTo = `${origin}/login`;
-    const oauthUrl = `https://oauth.telegram.org/auth?bot_id=${BOT_ID}&scope=write&origin=${encodeURIComponent(origin)}&return_to=${encodeURIComponent(returnTo)}&request_access=write`;
-
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-    if (isMobile) {
-      window.location.href = oauthUrl;
-    } else {
-      window.open(oauthUrl, "telegram_oauth", "width=550,height=470");
-    }
+    const returnTo = origin + '/login';
+    window.location.href = 'https://oauth.telegram.org/auth?bot_id=' + BOT_ID + '&scope=write&origin=' + encodeURIComponent(origin) + '&return_to=' + encodeURIComponent(returnTo) + '&request_access=write';
   };
 
   return (
