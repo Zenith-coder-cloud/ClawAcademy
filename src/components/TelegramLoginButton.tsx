@@ -71,13 +71,15 @@ export default function TelegramLoginButton() {
     if (iframe) {
       iframe.click();
     } else {
-      // Fallback: open Telegram OAuth directly
+      // Fallback: open Telegram OAuth directly with correct bot_id
       const origin = window.location.origin;
-      window.open(
-        `https://oauth.telegram.org/auth?bot_id=&scope=write&public_key=&nonce=&origin=${encodeURIComponent(origin)}&request_access=write&bot_id=&return_to=${encodeURIComponent(origin)}/login`,
-        "telegram_oauth",
-        "width=550,height=470,toolbar=no,menubar=no"
-      );
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      const url = `https://oauth.telegram.org/auth?bot_id=8663052035&scope=write&origin=${encodeURIComponent(origin)}&return_to=${encodeURIComponent(origin + "/login")}&request_access=write`;
+      if (isMobile) {
+        window.location.href = url;
+      } else {
+        window.open(url, "telegram_oauth", "width=550,height=470,toolbar=no,menubar=no");
+      }
     }
   };
 
