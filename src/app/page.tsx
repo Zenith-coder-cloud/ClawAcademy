@@ -42,7 +42,7 @@ export default function Home() {
           Возьми интеллект под свой контроль
         </h1>
         <p className="text-zinc-400 text-lg md:text-xl max-w-2xl mb-10">
-          Первая русскоязычная школа ИИ-агентов на OpenClaw
+          Больше чем курсы: прикладная база для тех, кто готов внедрять ИИ во все сферы жизни
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
           <Link
