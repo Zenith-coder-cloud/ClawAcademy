@@ -176,8 +176,8 @@ export default function Home() {
       {/* Guarantee */}
       <section className="max-w-5xl mx-auto px-4 py-20">
         <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 md:p-12 flex flex-col items-center text-center gap-6">
-          <div className="flex-shrink-0 w-24 h-24 rounded-full bg-[#FF4422]/10 flex items-center justify-center text-5xl">
-            🛡
+          <div className="flex-shrink-0 w-28 h-28 flex items-center justify-center">
+            <Image src="/stickers/sticker-shield.png" alt="Гарантия" width={112} height={112} className="w-28 h-28 object-contain" />
           </div>
           <div>
             <h2 className="text-2xl font-bold text-white mb-2">Гарантия результата</h2>
