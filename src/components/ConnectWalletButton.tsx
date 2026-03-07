@@ -4,6 +4,7 @@ import { useAppKit } from "@reown/appkit/react";
 import { useAccount, useDisconnect } from "wagmi";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Image from "next/image";
 
 export default function ConnectWalletButton() {
   const { open } = useAppKit();
@@ -47,8 +48,9 @@ export default function ConnectWalletButton() {
   return (
     <button
       onClick={() => open()}
-      className="w-full py-4 bg-zinc-800 border border-zinc-700 text-white font-semibold rounded-xl hover:border-[#FF4422] transition-colors text-sm flex items-center justify-center"
+      className="w-full py-4 bg-zinc-800 border border-zinc-700 text-white font-semibold rounded-xl hover:border-[#FF4422] transition-colors text-sm flex items-center justify-center gap-3"
     >
+      <Image src="/walletconnect.svg" alt="WalletConnect" width={22} height={15} className="w-6 h-auto" />
       Подключить кошелёк
     </button>
   );
