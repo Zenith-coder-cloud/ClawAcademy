@@ -10,8 +10,11 @@ export const dynamic = "force-dynamic";
 // S8 — Input validation for wallet auth
 const walletAuthSchema = z.object({
   address: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
-  message: z.string().min(1).max(500),
+  message: z.string().min(1).max(1000),
   signature: z.string().regex(/^0x[a-fA-F0-9]+$/),
+  chainId: z.number().int().positive(),
+  issuedAt: z.string().datetime(),
+  expiresAt: z.string().datetime(),
 });
 
 // GET — generate nonce
@@ -37,7 +40,8 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Server error" }, { status: 500 });
     }
 
-    return NextResponse.json({ nonce });
+    const issuedAt = new Date().toISOString();
+    return NextResponse.json({ nonce, issuedAt, expiresAt });
   } catch (err) {
     console.error("GET /api/auth/wallet error:", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
@@ -64,7 +68,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { address, message, signature } = parsed.data;
+    const { address, message, signature, chainId, issuedAt, expiresAt } = parsed.data;
+
+    // Validate expiration — message must not be expired
+    const now = Date.now();
+    if (new Date(expiresAt).getTime() <= now) {
+      return NextResponse.json({ error: "Message expired" }, { status: 400 });
+    }
+
+    // Validate issuedAt — must not be older than 10 minutes
+    if (now - new Date(issuedAt).getTime() > 10 * 60 * 1000) {
+      return NextResponse.json({ error: "Message too old" }, { status: 400 });
+    }
 
     // Extract nonce from message
     const nonceMatch = message.match(/Nonce: ([a-f0-9]+)/);
@@ -72,6 +87,25 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid message format" }, { status: 400 });
     }
     const nonce = nonceMatch[1];
+
+    // Reconstruct expected SIWE message and verify it matches
+    const expectedMessage = [
+      'clawacademy.io wants you to sign in with your Ethereum account:',
+      address,
+      '',
+      'Sign in to Claw Academy',
+      '',
+      'URI: https://www.clawacademy.io',
+      'Version: 1',
+      'Chain ID: ' + chainId,
+      'Nonce: ' + nonce,
+      'Issued At: ' + issuedAt,
+      'Expiration Time: ' + expiresAt,
+    ].join('\n');
+
+    if (message !== expectedMessage) {
+      return NextResponse.json({ error: "Message mismatch" }, { status: 400 });
+    }
 
     const db = supabaseAdmin();
 

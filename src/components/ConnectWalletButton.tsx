@@ -1,7 +1,7 @@
 "use client";
 
 import { useAppKit } from "@reown/appkit/react";
-import { useAccount, useDisconnect, useSignMessage } from "wagmi";
+import { useAccount, useChainId, useDisconnect, useSignMessage } from "wagmi";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -9,6 +9,7 @@ import Image from "next/image";
 export default function ConnectWalletButton() {
   const { open } = useAppKit();
   const { address, isConnected } = useAccount();
+  const chainId = useChainId();
   const { disconnect } = useDisconnect();
   const { signMessageAsync } = useSignMessage();
   const router = useRouter();
@@ -22,23 +23,34 @@ export default function ConnectWalletButton() {
       authAttempted.current = true;
       setSigning(true);
       try {
-        // 1. Fetch nonce from server
+        // 1. Fetch nonce + timestamps from server
         const nonceRes = await fetch("/api/auth/wallet");
-        const { nonce } = await nonceRes.json();
+        const { nonce, issuedAt, expiresAt } = await nonceRes.json();
         if (!nonce) throw new Error("Failed to get nonce");
 
-        // 2. Build sign message
-        const timestamp = new Date().toISOString();
-        const message = `Sign in to Claw Academy\nNonce: ${nonce}\nTimestamp: ${timestamp}`;
+        // 2. Build EIP-4361 SIWE message
+        const siweMessage = [
+          'clawacademy.io wants you to sign in with your Ethereum account:',
+          address,
+          '',
+          'Sign in to Claw Academy',
+          '',
+          'URI: https://www.clawacademy.io',
+          'Version: 1',
+          'Chain ID: ' + chainId,
+          'Nonce: ' + nonce,
+          'Issued At: ' + issuedAt,
+          'Expiration Time: ' + expiresAt,
+        ].join('\n');
 
         // 3. Request wallet signature
-        const signature = await signMessageAsync({ message });
+        const signature = await signMessageAsync({ message: siweMessage });
 
         // 4. Verify on server
         const verifyRes = await fetch("/api/auth/wallet", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ address, message, signature }),
+          body: JSON.stringify({ address, message: siweMessage, signature, chainId, issuedAt, expiresAt }),
         });
 
         const data = await verifyRes.json();
@@ -64,7 +76,7 @@ export default function ConnectWalletButton() {
     };
 
     authenticate();
-  }, [isConnected, address, router, signMessageAsync, disconnect, signing]);
+  }, [isConnected, address, chainId, router, signMessageAsync, disconnect, signing]);
 
   if (signing) {
     return (
