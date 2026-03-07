@@ -37,9 +37,8 @@ export default function ConnectWalletButton() {
     return (
       <button
         onClick={() => disconnect()}
-        className="w-full py-4 bg-[#1a1a1a] border border-[#333] text-white font-semibold rounded-xl hover:border-[#FF4422] transition-colors text-base flex items-center justify-center gap-3"
+        className="w-full py-4 bg-zinc-800 border border-zinc-700 text-white font-semibold rounded-xl hover:border-[#FF4422] transition-colors text-sm flex items-center justify-center"
       >
-        <span className="text-xl">🦊</span>
         {address.slice(0, 6)}...{address.slice(-4)} — Отключить
       </button>
     );
@@ -48,9 +47,8 @@ export default function ConnectWalletButton() {
   return (
     <button
       onClick={() => open()}
-      className="w-full py-4 bg-[#1a1a1a] border border-[#333] text-white font-semibold rounded-xl hover:border-[#FF4422] transition-colors text-base flex items-center justify-center gap-3"
+      className="w-full py-4 bg-zinc-800 border border-zinc-700 text-white font-semibold rounded-xl hover:border-[#FF4422] transition-colors text-sm flex items-center justify-center"
     >
-      <span className="text-xl">🦊</span>
       Подключить кошелёк
     </button>
   );

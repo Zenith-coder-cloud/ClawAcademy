@@ -88,10 +88,9 @@ export default function TelegramLoginButton() {
       {/* Custom styled button */}
       <button
         onClick={handleClick}
-        className="w-full py-4 bg-[#1a1a1a] border border-[#333] text-white font-semibold rounded-xl hover:border-[#FF4422] transition-colors text-base flex items-center justify-center gap-3"
+        className="w-full py-4 bg-zinc-800 border border-zinc-700 text-white font-semibold rounded-xl hover:border-[#FF4422] transition-colors text-sm flex items-center justify-center"
       >
-        <span className="text-xl">✈️</span>
-        Войти через Telegram
+        Войти по номеру телефона
       </button>
     </>
   );

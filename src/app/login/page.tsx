@@ -68,14 +68,10 @@ export default function LoginPage() {
           </div>
 
           {/* Method 1: phone number widget */}
-          <div className="flex flex-col gap-1">
-            <p className="text-zinc-600 text-xs pl-1">Через номер телефона</p>
-            <TelegramLoginButton />
-          </div>
+          <TelegramLoginButton />
 
           {/* Method 2: bot code */}
           <div className="flex flex-col gap-1">
-            <p className="text-zinc-600 text-xs pl-1">Через @ClawAcademyBot</p>
             {!showCodeForm ? (
               <button
                 onClick={() => setShowCodeForm(true)}
