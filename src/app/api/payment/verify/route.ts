@@ -39,6 +39,14 @@ export async function POST(req: NextRequest) {
 
     const { tx_hash, wallet_address } = parsed.data;
 
+    // Block test transactions in production
+    if ((tx_hash === "test" || tx_hash.startsWith("0xtest")) && !IS_MOCK_MODE) {
+      return NextResponse.json(
+        { error: "Test transactions not allowed in production" },
+        { status: 400 }
+      );
+    }
+
     const ip = req.headers.get("x-forwarded-for")?.split(",")[0] ?? req.headers.get("x-real-ip") ?? "unknown";
     const rateLimitKey = `payment-verify:${wallet_address || ip}`;
     const allowed = await checkRateLimit(rateLimitKey, 10, 5);

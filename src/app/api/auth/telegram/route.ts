@@ -2,6 +2,7 @@ import { createHmac, createHash, timingSafeEqual } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { checkRateLimit } from "@/lib/server/rateLimit";
+import { createSession, SESSION_COOKIE, MAX_AGE } from "@/lib/server/session";
 
 export const dynamic = "force-dynamic";
 
@@ -77,7 +78,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    return NextResponse.json({
+    const token = await createSession({ telegramId: userData.id, tier: "free" });
+    const response = NextResponse.json({
       ok: true,
       user: {
         id: userData.id,
@@ -87,6 +89,14 @@ export async function POST(req: NextRequest) {
         photo_url: (userData as Record<string, unknown>).photo_url,
       },
     });
+    response.cookies.set(SESSION_COOKIE, token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      maxAge: MAX_AGE,
+      path: "/",
+    });
+    return response;
   } catch (err) {
     console.error("telegram auth error:", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

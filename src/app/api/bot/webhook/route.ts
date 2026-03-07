@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { z } from "zod";
 import { supabaseAdmin } from "@/lib/server/supabaseAdmin";
+import { checkRateLimit } from "@/lib/server/rateLimit";
 
 export const dynamic = "force-dynamic";
 
@@ -45,8 +46,12 @@ const webhookSchema = z.object({
 });
 
 async function sendTelegramMessage(chatId: number, text: string) {
-  const token = process.env.TELEGRAM_BOT_TOKEN!;
-  const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  if (!botToken) {
+    console.error("TELEGRAM_BOT_TOKEN not set");
+    return;
+  }
+  const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ chat_id: chatId, text, parse_mode: "HTML" }),
@@ -58,6 +63,16 @@ async function sendTelegramMessage(chatId: number, text: string) {
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limiting
+    const ip =
+      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      req.headers.get("x-real-ip") ||
+      "unknown";
+    const allowed = await checkRateLimit(`webhook-${ip}`, 60, 1);
+    if (!allowed) {
+      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    }
+
     // S2 — Verify Telegram webhook secret token (REQUIRED)
     const secret = process.env.TELEGRAM_WEBHOOK_SECRET;
     if (!secret) {

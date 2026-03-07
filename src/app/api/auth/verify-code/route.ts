@@ -54,41 +54,11 @@ export async function POST(req: NextRequest) {
     );
 
     if (rpcError) {
-      // RPC not available — fallback to non-atomic (will be fixed when RPC is created)
-      console.error("redeem_auth_code RPC not available, using fallback:", rpcError.message);
-
-      const { data: found, error: findError } = await db
-        .from("auth_codes")
-        .select("*")
-        .eq("code", code)
-        .eq("used", false)
-        .gt("expires_at", new Date().toISOString())
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .single();
-
-      if (findError || !found) {
-        return NextResponse.json(
-          { error: "Неверный или устаревший код" },
-          { status: 401 }
-        );
-      }
-
-      // S9 — Check update result
-      const { error: updateError } = await db
-        .from("auth_codes")
-        .update({ used: true })
-        .eq("id", found.id);
-
-      if (updateError) {
-        console.error("verify-code: failed to mark code as used:", updateError);
-        return NextResponse.json(
-          { error: "Ошибка сервера" },
-          { status: 500 }
-        );
-      }
-
-      authCode = found;
+      console.error("redeem_auth_code RPC failed:", rpcError.message);
+      return NextResponse.json(
+        { error: "Code redemption failed, please try again" },
+        { status: 500 }
+      );
     } else {
       // RPC returned result
       if (!rpcResult || (Array.isArray(rpcResult) && rpcResult.length === 0)) {
