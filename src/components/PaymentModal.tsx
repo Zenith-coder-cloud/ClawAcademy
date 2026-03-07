@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAccount, useSendTransaction, useWriteContract, useChainId, useSwitchChain } from 'wagmi';
-import { parseUnits, encodeFunctionData } from 'viem';
+import { parseUnits } from 'viem';
 import { TIERS, SUPPORTED_CHAINS, PAYMENT_ADDRESS, type TierKey } from '@/lib/paymentConfig';
 
 interface PaymentModalProps {

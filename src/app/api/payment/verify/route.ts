@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { createPublicClient, http, parseAbiItem } from "viem";
+import { createPublicClient, http } from "viem";
 import { supabaseAdmin } from "@/lib/server/supabaseAdmin";
 import {
   SUPPORTED_CHAINS,
@@ -13,15 +13,11 @@ import { checkRateLimit } from "@/lib/server/rateLimit";
 export const dynamic = "force-dynamic";
 
 const verifySchema = z.object({
-  tx_hash: z.string().min(1),
+  tx_hash: z.string().regex(/^(0x[a-fA-F0-9]{64}|test|0xtest.*)$/, 'Invalid transaction hash format'),
   wallet_address: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
 });
 
 const IS_MOCK_MODE = process.env.PAYMENT_TEST_MODE === "true";
-
-const ERC20_TRANSFER_EVENT = parseAbiItem(
-  "event Transfer(address indexed from, address indexed to, uint256 value)"
-);
 
 function withinTolerance(actual: bigint, expected: bigint): boolean {
   const diff =

@@ -45,7 +45,10 @@ export async function POST(req: NextRequest) {
 
     // Verify Telegram hash (Login Widget uses SHA256 of bot token as secret)
     const { hash, ...userData } = parsed.data;
-    const botToken = process.env.TELEGRAM_BOT_TOKEN!;
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    if (!botToken) {
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+    }
     const secret = createHash("sha256").update(botToken).digest();
 
     const checkString = Object.keys(userData)
