@@ -44,9 +44,9 @@ export default function LoginPage() {
         <Image
           src="/logo.png"
           alt="Claw Academy"
-          width={160}
-          height={53}
-          className="h-12 w-auto"
+          width={200}
+          height={67}
+          className="h-16 w-auto"
         />
       </a>
 
@@ -61,9 +61,9 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Telegram Widget button */}
+        {/* Section: Telegram */}
         <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-3 w-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 hover:border-[#FF4422] rounded-xl px-5 py-4 transition-all cursor-pointer">
+          <div className="flex items-center gap-3 mb-1">
             <svg
               width="22"
               height="22"
@@ -76,7 +76,7 @@ export default function LoginPage() {
                 fill="#29B6F6"
               />
             </svg>
-            <span className="text-white font-medium text-sm">
+            <span className="text-zinc-300 font-medium text-sm">
               Войти через Telegram
             </span>
           </div>
@@ -90,7 +90,7 @@ export default function LoginPage() {
           <div className="flex-1 h-px bg-zinc-800" />
         </div>
 
-        {/* Bot code section */}
+        {/* Section: Bot code */}
         <div className="flex flex-col gap-3">
           {!showCodeForm ? (
             <button
@@ -194,9 +194,9 @@ export default function LoginPage() {
           <div className="flex-1 h-px bg-zinc-800" />
         </div>
 
-        {/* Wallet connect */}
+        {/* Section: Wallet */}
         <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-3 w-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 hover:border-[#FF4422] rounded-xl px-5 py-4 transition-all cursor-pointer">
+          <div className="flex items-center gap-3 mb-1">
             <svg
               width="22"
               height="22"
@@ -218,7 +218,7 @@ export default function LoginPage() {
               <path d="M2 10h20" stroke="#FF4422" strokeWidth="1.5" />
               <circle cx="17" cy="15" r="1.5" fill="#FF4422" />
             </svg>
-            <span className="text-white font-medium text-sm">
+            <span className="text-zinc-300 font-medium text-sm">
               Подключить кошелёк
             </span>
           </div>
