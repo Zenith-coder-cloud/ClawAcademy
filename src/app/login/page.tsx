@@ -62,24 +62,8 @@ export default function LoginPage() {
         </div>
 
         {/* Section: Telegram */}
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-3 mb-1">
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.7 8.02c-.13.58-.47.72-.95.45l-2.62-1.93-1.27 1.22c-.14.14-.26.26-.53.26l.19-2.72 4.96-4.48c.22-.19-.05-.29-.33-.1l-6.13 3.86-2.64-.82c-.57-.18-.58-.57.12-.84l10.33-3.98c.47-.17.89.12.57.96z"
-                fill="#29B6F6"
-              />
-            </svg>
-            <span className="text-zinc-300 font-medium text-sm">
-              Войти через Telegram
-            </span>
-          </div>
+        <div className="flex flex-col gap-2">
+          <p className="text-zinc-500 text-xs text-center">Войти через номер телефона</p>
           <TelegramLoginButton />
         </div>
 
@@ -195,33 +179,8 @@ export default function LoginPage() {
         </div>
 
         {/* Section: Wallet */}
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-3 mb-1">
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <rect
-                x="2"
-                y="6"
-                width="20"
-                height="14"
-                rx="3"
-                fill="#FF4422"
-                opacity="0.15"
-                stroke="#FF4422"
-                strokeWidth="1.5"
-              />
-              <path d="M2 10h20" stroke="#FF4422" strokeWidth="1.5" />
-              <circle cx="17" cy="15" r="1.5" fill="#FF4422" />
-            </svg>
-            <span className="text-zinc-300 font-medium text-sm">
-              Подключить кошелёк
-            </span>
-          </div>
+        <div className="flex flex-col gap-2">
+          <p className="text-zinc-500 text-xs text-center">Подключить кошелёк</p>
           <ConnectWalletButton />
         </div>
       </div>
