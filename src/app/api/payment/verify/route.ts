@@ -8,6 +8,7 @@ import {
   TIERS,
   type TierKey,
 } from "@/lib/paymentConfig";
+import { checkRateLimit } from "@/lib/server/rateLimit";
 
 export const dynamic = "force-dynamic";
 
@@ -41,6 +42,14 @@ export async function POST(req: NextRequest) {
     }
 
     const { tx_hash, wallet_address } = parsed.data;
+
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0] ?? req.headers.get("x-real-ip") ?? "unknown";
+    const rateLimitKey = `payment-verify:${wallet_address || ip}`;
+    const allowed = await checkRateLimit(rateLimitKey, 10, 5);
+    if (!allowed) {
+      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    }
+
     const db = supabaseAdmin();
 
     // Mock mode: skip on-chain verification for test transactions

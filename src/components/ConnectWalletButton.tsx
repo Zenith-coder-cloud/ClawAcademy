@@ -51,6 +51,7 @@ export default function ConnectWalletButton() {
           router.push("/dashboard");
         } else {
           console.error("Wallet auth failed:", data.error);
+          authAttempted.current = false;
           disconnect();
         }
       } catch (err) {

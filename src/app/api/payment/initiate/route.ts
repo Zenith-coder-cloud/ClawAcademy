@@ -7,6 +7,7 @@ import {
   PAYMENT_ADDRESS,
   type TierKey,
 } from "@/lib/paymentConfig";
+import { checkRateLimit } from "@/lib/server/rateLimit";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +28,13 @@ export async function POST(req: NextRequest) {
         { error: "Invalid request data" },
         { status: 400 }
       );
+    }
+
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0] ?? req.headers.get("x-real-ip") ?? "unknown";
+    const rateLimitKey = `payment-initiate:${parsed.data.wallet_address || ip}`;
+    const allowed = await checkRateLimit(rateLimitKey, 10, 5);
+    if (!allowed) {
+      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
 
     const { tier, chain_id, token, wallet_address } = parsed.data;
