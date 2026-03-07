@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import CourseProgram from "@/components/CourseProgram";
 
 const tiers = [
   {
@@ -166,6 +167,9 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* Course Program */}
+      <CourseProgram />
 
       {/* Footer */}
       <footer className="border-t border-[#222] py-8 text-center text-[#888888] text-sm">
