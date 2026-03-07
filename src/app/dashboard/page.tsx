@@ -3,14 +3,15 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 const modules = [
-  { id: 0, title: "Блок 0 — Вход: что такое ИИ-агент и OpenClaw", locked: false },
-  { id: 1, title: "Блок 1 — Установка и первый агент за 15 минут", locked: false },
-  { id: 2, title: "Блок 2 — Быстрый заработок: первые схемы", locked: false },
-  { id: 3, title: "Блок 3 — Средний уровень: мультиагент и автоматизация", locked: false },
-  { id: 4, title: "Блок 4 — Продвинутые схемы: SaaS и аутстаффинг", locked: true },
-  { id: 5, title: "Блок 5 — Бизнес-модель: упаковка, клиенты, прайсинг", locked: true },
+  { id: 0, title: "Вход — что такое ИИ-агент", cover: "/covers/block0.png", locked: false },
+  { id: 1, title: "Установка и первый агент", cover: "/covers/block1.png", locked: false },
+  { id: 2, title: "Быстрый заработок: первые схемы", cover: "/covers/block2.png", locked: false },
+  { id: 3, title: "Мультиагент и автоматизация", cover: "/covers/block3.png", locked: false },
+  { id: 4, title: "Продвинутые схемы: SaaS и аутстаффинг", cover: "/covers/block4.png", locked: true },
+  { id: 5, title: "Бизнес-модель: упаковка, клиенты, прайсинг", cover: "/covers/block5.png", locked: true },
 ];
 
 interface TgUser {
@@ -82,29 +83,50 @@ export default function DashboardPage() {
         <h2 className="text-xl font-semibold text-white mb-6">
           Ваши модули
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {modules.map((m) => (
             <div
               key={m.id}
-              className={`p-6 rounded-xl border transition-colors ${
+              className={`rounded-2xl shadow-xl overflow-hidden transition-transform ${
                 m.locked
-                  ? "bg-[#1a1a1a] border-[#333] opacity-50 cursor-not-allowed"
-                  : "bg-[#1a1a1a] border-[#FF4422] hover:bg-[#221a1a] cursor-pointer"
+                  ? "bg-zinc-900 cursor-not-allowed"
+                  : "bg-zinc-900 hover:scale-[1.02] cursor-pointer"
               }`}
             >
-              <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-white">{m.title}</h3>
-                <span className="text-xl">{m.locked ? "🔒" : "✅"}</span>
+              {/* Cover */}
+              <div className="relative w-full aspect-video">
+                <Image
+                  src={m.cover}
+                  alt={`Блок ${m.id}: ${m.title}`}
+                  width={1280}
+                  height={720}
+                  className="w-full h-full object-cover"
+                  priority={m.id === 0}
+                />
+                {m.locked && (
+                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                    <span className="text-5xl">🔒</span>
+                  </div>
+                )}
               </div>
-              {m.locked ? (
-                <p className="text-[#555] text-sm mt-2">
-                  Разблокируйте тарифом Pro или Elite
+              {/* Info */}
+              <div className="p-5">
+                <p className="text-sm text-[#888888] mb-1">
+                  {m.locked ? "🔒" : "🔓"} БЛОК {m.id}
                 </p>
-              ) : (
-                <p className="text-[#888888] text-sm mt-2">
-                  Доступен — нажмите чтобы начать
-                </p>
-              )}
+                <h3 className="font-semibold text-white text-lg mb-3">
+                  {m.title}
+                </h3>
+                {m.locked ? (
+                  <button className="w-full py-2.5 bg-zinc-700 hover:bg-zinc-600 text-white font-medium rounded-lg transition-colors text-sm">
+                    Разблокировать
+                  </button>
+                ) : (
+                  <button className="w-full py-2.5 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-medium rounded-lg transition-colors text-sm">
+                    Начать
+                  </button>
+                )}
+              </div>
             </div>
           ))}
         </div>

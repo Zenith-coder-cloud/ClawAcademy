@@ -72,7 +72,6 @@ export default function TelegramLoginButton() {
       iframe.click();
     } else {
       // Fallback: open Telegram OAuth directly
-      const botName = "ClawAcademyBot";
       const origin = window.location.origin;
       window.open(
         `https://oauth.telegram.org/auth?bot_id=&scope=write&public_key=&nonce=&origin=${encodeURIComponent(origin)}&request_access=write&bot_id=&return_to=${encodeURIComponent(origin)}/login`,
