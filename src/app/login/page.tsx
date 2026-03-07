@@ -135,6 +135,12 @@ export default function LoginPage() {
 
         {/* Wallet */}
         <ConnectWalletButton />
+
+        {/* iOS hint */}
+        <p className="text-zinc-600 text-xs text-center leading-relaxed">
+          На iPhone: откройте этот сайт во встроенном браузере MetaMask<br />
+          <span className="text-zinc-700">MetaMask → Browser → clawacademy.io</span>
+        </p>
       </div>
 
       {/* Back link */}
