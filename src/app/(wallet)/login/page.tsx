@@ -26,6 +26,7 @@ export default function LoginPage() {
       const data = await res.json();
       if (res.ok && data.ok) {
         localStorage.setItem("tg_user", JSON.stringify({ ...data.user, auth_at: Date.now() }));
+        if (data.user.id) localStorage.setItem("telegram_id", String(data.user.id));
         router.push("/dashboard");
       } else {
         setError(data.error || "Неверный код");

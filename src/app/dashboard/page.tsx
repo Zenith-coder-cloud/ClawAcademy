@@ -94,6 +94,8 @@ export default function DashboardPage() {
 
   const handleLogout = () => {
     localStorage.removeItem("tg_user");
+    localStorage.removeItem("wallet_address");
+    localStorage.removeItem("telegram_id");
     router.push("/");
   };
 
