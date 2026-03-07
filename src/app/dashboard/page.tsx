@@ -2,17 +2,24 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import Image from "next/image";
+import PaymentModal from "@/components/PaymentModal";
 
-const modules = [
-  { id: 0, title: "Вход — что такое ИИ-агент", cover: "/covers/block0.png", locked: false },
-  { id: 1, title: "Установка и первый агент", cover: "/covers/block1.png", locked: false },
-  { id: 2, title: "Быстрый заработок: первые схемы", cover: "/covers/block2.png", locked: false },
-  { id: 3, title: "Мультиагент и автоматизация", cover: "/covers/block3.png", locked: true },
-  { id: 4, title: "Продвинутые схемы: SaaS и аутстаффинг", cover: "/covers/block4.png", locked: true },
-  { id: 5, title: "Бизнес-модель: упаковка, клиенты, прайсинг", cover: "/covers/block5.png", locked: true },
+const allModules = [
+  { id: 0, title: "Вход — что такое ИИ-агент", cover: "/covers/block0.png" },
+  { id: 1, title: "Установка и первый агент", cover: "/covers/block1.png" },
+  { id: 2, title: "Быстрый заработок: первые схемы", cover: "/covers/block2.png" },
+  { id: 3, title: "Мультиагент и автоматизация", cover: "/covers/block3.png" },
+  { id: 4, title: "Продвинутые схемы: SaaS и аутстаффинг", cover: "/covers/block4.png" },
+  { id: 5, title: "Бизнес-модель: упаковка, клиенты, прайсинг", cover: "/covers/block5.png" },
 ];
+
+const TIER_LABELS: Record<string, string> = {
+  free: "Free",
+  genesis: "Genesis",
+  pro: "Pro",
+  elite: "Elite",
+};
 
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -51,6 +58,8 @@ function validateStoredUser(stored: string): TgUser | null {
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<TgUser | null>(null);
+  const [tierData, setTierData] = useState<{ tier: string; blocks: number[] }>({ tier: "free", blocks: [0, 1, 2] });
+  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("tg_user");
@@ -61,13 +70,26 @@ export default function DashboardPage() {
 
     const validUser = validateStoredUser(stored);
     if (!validUser) {
-      // S5 — Invalid or expired session → clear and redirect
       localStorage.removeItem("tg_user");
       router.push("/login");
       return;
     }
 
     setUser(validUser);
+
+    // Fetch user tier from API
+    const headers: Record<string, string> = {};
+    const walletAddress = localStorage.getItem("wallet_address");
+    const telegramId = localStorage.getItem("telegram_id");
+    if (walletAddress) headers["x-wallet-address"] = walletAddress;
+    else if (telegramId) headers["x-telegram-id"] = telegramId;
+
+    fetch("/api/user/tier", { headers })
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        if (data?.tier) setTierData({ tier: data.tier, blocks: data.blocks ?? [0, 1, 2] });
+      })
+      .catch(() => {});
   }, [router]);
 
   const handleLogout = () => {
@@ -102,7 +124,7 @@ export default function DashboardPage() {
           </div>
           <div className="flex items-center gap-3">
             <div className="px-4 py-2 bg-[#1a1a1a] border border-[#333] rounded-lg text-[#888888] text-sm whitespace-nowrap">
-              Тариф: <span className="text-[#FF4422] font-medium">Genesis</span>
+              Тариф: <span className="text-[#FF4422] font-medium">{TIER_LABELS[tierData.tier] ?? tierData.tier}</span>
             </div>
             <button
               onClick={handleLogout}
@@ -118,69 +140,82 @@ export default function DashboardPage() {
           Ваши модули
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {modules.map((m) => (
-            <div
-              key={m.id}
-              className={`rounded-2xl shadow-xl overflow-hidden transition-transform ${
-                m.locked
-                  ? "bg-zinc-900 cursor-not-allowed"
-                  : "bg-zinc-900 hover:scale-[1.02] cursor-pointer"
-              }`}
-            >
-              {/* Cover */}
-              <div className="relative w-full aspect-video">
-                <Image
-                  src={m.cover}
-                  alt={`Блок ${m.id}: ${m.title}`}
-                  width={1280}
-                  height={720}
-                  className="w-full h-full object-cover"
-                  priority={m.id === 0}
-                />
-                {m.locked && (
-                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                    <span className="text-5xl">🔒</span>
-                  </div>
-                )}
+          {allModules.map((m) => {
+            const locked = !tierData.blocks.includes(m.id);
+            return (
+              <div
+                key={m.id}
+                className={`rounded-2xl shadow-xl overflow-hidden transition-transform ${
+                  locked
+                    ? "bg-zinc-900 cursor-not-allowed"
+                    : "bg-zinc-900 hover:scale-[1.02] cursor-pointer"
+                }`}
+              >
+                {/* Cover */}
+                <div className="relative w-full aspect-video">
+                  <Image
+                    src={m.cover}
+                    alt={`Блок ${m.id}: ${m.title}`}
+                    width={1280}
+                    height={720}
+                    className="w-full h-full object-cover"
+                    priority={m.id === 0}
+                  />
+                  {locked && (
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                      <span className="text-5xl">🔒</span>
+                    </div>
+                  )}
+                </div>
+                {/* Info */}
+                <div className="p-5">
+                  <p className="text-sm text-[#888888] mb-1">
+                    {locked ? "🔒" : "🔓"} БЛОК {m.id}
+                  </p>
+                  <h3 className="font-semibold text-white text-lg mb-3">
+                    {m.title}
+                  </h3>
+                  {locked ? (
+                    <button
+                      onClick={() => setIsPaymentOpen(true)}
+                      className="w-full py-2.5 bg-zinc-700 hover:bg-zinc-600 text-white font-medium rounded-lg transition-colors text-sm"
+                    >
+                      Разблокировать
+                    </button>
+                  ) : (
+                    <button className="w-full py-2.5 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-medium rounded-lg transition-colors text-sm">
+                      Начать
+                    </button>
+                  )}
+                </div>
               </div>
-              {/* Info */}
-              <div className="p-5">
-                <p className="text-sm text-[#888888] mb-1">
-                  {m.locked ? "🔒" : "🔓"} БЛОК {m.id}
-                </p>
-                <h3 className="font-semibold text-white text-lg mb-3">
-                  {m.title}
-                </h3>
-                {m.locked ? (
-                  <button className="w-full py-2.5 bg-zinc-700 hover:bg-zinc-600 text-white font-medium rounded-lg transition-colors text-sm">
-                    Разблокировать
-                  </button>
-                ) : (
-                  <button className="w-full py-2.5 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-medium rounded-lg transition-colors text-sm">
-                    Начать
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Upgrade CTA */}
-        <div className="mt-10 p-6 rounded-xl bg-[#1a1a1a] border border-[#333] flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
-            <p className="text-white font-semibold">Хочешь больше?</p>
-            <p className="text-[#888888] text-sm">
-              Pro и Elite открывают все блоки + AI-чат Zenith Junior
-            </p>
+        {(tierData.tier === "free" || tierData.tier === "genesis") && (
+          <div className="mt-10 p-6 rounded-xl bg-[#1a1a1a] border border-[#333] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <p className="text-white font-semibold">Хочешь больше?</p>
+              <p className="text-[#888888] text-sm">
+                Pro и Elite открывают все блоки + AI-чат Zenith Junior
+              </p>
+            </div>
+            <button
+              onClick={() => setIsPaymentOpen(true)}
+              className="px-6 py-3 bg-[#FF4422] text-white font-semibold rounded-lg hover:bg-[#e63d1e] transition-colors whitespace-nowrap"
+            >
+              Улучшить доступ
+            </button>
           </div>
-          <Link
-            href="/#tiers"
-            className="px-6 py-3 bg-[#FF4422] text-white font-semibold rounded-lg hover:bg-[#e63d1e] transition-colors whitespace-nowrap"
-          >
-            Улучшить тариф
-          </Link>
-        </div>
+        )}
       </div>
+
+      <PaymentModal
+        isOpen={isPaymentOpen}
+        onClose={() => setIsPaymentOpen(false)}
+      />
     </main>
   );
 }

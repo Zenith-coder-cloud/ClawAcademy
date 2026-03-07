@@ -1,8 +1,14 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import CourseProgram from "@/components/CourseProgram";
 import FAQ from "@/components/FAQ";
 import HowItWorks from "@/components/HowItWorks";
+import PaymentModal from "@/components/PaymentModal";
+import type { TierKey } from "@/lib/paymentConfig";
 
 const tiers = [
   {
@@ -37,6 +43,23 @@ const features = [
 ];
 
 export default function Home() {
+  const router = useRouter();
+  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
+  const [selectedTier, setSelectedTier] = useState<TierKey>("genesis");
+
+  const handleBuyClick = (tierName: string) => {
+    const tierKey = tierName.toLowerCase() as TierKey;
+    const hasWallet = typeof window !== "undefined" && localStorage.getItem("wallet_address");
+    const hasTelegram = typeof window !== "undefined" && localStorage.getItem("telegram_id");
+
+    if (hasWallet || hasTelegram) {
+      setSelectedTier(tierKey);
+      setIsPaymentOpen(true);
+    } else {
+      router.push("/login");
+    }
+  };
+
   return (
     <main className="min-h-screen bg-[#0d0d0d]">
       {/* Hero */}
@@ -94,6 +117,7 @@ export default function Home() {
                 {tier.description}
               </p>
               <button
+                onClick={() => handleBuyClick(tier.name)}
                 className={`mt-auto py-3 px-6 rounded-lg font-semibold transition-colors ${
                   tier.highlighted
                     ? "bg-white text-[#FF4422] hover:bg-gray-100"
@@ -221,6 +245,12 @@ export default function Home() {
         <p>Claw Academy © 2026</p>
         <p className="mt-1">clawacademy.io</p>
       </footer>
+
+      <PaymentModal
+        isOpen={isPaymentOpen}
+        onClose={() => setIsPaymentOpen(false)}
+        initialTier={selectedTier}
+      />
     </main>
   );
 }
