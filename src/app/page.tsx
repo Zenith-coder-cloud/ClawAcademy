@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const tiers = [
   {
@@ -26,10 +27,10 @@ const tiers = [
 ];
 
 const features = [
-  { icon: "🤖", title: "AI агент внутри" },
-  { icon: "🔗", title: "NFT доступ навсегда" },
-  { icon: "📚", title: "6 блоков курса" },
-  { icon: "💰", title: "Реальные схемы заработка" },
+  { icon: "/stickers/sticker-robot.png", title: "AI агент внутри" },
+  { icon: "/stickers/sticker-nft.png", title: "NFT доступ навсегда" },
+  { icon: "/stickers/sticker-books.png", title: "6 блоков курса" },
+  { icon: "/stickers/sticker-coins.png", title: "Реальные схемы заработка" },
 ];
 
 export default function Home() {
@@ -111,7 +112,7 @@ export default function Home() {
               key={f.title}
               className="flex flex-col items-center text-center gap-3"
             >
-              <span className="text-5xl">{f.icon}</span>
+              <Image src={f.icon} alt={f.title} width={80} height={80} className="w-20 h-20 object-contain" />
               <p className="text-white font-medium">{f.title}</p>
             </div>
           ))}
