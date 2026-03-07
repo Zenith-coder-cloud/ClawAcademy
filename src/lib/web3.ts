@@ -25,7 +25,12 @@ export const modal = createAppKit({
   networks,
   defaultNetwork: bsc,
   metadata,
-  features: { analytics: false },
+  features: {
+    analytics: false,
+    email: false,
+    socials: [],
+    emailShowWallets: false,
+  },
   themeMode: "dark",
   themeVariables: {
     "--w3m-accent": "#FF4422",
