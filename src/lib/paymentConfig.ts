@@ -51,6 +51,17 @@ export const SUPPORTED_CHAINS = [
   },
 ] as const;
 
+export const TESTNET_CHAINS = [
+  {
+    id: 97,
+    name: "BSC Testnet",
+    nativeCurrency: "tBNB",
+    nativeRate: 600,
+    usdtAddress: "0xEdA5dA0050e21e9E34fadb1075986Af1370c7BDb",
+    rpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545",
+  },
+];
+
 export type SupportedChain = (typeof SUPPORTED_CHAINS)[number];
 
 export function getChainById(chainId: number): SupportedChain | undefined {

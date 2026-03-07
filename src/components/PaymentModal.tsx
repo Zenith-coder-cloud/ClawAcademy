@@ -292,6 +292,37 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
               </div>
             </div>
 
+            {process.env.NEXT_PUBLIC_PAYMENT_TEST_MODE === 'true' && !txHash && (
+              <button
+                onClick={() => {
+                  setTxHash('test');
+                  setStep(4);
+                  // Auto-verify after moving to step 4
+                  setTimeout(async () => {
+                    if (!address) return;
+                    setLoading(true);
+                    try {
+                      const res = await fetch('/api/payment/verify', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ tx_hash: 'test', wallet_address: address }),
+                      });
+                      const data = await res.json();
+                      if (!res.ok) throw new Error(data.error || 'Ошибка верификации');
+                      setVerified(true);
+                    } catch (err: unknown) {
+                      setError(err instanceof Error ? err.message : 'Ошибка верификации');
+                    } finally {
+                      setLoading(false);
+                    }
+                  }, 500);
+                }}
+                className="w-full py-3 rounded-xl text-sm font-semibold bg-yellow-600 text-white hover:bg-yellow-700 transition-colors mb-3"
+              >
+                Тест: пропустить оплату
+              </button>
+            )}
+
             {needsChainSwitch ? (
               <button
                 onClick={() => switchChain({ chainId: selectedChain.id })}

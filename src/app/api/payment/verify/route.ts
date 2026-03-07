@@ -12,9 +12,11 @@ import {
 export const dynamic = "force-dynamic";
 
 const verifySchema = z.object({
-  tx_hash: z.string().regex(/^0x[a-fA-F0-9]{64}$/),
+  tx_hash: z.string().min(1),
   wallet_address: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
 });
+
+const IS_MOCK_MODE = process.env.PAYMENT_TEST_MODE === "true";
 
 const ERC20_TRANSFER_EVENT = parseAbiItem(
   "event Transfer(address indexed from, address indexed to, uint256 value)"
@@ -40,6 +42,44 @@ export async function POST(req: NextRequest) {
 
     const { tx_hash, wallet_address } = parsed.data;
     const db = supabaseAdmin();
+
+    // Mock mode: skip on-chain verification for test transactions
+    if (IS_MOCK_MODE && (tx_hash === "test" || tx_hash.startsWith("0xtest"))) {
+      const { data: mockPayment, error: mockErr } = await db
+        .from("payments")
+        .select("*")
+        .eq("wallet_address", wallet_address.toLowerCase())
+        .eq("status", "pending")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+
+      if (mockErr || !mockPayment) {
+        return NextResponse.json(
+          { success: false, error: "No pending payment found" },
+          { status: 404 }
+        );
+      }
+
+      await db
+        .from("payments")
+        .update({
+          status: "confirmed",
+          tx_hash,
+          confirmed_at: new Date().toISOString(),
+        })
+        .eq("id", mockPayment.id);
+
+      await db
+        .from("users")
+        .update({
+          tier: mockPayment.tier,
+          tier_updated_at: new Date().toISOString(),
+        })
+        .eq("wallet_address", wallet_address.toLowerCase());
+
+      return NextResponse.json({ success: true, tier: mockPayment.tier });
+    }
 
     // 1) Find pending payment
     const { data: payment, error: paymentError } = await db
