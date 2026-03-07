@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import CourseProgram from "@/components/CourseProgram";
+import FAQ from "@/components/FAQ";
 
 const tiers = [
   {
@@ -170,6 +171,49 @@ export default function Home() {
 
       {/* Course Program */}
       <CourseProgram />
+
+      {/* Guarantee */}
+      <section className="max-w-5xl mx-auto px-4 py-20">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-8">
+          <div className="flex-shrink-0 w-20 h-20 rounded-full bg-[#FF4422]/10 flex items-center justify-center text-4xl">
+            🛡
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-white mb-2">Гарантия результата</h2>
+            <p className="text-[#FF4422] font-medium italic mb-4">«Мы гарантируем — если ты гарантируешь»</p>
+            <p className="text-zinc-400 leading-relaxed">
+              Курс работает. Но только если ты работаешь. Наша гарантия простая: пройди Block 0 и Block 1 до конца, попробуй запустить агента, и если что-то не получается — мы разберём это вместе в поддержке и доведём до результата.
+            </p>
+            <p className="text-zinc-500 mt-3 text-sm">
+              Мы не возвращаем деньги тем кто открыл и закрыл. Мы помогаем тем кто пробует.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <FAQ />
+
+      {/* Final CTA */}
+      <section className="w-full bg-zinc-900 border-t border-zinc-800 py-24 px-4">
+        <div className="max-w-2xl mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
+            Твои агенты ждут.<br />Осталось нажать одну кнопку.
+          </h2>
+          <p className="text-zinc-400 text-lg mb-10">
+            Тысячи задач которые ты делаешь руками — уже завтра могут делать агенты. Пока ты читаешь это, кто-то уже запустил своего первого агента.
+          </p>
+          <a
+            href="/login"
+            className="inline-block bg-[#FF4422] hover:bg-[#e03a1e] text-white font-semibold text-lg px-10 py-4 rounded-xl transition-colors"
+          >
+            Начать обучение →
+          </a>
+          <p className="text-zinc-600 text-sm mt-6">
+            Доступ пожизненный · Оплата один раз · Первый агент за 15 минут
+          </p>
+        </div>
+      </section>
 
       {/* Footer */}
       <footer className="border-t border-[#222] py-8 text-center text-[#888888] text-sm">
