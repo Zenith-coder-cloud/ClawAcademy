@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- Главная страница — высший приоритет -->
+  <url>
+    <loc>https://www.clawacademy.io/</loc>
+    <lastmod>2026-03-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://www.clawacademy.io/"/>
+  </url>
+
+  <!-- Страница входа -->
+  <url>
+    <loc>https://www.clawacademy.io/login</loc>
+    <lastmod>2026-03-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Dashboard (noindex через meta на странице, но в sitemap для crawling) -->
+  <url>
+    <loc>https://www.clawacademy.io/dashboard</loc>
+    <lastmod>2026-03-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+</urlset>

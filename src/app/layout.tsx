@@ -3,9 +3,27 @@ import "./globals.css";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "Claw Academy — Возьми интеллект под свой контроль",
+  title: "Claw Academy — Курс по ИИ-агентам | Заработок с искусственным интеллектом",
   description:
-    "Больше чем курсы: прикладная база для тех, кто готов внедрять ИИ во все сферы жизни. Первая RU платформа по работе с ИИ-агентами на OpenClaw.",
+    "Первая русскоязычная платформа по обучению работе с ИИ-агентами на OpenClaw. Создай агента за 15 минут, автоматизируй бизнес и зарабатывай с помощью ИИ без опыта в программировании.",
+  keywords: [
+    "ИИ агент курс",
+    "обучение ИИ агентам",
+    "заработок с нейросетями",
+    "курс по AI агентам 2026",
+    "OpenClaw обучение",
+    "AI агент для бизнеса",
+    "автоматизация с ИИ",
+    "ИИ агент как создать",
+    "пассивный доход с ИИ",
+    "ИИ агенты без программирования",
+  ],
+  authors: [{ name: "Claw Academy" }],
+  creator: "Claw Academy",
+  metadataBase: new URL("https://www.clawacademy.io"),
+  alternates: {
+    canonical: "https://www.clawacademy.io",
+  },
   icons: {
     icon: [
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },

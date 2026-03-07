@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://www.clawacademy.io/sitemap.xml
+
+# Canonical domain
+Host: www.clawacademy.io
