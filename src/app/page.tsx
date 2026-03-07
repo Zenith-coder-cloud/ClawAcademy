@@ -27,10 +27,10 @@ const tiers = [
 ];
 
 const features = [
-  { icon: "/stickers/sticker-robot.png", title: "AI агент внутри" },
-  { icon: "/stickers/sticker-nft.png", title: "NFT доступ навсегда" },
-  { icon: "/stickers/sticker-books.png", title: "6 блоков курса" },
-  { icon: "/stickers/sticker-coins.png", title: "Реальные схемы заработка" },
+  { icon: "/stickers/sticker-robot.png", title: "AI агент внутри", description: "Настоящий ИИ-агент на базе OpenClaw — думает, действует и работает за тебя 24/7" },
+  { icon: "/stickers/sticker-nft.png", title: "NFT доступ навсегда", description: "Доступ хранится в блокчейне. Никто не может его отозвать — он всегда твой" },
+  { icon: "/stickers/sticker-books.png", title: "6 блоков курса", description: "От первого агента до полноценного бизнеса — пошаговая программа для любого уровня" },
+  { icon: "/stickers/sticker-coins.png", title: "Реальные схемы", description: "Рабочие схемы монетизации, автоматизации и внедрения ИИ в любую сферу жизни" },
 ];
 
 export default function Home() {
@@ -105,15 +105,16 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section className="max-w-4xl mx-auto px-4 py-20">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+      <section className="max-w-6xl mx-auto px-4 py-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((f) => (
             <div
               key={f.title}
-              className="flex flex-col items-center text-center gap-3"
+              className="bg-zinc-900 border border-[#FF4422]/30 rounded-2xl p-6 flex flex-col items-center text-center gap-4 hover:border-[#FF4422]/60 transition-colors"
             >
-              <Image src={f.icon} alt={f.title} width={80} height={80} className="w-20 h-20 object-contain" />
-              <p className="text-white font-medium">{f.title}</p>
+              <Image src={f.icon} alt={f.title} width={100} height={100} className="w-24 h-24 object-contain" />
+              <h3 className="text-white font-semibold text-lg">{f.title}</h3>
+              <p className="text-zinc-400 text-sm leading-relaxed">{f.description}</p>
             </div>
           ))}
         </div>
