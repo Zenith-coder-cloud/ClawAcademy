@@ -120,6 +120,53 @@ export default function Home() {
         </div>
       </section>
 
+      {/* How it works */}
+      <section className="max-w-5xl mx-auto px-4 py-20">
+        <h2 className="text-3xl font-bold text-white text-center mb-16">Как это работает</h2>
+        <div className="relative flex flex-col md:flex-row items-start justify-between gap-8">
+          {/* Connecting line - desktop only */}
+          <div className="hidden md:block absolute top-8 left-[16.66%] right-[16.66%] h-px bg-zinc-700" />
+
+          {[
+            { num: "01", title: "Выбери тариф", desc: "Оплата один раз, доступ пожизненно" },
+            { num: "02", title: "Запусти агента", desc: "15 минут до первого результата" },
+            { num: "03", title: "Делегируй и живи", desc: "Твои агенты работают 24/7 пока ты живёшь" },
+          ].map((step) => (
+            <div key={step.num} className="flex-1 flex flex-col items-center text-center gap-3 relative z-10">
+              <div className="w-16 h-16 rounded-full bg-zinc-900 border-2 border-zinc-700 flex items-center justify-center">
+                <span className="text-2xl font-bold text-[#FF4422]">{step.num}</span>
+              </div>
+              <h3 className="text-white font-semibold text-lg">{step.title}</h3>
+              <p className="text-zinc-400 text-sm">{step.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* For who */}
+      <section className="max-w-5xl mx-auto px-4 py-20">
+        <h2 className="text-3xl font-bold text-white text-center mb-4">Ты на правильном месте, если...</h2>
+        <p className="text-zinc-400 text-center mb-12">Claw Academy подходит для любой сферы и любого уровня</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            { title: "Бизнес", desc: "Хочешь автоматизировать рутину без найма команды" },
+            { title: "Кодер", desc: "Хочешь делегировать монотонные задачи агентам" },
+            { title: "Творец", desc: "Хочешь освободить время для главного, а не для рутины" },
+            { title: "Соцсети", desc: "Устал тратить часы на контент и ответы подписчикам" },
+            { title: "Фрилансер", desc: "Хочешь брать больше клиентов без увеличения рабочих часов" },
+            { title: "Студент", desc: "Хочешь умного помощника который работает пока ты спишь" },
+            { title: "Быт", desc: "Хочешь автоматизировать расписание, напоминания и повседневные дела" },
+            { title: "Доход", desc: "Хочешь новый источник дохода на базе ИИ-агентов" },
+            { title: "Просто жить", desc: "Хочешь меньше делать руками и больше жить" },
+          ].map((item) => (
+            <div key={item.title} className="bg-zinc-900 rounded-2xl p-6 border-t-2 border-[#FF4422] hover:bg-zinc-800 transition-colors">
+              <h3 className="text-white font-semibold text-base mb-2">{item.title}</h3>
+              <p className="text-zinc-400 text-sm leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="border-t border-[#222] py-8 text-center text-[#888888] text-sm">
         <p>Claw Academy © 2026</p>
