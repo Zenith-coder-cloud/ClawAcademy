@@ -52,7 +52,9 @@ export default function ConnectWalletButton() {
       // 3. Request wallet signature
       const provider = (window as any).ethereum;
       if (!provider) throw new Error("MetaMask not found");
-      const msgHex = "0x" + Buffer.from(signMessage, "utf8").toString("hex");
+      const encoder = new TextEncoder();
+      const bytes = encoder.encode(signMessage);
+      const msgHex = "0x" + Array.from(bytes).map(b => b.toString(16).padStart(2, "0")).join("");
       const signature = await provider.request({
         method: "personal_sign",
         params: [msgHex, address],
