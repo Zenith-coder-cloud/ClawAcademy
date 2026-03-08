@@ -8,15 +8,19 @@ export async function POST(req: NextRequest) {
   if (adminSecret !== process.env.ADMIN_SECRET) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
-  const { wallet_address, tier } = await req.json();
-  if (!wallet_address || !tier) return NextResponse.json({ error: "Missing params" }, { status: 400 });
+  const { wallet_address, telegram_id, tier } = await req.json();
+  if (!tier) return NextResponse.json({ error: "Missing tier" }, { status: 400 });
   const db = supabaseAdmin();
-  const lower = wallet_address.toLowerCase();
-  const { data, error } = await db
-    .from("users")
-    .update({ tier, tier_updated_at: new Date().toISOString() })
-    .or(`wallet_address.eq.${lower},wallet_address.eq.${wallet_address}`)
-    .select("id, wallet_address, tier");
+  let query = db.from("users").update({ tier, tier_updated_at: new Date().toISOString() });
+  if (telegram_id) {
+    query = query.eq("telegram_id", telegram_id);
+  } else if (wallet_address) {
+    const lower = wallet_address.toLowerCase();
+    query = query.or(`wallet_address.eq.${lower},wallet_address.eq.${wallet_address}`);
+  } else {
+    return NextResponse.json({ error: "Missing wallet_address or telegram_id" }, { status: 400 });
+  }
+  const { data, error } = await query.select("id, wallet_address, telegram_id, tier");
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ ok: true, updated: data });
 }
