@@ -54,6 +54,7 @@ export default function ConnectWalletButton() {
       ].join("\n");
 
       // 3. Request wallet signature
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const provider = (window as any).ethereum;
       if (!provider) throw new Error("MetaMask not found");
       const encoder = new TextEncoder();

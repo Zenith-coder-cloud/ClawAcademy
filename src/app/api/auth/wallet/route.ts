@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { address, message, signature, chainId, issuedAt, expiresAt } =
+    const { address, message, signature, issuedAt, expiresAt } =
       parsed.data;
 
     // Validate expiration — message must not be expired
