@@ -3,7 +3,7 @@
 import { useAppKit } from "@reown/appkit/react";
 import { useAccount, useChainId, useDisconnect, useSignMessage } from "wagmi";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 export default function ConnectWalletButton() {
@@ -15,6 +15,11 @@ export default function ConnectWalletButton() {
   const router = useRouter();
   const [signing, setSigning] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const authenticate = async () => {
     const hostname = window.location.hostname;
@@ -89,6 +94,18 @@ export default function ConnectWalletButton() {
       setSigning(false);
     }
   };
+
+  if (!mounted) {
+    return (
+      <button
+        disabled
+        className="w-full py-3.5 bg-zinc-800 border border-zinc-700 text-white font-semibold rounded-xl text-sm flex items-center justify-center gap-3 opacity-60"
+      >
+        <Image src="/walletconnect.svg" alt="WalletConnect" width={22} height={15} className="w-6 h-auto" />
+        Подключить кошелёк
+      </button>
+    );
+  }
 
   if (isConnected && address && connector) {
     return (

@@ -13,6 +13,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [hashLoading, setHashLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const decodeTelegramAuthResult = (encoded: string) => {
     const decoded = decodeURIComponent(encoded);
@@ -36,6 +37,7 @@ export default function LoginPage() {
   // - Query format: ?tgAuthResult=BASE64_JSON (some Telegram versions)
   // - Flat params:  ?id=...&first_name=...&hash=... (Telegram web)
   useEffect(() => {
+    setMounted(true);
     const hostname = window.location.hostname;
     if (hostname === "clawacademy.io") {
       const target =
@@ -166,7 +168,7 @@ export default function LoginPage() {
           <p className="text-zinc-400 text-sm">Авторизация через Telegram...</p>
         </div>
       )}
-      {process.env.NODE_ENV === "development" && (
+      {process.env.NODE_ENV === "development" && mounted && (
         <div className="fixed top-2 left-2 z-50 bg-black/80 text-green-400 text-[10px] font-mono p-2 rounded max-w-[90vw] break-all">
           <div>hash: {typeof window !== "undefined" ? window.location.hash : ""}</div>
           <div>search: {typeof window !== "undefined" ? window.location.search : ""}</div>
