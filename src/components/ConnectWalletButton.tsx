@@ -2,30 +2,19 @@
 "use client";
 
 import { useAppKit } from "@reown/appkit/react";
-import { useAccount, useChainId, useDisconnect } from "wagmi";
+import { useAccount, useChainId, useDisconnect, useSignMessage } from "wagmi";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
-const AUTH_VERSION = "2.1-injected" as const;
-
-// Get the real injected provider, not AppKit wrapped
-const getInjectedProvider = (): { request: (args: { method: string; params?: unknown[] }) => Promise<unknown> } | null => {
-  if (typeof window === "undefined") return null;
-  const eth = (window as { ethereum?: { providers?: unknown[]; isMetaMask?: boolean; request: (args: { method: string; params?: unknown[] }) => Promise<unknown> } }).ethereum;
-  if (!eth) return null;
-  const providers = eth.providers as Array<{ isMetaMask?: boolean; isWalletConnect?: boolean; request: (args: { method: string; params?: unknown[] }) => Promise<unknown> }> | undefined;
-  if (providers) {
-    return providers.find((p) => p.isMetaMask && !p.isWalletConnect) || providers[0];
-  }
-  return eth;
-};
+const AUTH_VERSION = "2.2-wagmi" as const;
 
 export default function ConnectWalletButton() {
   const { open } = useAppKit();
   const { address, isConnected, connector } = useAccount();
   const chainId = useChainId();
   const { disconnect } = useDisconnect();
+  const { signMessageAsync } = useSignMessage();
   const router = useRouter();
   const [signing, setSigning] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -55,38 +44,24 @@ export default function ConnectWalletButton() {
       const { nonce, issuedAt, expiresAt } = await nonceRes.json();
       if (!nonce) throw new Error("Failed to get nonce");
 
-      // 2. Get real injected provider (bypass AppKit wrapper)
-      const injected = getInjectedProvider();
-      if (!injected) throw new Error("MetaMask not found");
-
-      const accounts = await injected.request({ method: "eth_requestAccounts" }) as string[];
-      const signerAddress = accounts[0];
-      if (!signerAddress) throw new Error("No account returned");
-
-      // 3. Build plain-text sign-in message (avoid SIWE-like patterns)
+      // 2. Build plain-text sign-in message (avoid SIWE-like patterns)
       const signMessage = [
         "Claw Academy — вход",
-        "Адрес: " + signerAddress,
+        "Адрес: " + address,
         "Код: " + nonce,
         "Выдан: " + issuedAt,
         "Истекает: " + expiresAt,
       ].join("\n");
 
-      // 4. Request wallet signature via injected provider directly
-      const encoder = new TextEncoder();
-      const bytes = encoder.encode(signMessage);
-      const msgHex = "0x" + Array.from(bytes).map(b => b.toString(16).padStart(2, "0")).join("");
-      const signature = await injected.request({
-        method: "personal_sign",
-        params: [msgHex, signerAddress],
-      }) as string;
+      // 3. Sign via wagmi (works for all wallet types)
+      const signature = await signMessageAsync({ message: signMessage });
 
-      // 5. Verify on server
+      // 4. Verify on server
       const verifyRes = await fetch("/api/auth/wallet", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          address: signerAddress,
+          address,
           message: signMessage,
           signature,
           chainId,
@@ -101,7 +76,7 @@ export default function ConnectWalletButton() {
           "tg_user",
           JSON.stringify({ ...data.user, auth_at: Date.now() })
         );
-        localStorage.setItem("wallet_address", signerAddress);
+        localStorage.setItem("wallet_address", address);
         router.push("/dashboard");
       } else {
         console.error("Wallet auth failed:", data.error);
