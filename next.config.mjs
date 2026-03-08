@@ -1,5 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "clawacademy.io" }],
+        destination: "https://www.clawacademy.io/:path*",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
