@@ -13,6 +13,7 @@ interface PaymentModalProps {
 }
 
 const TIER_FEATURES: Record<TierKey, string[]> = {
+  free: ['Блок 0', 'Бесплатно'],
   genesis: ['Блоки 0-2', 'Базовый доступ', 'Навсегда'],
   pro: ['Все 6 блоков', 'Zenith Junior AI', 'Навсегда'],
   elite: ['Все 6 блоков', 'Чат с создателем', 'Кастомный агент', 'Макс 50 мест'],
