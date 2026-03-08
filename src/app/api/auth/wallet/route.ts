@@ -119,42 +119,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Extract nonce from message
-    const nonceMatch = message.match(/Nonce: ([a-fA-F0-9]+)/);
-    if (!nonceMatch) {
-      return withCors(
-        NextResponse.json({ error: "Invalid message format" }, { status: 400 })
-      );
-    }
-    const nonce = nonceMatch[1];
-
-    // Extract domain + uri from message (do not hardcode)
     const lines = message.split(/\r?\n/);
-    const domainLine = lines[0] || "";
-    const domainMatch = domainLine.match(
-      /^(.*) wants you to sign in with your Ethereum account:$/
-    );
-    const domain = domainMatch?.[1]?.trim();
-    const uriLine = lines.find((line) => line.startsWith("URI: ")) || "";
-    const uri = uriLine.replace("URI: ", "").trim();
-    if (!domain || !uri) {
-      return withCors(
-        NextResponse.json({ error: "Invalid message format" }, { status: 400 })
-      );
-    }
+    const getLineValue = (prefix: string) => {
+      const line = lines.find((item) => item.startsWith(prefix));
+      return line ? line.slice(prefix.length).trim() : "";
+    };
 
-    // Parse required fields from message to avoid strict string mismatch issues
-    const messageAddress = (lines[1] || "").trim();
-    const messageChainIdRaw = (lines.find((line) => line.startsWith("Chain ID: ")) || "").replace("Chain ID: ", "").trim();
-    const messageIssuedAt = (lines.find((line) => line.startsWith("Issued At: ")) || "").replace("Issued At: ", "").trim();
-    const messageExpiresAt = (lines.find((line) => line.startsWith("Expiration Time: ")) || "").replace("Expiration Time: ", "").trim();
+    const messageAddressRaw = getLineValue("Адрес: ");
+    const nonce = getLineValue("Nonce: ");
+    const messageIssuedAt = getLineValue("Выдан: ");
+    const messageExpiresAt = getLineValue("Истекает: ");
 
-    if (
-      !messageAddress ||
-      !messageChainIdRaw ||
-      !messageIssuedAt ||
-      !messageExpiresAt
-    ) {
+    if (!messageAddressRaw || !nonce || !messageIssuedAt || !messageExpiresAt) {
       return withCors(
         NextResponse.json({ error: "Invalid message format" }, { status: 400 })
       );
@@ -164,7 +140,7 @@ export async function POST(req: NextRequest) {
     let normalizedMessageAddress: `0x${string}`;
     try {
       normalizedAddress = getAddress(address as `0x${string}`);
-      normalizedMessageAddress = getAddress(messageAddress as `0x${string}`);
+      normalizedMessageAddress = getAddress(messageAddressRaw as `0x${string}`);
     } catch {
       return withCors(
         NextResponse.json({ error: "Invalid address" }, { status: 400 })
@@ -177,18 +153,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const messageChainId = Number(messageChainIdRaw);
-    if (!Number.isInteger(messageChainId) || messageChainId <= 0) {
-      return withCors(
-        NextResponse.json({ error: "Invalid chain id" }, { status: 400 })
-      );
-    }
-
-    if (
-      messageChainId !== chainId ||
-      messageIssuedAt !== issuedAt ||
-      messageExpiresAt !== expiresAt
-    ) {
+    if (messageIssuedAt !== issuedAt || messageExpiresAt !== expiresAt) {
       return withCors(
         NextResponse.json({ error: "Message mismatch" }, { status: 400 })
       );

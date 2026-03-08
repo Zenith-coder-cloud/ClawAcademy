@@ -39,27 +39,20 @@ export default function ConnectWalletButton() {
       const { nonce, issuedAt, expiresAt } = await nonceRes.json();
       if (!nonce) throw new Error("Failed to get nonce");
 
-      // 2. Build EIP-4361 SIWE message
-      const domain = window.location.host;
-      const uri = window.location.origin;
-      const siweMessage = [
-        domain + ' wants you to sign in with your Ethereum account:',
-        address,
-        '',
-        'Sign in to Claw Academy',
-        '',
-        'URI: ' + uri,
-        'Version: 1',
-        'Chain ID: ' + chainId,
-        'Nonce: ' + nonce,
-        'Issued At: ' + issuedAt,
-        'Expiration Time: ' + expiresAt,
-      ].join('\n');
+      // 2. Build plain-text sign-in message
+      const signMessage = [
+        "Войти в ClawAcademy",
+        "",
+        "Адрес: " + address,
+        "Nonce: " + nonce,
+        "Выдан: " + issuedAt,
+        "Истекает: " + expiresAt,
+      ].join("\n");
 
       // 3. Request wallet signature
       const provider = (window as any).ethereum;
       if (!provider) throw new Error("MetaMask not found");
-      const msgHex = "0x" + Buffer.from(siweMessage, "utf8").toString("hex");
+      const msgHex = "0x" + Buffer.from(signMessage, "utf8").toString("hex");
       const signature = await provider.request({
         method: "personal_sign",
         params: [msgHex, address],
@@ -69,7 +62,14 @@ export default function ConnectWalletButton() {
       const verifyRes = await fetch("/api/auth/wallet", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ address, message: siweMessage, signature, chainId, issuedAt, expiresAt }),
+        body: JSON.stringify({
+          address,
+          message: signMessage,
+          signature,
+          chainId,
+          issuedAt,
+          expiresAt,
+        }),
       });
 
       const data = await verifyRes.json();
