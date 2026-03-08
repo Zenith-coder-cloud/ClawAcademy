@@ -151,6 +151,26 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {allModules.map((m) => {
             const locked = !tierData.blocks.includes(m.id);
+
+            const handleStart = () => {
+              const tier = tierData.tier;
+              let hasAccess = false;
+
+              if (m.id === 0) {
+                hasAccess = true;
+              } else if (m.id <= 2) {
+                hasAccess = tier !== "free";
+              } else {
+                hasAccess = tier === "pro" || tier === "elite";
+              }
+
+              if (hasAccess) {
+                router.push(`/dashboard/course/block/${m.id}/lesson/1`);
+              } else {
+                setIsPaymentOpen(true);
+              }
+            };
+
             return (
               <div
                 key={m.id}
@@ -192,7 +212,10 @@ export default function DashboardPage() {
                       Разблокировать
                     </button>
                   ) : (
-                    <button className="w-full py-2.5 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-medium rounded-lg transition-colors text-sm">
+                    <button
+                      onClick={handleStart}
+                      className="w-full py-2.5 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-medium rounded-lg transition-colors text-sm"
+                    >
                       Начать
                     </button>
                   )}
