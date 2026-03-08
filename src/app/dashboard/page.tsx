@@ -106,17 +106,15 @@ export default function DashboardPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('tier_updated')) {
-      // First refresh the session cookie with new tier, then fetch tier
-      fetch("/api/auth/refresh-session", { method: "POST" })
-        .catch(() => {})
-        .finally(() => {
-          fetch("/api/user/tier")
-            .then((res) => res.ok ? res.json() : null)
-            .then((data) => {
-              if (data?.tier) setTierData({ tier: data.tier, blocks: data.blocks ?? [0, 1, 2] });
-            })
-            .catch(() => {});
-        });
+      // Fetch tier directly from DB (no refresh-session dependency)
+      fetch("/api/user/tier")
+        .then((res) => res.ok ? res.json() : null)
+        .then((data) => {
+          if (data?.tier) setTierData({ tier: data.tier, blocks: data.blocks ?? [0, 1, 2] });
+        })
+        .catch(() => {});
+      // Also refresh session cookie in background (non-blocking)
+      fetch("/api/auth/refresh-session", { method: "POST" }).catch(() => {});
       // Clean URL
       window.history.replaceState({}, '', '/dashboard');
     }
