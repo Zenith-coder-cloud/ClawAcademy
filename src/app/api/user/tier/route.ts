@@ -28,8 +28,8 @@ export async function GET(req: NextRequest) {
     let query = db.from("users").select("tier, wallet_address, telegram_id");
 
     if (session.walletAddress) {
-      const lower = session.walletAddress.toLowerCase();
-      query = query.or(`wallet_address.eq.${lower},wallet_address.eq.${session.walletAddress}`);
+      // ilike = case-insensitive match — works regardless of how address was stored
+      query = query.ilike("wallet_address", session.walletAddress);
     } else if (session.telegramId) {
       query = query.eq("telegram_id", session.telegramId);
     } else {
