@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-import { verifyMessage } from "viem";
+import { getAddress, verifyMessage } from "viem";
 import { z } from "zod";
 import { supabaseAdmin } from "@/lib/server/supabaseAdmin";
 import { checkRateLimit, getClientIp } from "@/lib/server/rateLimit";
@@ -13,7 +13,7 @@ const walletAuthSchema = z.object({
   address: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
   message: z.string().min(1).max(1000),
   signature: z.string().regex(/^0x[a-fA-F0-9]+$/),
-  chainId: z.number().int().positive(),
+  chainId: z.coerce.number().int().positive(),
   issuedAt: z.string().datetime(),
   expiresAt: z.string().datetime(),
 });
@@ -34,6 +34,7 @@ export async function GET(req: NextRequest) {
     const { error } = await db.from("auth_nonces").insert({
       nonce,
       expires_at: expiresAt,
+      used: false,
     });
 
     if (error) {
@@ -84,14 +85,14 @@ export async function POST(req: NextRequest) {
     }
 
     // Extract nonce from message
-    const nonceMatch = message.match(/Nonce: ([a-f0-9]+)/);
+    const nonceMatch = message.match(/Nonce: ([a-fA-F0-9]+)/);
     if (!nonceMatch) {
       return NextResponse.json({ error: "Invalid message format" }, { status: 400 });
     }
     const nonce = nonceMatch[1];
 
     // Extract domain + uri from message (do not hardcode)
-    const lines = message.split("\n");
+    const lines = message.split(/\r?\n/);
     const domainLine = lines[0] || "";
     const domainMatch = domainLine.match(
       /^(.*) wants you to sign in with your Ethereum account:$/
@@ -106,22 +107,35 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Reconstruct expected SIWE message and verify it matches
-    const expectedMessage = [
-      domain + " wants you to sign in with your Ethereum account:",
-      address,
-      '',
-      'Sign in to Claw Academy',
-      '',
-      'URI: ' + uri,
-      'Version: 1',
-      'Chain ID: ' + chainId,
-      'Nonce: ' + nonce,
-      'Issued At: ' + issuedAt,
-      'Expiration Time: ' + expiresAt,
-    ].join('\n');
+    // Parse required fields from message to avoid strict string mismatch issues
+    const messageAddress = (lines[1] || "").trim();
+    const messageChainIdRaw = (lines.find((line) => line.startsWith("Chain ID: ")) || "").replace("Chain ID: ", "").trim();
+    const messageIssuedAt = (lines.find((line) => line.startsWith("Issued At: ")) || "").replace("Issued At: ", "").trim();
+    const messageExpiresAt = (lines.find((line) => line.startsWith("Expiration Time: ")) || "").replace("Expiration Time: ", "").trim();
 
-    if (message !== expectedMessage) {
+    if (!messageAddress || !messageChainIdRaw || !messageIssuedAt || !messageExpiresAt) {
+      return NextResponse.json({ error: "Invalid message format" }, { status: 400 });
+    }
+
+    let normalizedAddress: `0x${string}`;
+    let normalizedMessageAddress: `0x${string}`;
+    try {
+      normalizedAddress = getAddress(address as `0x${string}`);
+      normalizedMessageAddress = getAddress(messageAddress as `0x${string}`);
+    } catch {
+      return NextResponse.json({ error: "Invalid address" }, { status: 400 });
+    }
+
+    if (normalizedAddress !== normalizedMessageAddress) {
+      return NextResponse.json({ error: "Address mismatch" }, { status: 400 });
+    }
+
+    const messageChainId = Number(messageChainIdRaw);
+    if (!Number.isInteger(messageChainId) || messageChainId <= 0) {
+      return NextResponse.json({ error: "Invalid chain id" }, { status: 400 });
+    }
+
+    if (messageChainId !== chainId || messageIssuedAt !== issuedAt || messageExpiresAt !== expiresAt) {
       return NextResponse.json({ error: "Message mismatch" }, { status: 400 });
     }
 
@@ -132,7 +146,7 @@ export async function POST(req: NextRequest) {
       .from("auth_nonces")
       .select("*")
       .eq("nonce", nonce)
-      .eq("used", false)
+      .or("used.is.null,used.eq.false")
       .gt("expires_at", new Date().toISOString())
       .single();
 
@@ -145,7 +159,7 @@ export async function POST(req: NextRequest) {
 
     // Verify signature using viem
     const isValid = await verifyMessage({
-      address: address as `0x${string}`,
+      address: normalizedAddress,
       message,
       signature: signature as `0x${string}`,
     });
@@ -160,7 +174,7 @@ export async function POST(req: NextRequest) {
     // Mark nonce as used
     const { error: updateError } = await db
       .from("auth_nonces")
-      .update({ used: true, address })
+      .update({ used: true, address: normalizedAddress })
       .eq("id", nonceRecord.id);
 
     if (updateError) {
@@ -172,7 +186,7 @@ export async function POST(req: NextRequest) {
       .from("users")
       .upsert(
         {
-          wallet_address: address.toLowerCase(),
+          wallet_address: normalizedAddress.toLowerCase(),
           first_name: address.slice(0, 6) + "..." + address.slice(-4),
           updated_at: new Date().toISOString(),
         },
@@ -188,7 +202,7 @@ export async function POST(req: NextRequest) {
 
     const sessionToken = await createSession({
       userId: user?.id,
-      walletAddress: address.toLowerCase(),
+      walletAddress: normalizedAddress.toLowerCase(),
       tier: (user?.tier as string) || "free",
     });
     const response = NextResponse.json({
