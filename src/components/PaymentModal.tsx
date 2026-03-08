@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import { useRouter } from 'next/navigation';
 import { useAccount, useSendTransaction, useWriteContract, useWaitForTransactionReceipt, useChainId, useSwitchChain } from 'wagmi';
 import { parseUnits, parseEther } from 'viem';
@@ -52,6 +53,13 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [verified, setVerified] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyAddress = useCallback(() => {
+    navigator.clipboard.writeText(PAYMENT_ADDRESS);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }, []);
 
   const { isSuccess: isTxConfirmed } = useWaitForTransactionReceipt({ hash: txHash });
 
@@ -333,6 +341,20 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
               <div className="flex justify-between">
                 <span className="text-zinc-400 text-sm">Сеть</span>
                 <span className="text-white text-sm">{selectedChain.name}</span>
+              </div>
+            </div>
+
+            {/* QR code + address */}
+            <div className="flex flex-col items-center mb-6">
+              <QRCodeSVG value={PAYMENT_ADDRESS} size={180} bgColor="#111" fgColor="#ffffff" />
+              <div className="flex items-center gap-2 mt-3">
+                <span className="text-zinc-400 text-xs font-mono break-all text-center">{PAYMENT_ADDRESS}</span>
+                <button
+                  onClick={handleCopyAddress}
+                  className="shrink-0 px-2 py-1 rounded bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white text-xs transition-colors"
+                >
+                  {copied ? 'Скопировано!' : 'Копировать'}
+                </button>
               </div>
             </div>
 
