@@ -194,7 +194,7 @@ export default function LoginPage() {
             {!showCodeForm ? (
               <button
                 onClick={() => setShowCodeForm(true)}
-                className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 hover:border-[#FF4422] rounded-xl px-5 py-3 flex items-center justify-center gap-3 text-white text-sm font-medium w-full transition-all"
+                className="bg-[#229ED9] hover:bg-[#1a8abf] rounded-xl px-5 py-3 flex items-center justify-center gap-3 text-white text-sm font-semibold w-full transition-all"
               >
                 <Image src="/robot-icon.png" width={24} height={24} alt="bot" className="rounded-full" />
                 Войти через @ClawAcademyBot
