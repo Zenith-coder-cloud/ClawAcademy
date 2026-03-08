@@ -34,6 +34,7 @@ const ERC20_TRANSFER_ABI = [
 ] as const;
 
 type PayStatus = 'idle' | 'sending' | 'waiting' | 'verifying' | 'success' | 'error';
+type PaymentMethod = 'crypto' | 'cryptobot';
 
 export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentModalProps) {
   const router = useRouter();
@@ -54,6 +55,11 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
   const [error, setError] = useState<string | null>(null);
   const [verified, setVerified] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('crypto');
+  const [cryptobotInvoiceUrl, setCryptobotInvoiceUrl] = useState<string | null>(null);
+  const [cryptobotInvoiceId, setCryptobotInvoiceId] = useState<number | null>(null);
+  const [cryptobotLoading, setCryptobotLoading] = useState(false);
+  const [cryptobotPolling, setCryptobotPolling] = useState(false);
 
   const handleCopyAddress = useCallback(() => {
     navigator.clipboard.writeText(PAYMENT_ADDRESS);
@@ -199,6 +205,63 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
     setTxHash(undefined);
     setManualTxHash('');
     setError(null);
+    setCryptobotInvoiceUrl(null);
+    setCryptobotInvoiceId(null);
+    setCryptobotLoading(false);
+    setCryptobotPolling(false);
+  }
+
+  async function handleCryptobotCreate() {
+    if (!selectedTier) return;
+    setCryptobotLoading(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/payment/cryptobot-create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tier: selectedTier }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Ошибка создания инвойса');
+      setCryptobotInvoiceUrl(data.invoice_url);
+      setCryptobotInvoiceId(data.invoice_id);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Ошибка создания инвойса');
+    } finally {
+      setCryptobotLoading(false);
+    }
+  }
+
+  async function handleCryptobotCheck() {
+    if (!cryptobotInvoiceId) return;
+    setCryptobotPolling(true);
+    setError(null);
+    let attempts = 0;
+    const maxAttempts = 20; // 20 * 3s = 60s
+    const poll = async () => {
+      try {
+        const res = await fetch(`/api/payment/cryptobot-status?invoice_id=${cryptobotInvoiceId}`);
+        const data = await res.json();
+        if (data.status === 'paid') {
+          setCryptobotPolling(false);
+          try { await fetch('/api/auth/refresh-session', { method: 'POST' }); } catch {}
+          setVerified(true);
+          setStep(4);
+          return;
+        }
+        attempts++;
+        if (attempts >= maxAttempts) {
+          setCryptobotPolling(false);
+          setError('Время ожидания истекло. Попробуйте проверить позже.');
+          return;
+        }
+        setTimeout(poll, 3000);
+      } catch {
+        setCryptobotPolling(false);
+        setError('Ошибка проверки статуса');
+      }
+    };
+    poll();
   }
 
   return (
@@ -255,67 +318,137 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
           </div>
         )}
 
-        {/* STEP 2 — Chain & token */}
+        {/* STEP 2 — Payment method & details */}
         {step === 2 && (
           <div>
-            <h2 className="text-white text-xl font-bold mb-6">Выбор сети и токена</h2>
+            <h2 className="text-white text-xl font-bold mb-6">Способ оплаты</h2>
 
-            <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 mb-6">
-              {SUPPORTED_CHAINS.map((chain) => (
-                <button
-                  key={chain.id}
-                  onClick={() => setSelectedChain(chain)}
-                  className={`py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
-                    selectedChain.id === chain.id
-                      ? 'bg-[#e63329] text-white'
-                      : 'bg-zinc-800 text-zinc-400 hover:text-white'
-                  }`}
-                >
-                  {chain.name}
-                </button>
-              ))}
-            </div>
-
+            {/* Payment method selector */}
             <div className="flex gap-2 mb-6">
               <button
-                onClick={() => setSelectedToken('usdt')}
-                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  selectedToken === 'usdt'
+                onClick={() => { setPaymentMethod('crypto'); setError(null); resetPaymentState(); }}
+                className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-colors ${
+                  paymentMethod === 'crypto'
                     ? 'bg-[#e63329] text-white'
                     : 'bg-zinc-800 text-zinc-400 hover:text-white'
                 }`}
               >
-                USDT
+                💎 Крипто-кошелёк
               </button>
               <button
-                onClick={() => setSelectedToken('native')}
-                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  selectedToken === 'native'
+                onClick={() => { setPaymentMethod('cryptobot'); setError(null); resetPaymentState(); }}
+                className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-colors ${
+                  paymentMethod === 'cryptobot'
                     ? 'bg-[#e63329] text-white'
                     : 'bg-zinc-800 text-zinc-400 hover:text-white'
                 }`}
               >
-                {selectedChain.nativeCurrency}
+                ✈️ CryptoBot (USDT)
               </button>
             </div>
 
-            <div className="bg-zinc-900 rounded-xl p-4 mb-6">
-              <p className="text-zinc-400 text-sm">К оплате:</p>
-              <p className="text-white text-2xl font-bold">{displayAmount}</p>
-            </div>
+            {/* Crypto wallet flow */}
+            {paymentMethod === 'crypto' && (
+              <>
+                <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 mb-6">
+                  {SUPPORTED_CHAINS.map((chain) => (
+                    <button
+                      key={chain.id}
+                      onClick={() => setSelectedChain(chain)}
+                      className={`py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
+                        selectedChain.id === chain.id
+                          ? 'bg-[#e63329] text-white'
+                          : 'bg-zinc-800 text-zinc-400 hover:text-white'
+                      }`}
+                    >
+                      {chain.name}
+                    </button>
+                  ))}
+                </div>
 
-            <button
-              onClick={handleInitiatePayment}
-              disabled={loading}
-              className="w-full py-3 rounded-xl text-sm font-semibold bg-[#e63329] text-white hover:bg-[#c92a22] transition-colors disabled:opacity-50"
-            >
-              {loading ? 'Загрузка...' : 'Далее'}
-            </button>
+                <div className="flex gap-2 mb-6">
+                  <button
+                    onClick={() => setSelectedToken('usdt')}
+                    className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      selectedToken === 'usdt'
+                        ? 'bg-[#e63329] text-white'
+                        : 'bg-zinc-800 text-zinc-400 hover:text-white'
+                    }`}
+                  >
+                    USDT
+                  </button>
+                  <button
+                    onClick={() => setSelectedToken('native')}
+                    className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      selectedToken === 'native'
+                        ? 'bg-[#e63329] text-white'
+                        : 'bg-zinc-800 text-zinc-400 hover:text-white'
+                    }`}
+                  >
+                    {selectedChain.nativeCurrency}
+                  </button>
+                </div>
+
+                <div className="bg-zinc-900 rounded-xl p-4 mb-6">
+                  <p className="text-zinc-400 text-sm">К оплате:</p>
+                  <p className="text-white text-2xl font-bold">{displayAmount}</p>
+                </div>
+
+                <button
+                  onClick={handleInitiatePayment}
+                  disabled={loading}
+                  className="w-full py-3 rounded-xl text-sm font-semibold bg-[#e63329] text-white hover:bg-[#c92a22] transition-colors disabled:opacity-50"
+                >
+                  {loading ? 'Загрузка...' : 'Далее'}
+                </button>
+              </>
+            )}
+
+            {/* CryptoBot flow */}
+            {paymentMethod === 'cryptobot' && (
+              <>
+                <div className="bg-zinc-900 rounded-xl p-4 mb-6">
+                  <p className="text-zinc-400 text-sm">К оплате через CryptoBot:</p>
+                  <p className="text-white text-2xl font-bold">{tierPrice} USDT</p>
+                </div>
+
+                {!cryptobotInvoiceUrl ? (
+                  <button
+                    onClick={handleCryptobotCreate}
+                    disabled={cryptobotLoading}
+                    className="w-full py-3 rounded-xl text-sm font-semibold bg-[#e63329] text-white hover:bg-[#c92a22] transition-colors disabled:opacity-50"
+                  >
+                    {cryptobotLoading ? 'Создаём инвойс...' : 'Создать инвойс'}
+                  </button>
+                ) : (
+                  <div className="space-y-3">
+                    <button
+                      onClick={() => window.open(cryptobotInvoiceUrl, '_blank')}
+                      className="w-full py-4 rounded-xl text-base font-bold bg-[#0088cc] text-white hover:bg-[#006da8] transition-colors"
+                    >
+                      ✈️ Оплатить в @CryptoBot
+                    </button>
+                    <button
+                      onClick={handleCryptobotCheck}
+                      disabled={cryptobotPolling}
+                      className="w-full py-3 rounded-xl text-sm font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-colors disabled:opacity-50"
+                    >
+                      {cryptobotPolling ? (
+                        <span className="flex items-center justify-center gap-2">
+                          <span className="w-4 h-4 border-2 border-zinc-400 border-t-transparent rounded-full animate-spin" />
+                          Проверяем оплату...
+                        </span>
+                      ) : 'Проверить оплату'}
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
 
             {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
 
             <button
-              onClick={() => { setStep(1); setError(null); }}
+              onClick={() => { setStep(1); setError(null); resetPaymentState(); }}
               className="w-full mt-3 py-2 text-zinc-500 hover:text-white text-sm transition-colors"
             >
               Назад
