@@ -63,7 +63,11 @@ export default function ConnectWalletButton() {
     }
   }, [isConnected, address, connector, fetchNonce]);
 
-  const authenticate = async () => {
+  // Auto-sign when nonce is ready after wallet connects
+  const authenticateRef = useRef<(() => Promise<void>) | null>(null);
+  const autoSignTriggered = useRef(false);
+
+  const authenticate = useCallback(async () => {
     const hostname = window.location.hostname;
     if (hostname === "clawacademy.io") {
       window.location.href =
@@ -145,13 +149,28 @@ export default function ConnectWalletButton() {
         setError("Кошелёк отключился. Пожалуйста, переподключите.");
       } else if (err instanceof Error && err.message.includes("User rejected")) {
         setError("Подпись отклонена.");
+        autoSignTriggered.current = false;
       } else {
         setError("Ошибка входа. Попробуйте ещё раз.");
       }
     } finally {
       setSigning(false);
     }
-  };
+  }, [isConnected, address, connector, signMessageAsync, chainId, fetchNonce, router]);
+
+  authenticateRef.current = authenticate;
+
+  useEffect(() => {
+    if (nonceReady && isConnected && address && !signing && !autoSignTriggered.current) {
+      autoSignTriggered.current = true;
+      authenticateRef.current?.();
+    }
+  }, [nonceReady, isConnected, address, signing]);
+
+  // Reset auto-sign flag when address changes or wallet disconnects
+  useEffect(() => {
+    autoSignTriggered.current = false;
+  }, [address]);
 
   if (!mounted) {
     return (
