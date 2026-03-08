@@ -13,7 +13,7 @@ const walletAuthSchema = z.object({
   address: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
   message: z.string().min(1).max(1000),
   signature: z.string().regex(/^0x[a-fA-F0-9]+$/),
-  chainId: z.coerce.number().int().positive(),
+  chainId: z.coerce.number().int().positive().optional(),
   issuedAt: z.string().datetime(),
   expiresAt: z.string().datetime(),
 });
