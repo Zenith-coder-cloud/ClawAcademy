@@ -53,8 +53,21 @@ export default function ConnectWalletButton() {
         "Истекает: " + expiresAt,
       ].join("\n");
 
-      // 3. Sign via wagmi (works for all wallet types)
-      const signature = await signMessageAsync({ message: signMessage });
+      // 3. Sign — use window.ethereum directly for MetaMask to avoid popup suppression
+      let signature: string;
+      const injectedEthereum = (window as any).ethereum;
+
+      if (injectedEthereum && injectedEthereum.isMetaMask) {
+        const encoder = new TextEncoder();
+        const bytes = encoder.encode(signMessage);
+        const msgHex = '0x' + Array.from(bytes).map((b: number) => b.toString(16).padStart(2, '0')).join('');
+        signature = await injectedEthereum.request({
+          method: 'personal_sign',
+          params: [msgHex, address],
+        });
+      } else {
+        signature = await signMessageAsync({ message: signMessage });
+      }
 
       // 4. Verify on server
       const verifyRes = await fetch("/api/auth/wallet", {
