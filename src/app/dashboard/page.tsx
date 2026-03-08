@@ -58,7 +58,7 @@ function validateStoredUser(stored: string): TgUser | null {
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<TgUser | null>(null);
-  const [tierData, setTierData] = useState<{ tier: string; blocks: number[] }>({ tier: "free", blocks: [0, 1, 2] });
+  const [tierData, setTierData] = useState<{ tier: string; blocks: number[] } | null>(null);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
 
   useEffect(() => {
@@ -87,6 +87,10 @@ export default function DashboardPage() {
               : "User",
           });
         }
+
+        // Skip tier fetch here if tier_updated — second useEffect handles it after refresh-session
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('tier_updated')) return;
 
         // Fetch tier — cookie sent automatically
         return fetch("/api/user/tier");
@@ -126,7 +130,7 @@ export default function DashboardPage() {
     router.push("/");
   };
 
-  if (!user) return null;
+  if (!user || !tierData) return null;
 
   return (
     <main className="min-h-screen bg-[#0d0d0d] px-4 py-12">
