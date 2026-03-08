@@ -12,17 +12,9 @@ import type { TierKey } from "@/lib/paymentConfig";
 
 const tiers = [
   {
-    name: "Free",
-    price: "0$",
-    description: "Блок 0 — вводный блок бесплатно всем зарегистрированным пользователям",
-    button: "Войти",
-    highlighted: false,
-    isFree: true,
-  },
-  {
     name: "Genesis",
     price: "$49",
-    description: "Блоки 1–2, базовый доступ",
+    description: "Блоки 1–2, базовый доступ к курсу",
     button: "Купить Genesis",
     highlighted: false,
   },
@@ -34,13 +26,15 @@ const tiers = [
     highlighted: true,
     badge: "Рекомендуем",
   },
+  {
+    name: "Elite",
+    price: "$249",
+    description: "Всё + прямой доступ к создателю + кастомный агент",
+    button: "Купить Elite",
+    highlighted: false,
+    exclusive: true,
+  },
 ];
-
-const eliteTier = {
-  name: "Elite",
-  price: "$249",
-  description: "Всё + прямой доступ к создателю + кастомный агент",
-};
 
 const features = [
   { icon: "/stickers/sticker-robot.png", title: "AI ментор внутри", description: "Твой личный AI-эксперт по OpenClaw — отвечает на вопросы, помогает разобраться и ведёт тебя на каждом шагу" },
@@ -103,9 +97,25 @@ export default function Home() {
 
       {/* Tiers */}
       <section className="max-w-6xl mx-auto px-4 py-20">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
           Выбери свой тариф
         </h2>
+
+        {/* Free banner */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#141414] border border-[#2a2a2a] rounded-xl px-6 py-4 mb-8">
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-semibold tracking-widest uppercase text-zinc-500">Бесплатно</span>
+            <span className="text-white text-sm">Блок 0 открыт всем — начни прямо сейчас</span>
+          </div>
+          <button
+            onClick={() => router.push('/login')}
+            className="text-[#FF4422] border border-[#FF4422]/40 hover:bg-[#FF4422]/10 text-sm font-semibold px-5 py-2 rounded-lg transition-colors whitespace-nowrap"
+          >
+            Начать бесплатно →
+          </button>
+        </div>
+
+        {/* Paid tiers: Genesis | Pro | Elite */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {tiers.map((tier) => (
             <div
@@ -121,19 +131,18 @@ export default function Home() {
                   {tier.badge}
                 </span>
               )}
+              {(tier as { exclusive?: boolean }).exclusive && (
+                <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#888] mb-1">Exclusive</span>
+              )}
               <h3 className="text-2xl font-bold mb-2">{tier.name}</h3>
               <p className="text-4xl font-extrabold mb-4">{tier.price}</p>
-              <p
-                className={`mb-8 ${
-                  tier.highlighted ? "text-white/80" : "text-[#888888]"
-                }`}
-              >
+              <p className={`mb-8 flex-1 ${tier.highlighted ? "text-white/80" : "text-[#888888]"}`}>
                 {tier.description}
               </p>
               <button
-                onClick={() => (tier as { isFree?: boolean }).isFree ? router.push('/login') : handleBuyClick(tier.name)}
+                onClick={() => handleBuyClick(tier.name)}
                 disabled={checkingSession === tier.name.toLowerCase()}
-                className={`mt-auto py-3 px-6 rounded-lg font-semibold transition-colors ${
+                className={`py-3 px-6 rounded-lg font-semibold transition-colors w-full ${
                   tier.highlighted
                     ? "bg-white text-[#FF4422] hover:bg-gray-100"
                     : "bg-[#FF4422] text-white hover:bg-[#e63d1e]"
@@ -143,30 +152,6 @@ export default function Home() {
               </button>
             </div>
           ))}
-        </div>
-
-        {/* Elite VIP Strip */}
-        <div className="mt-6">
-          <div className="bg-[#1a1a1a] border border-white/10 rounded-2xl p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex flex-col gap-2">
-              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#FF4422]">Exclusive</span>
-              <h3 className="text-2xl md:text-3xl font-bold text-white">Elite</h3>
-              <p className="text-4xl md:text-5xl font-extrabold text-white">
-                {eliteTier.price}
-              </p>
-              <p className="text-zinc-400 max-w-md">{eliteTier.description}</p>
-            </div>
-            <div className="flex flex-col items-end gap-3">
-              <span className="text-zinc-500 text-sm">Осталось мест: 50</span>
-              <button
-                onClick={() => handleBuyClick("Elite")}
-                disabled={checkingSession === "elite"}
-                className="bg-[#FF4422] hover:bg-[#e63d1e] text-white font-semibold py-3 px-10 rounded-lg transition-colors disabled:opacity-60 whitespace-nowrap"
-              >
-                {checkingSession === "elite" ? "Загрузка..." : "Купить Elite"}
-              </button>
-            </div>
-          </div>
         </div>
       </section>
 
