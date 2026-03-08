@@ -55,7 +55,8 @@ export default function ConnectWalletButton() {
 
       // 3. Sign — use window.ethereum directly for MetaMask to avoid popup suppression
       let signature: string;
-      const injectedEthereum = (window as any).ethereum;
+      type EthereumProvider = { isMetaMask?: boolean; request: (args: { method: string; params: unknown[] }) => Promise<string> };
+      const injectedEthereum = (window as Window & { ethereum?: EthereumProvider }).ethereum;
 
       if (injectedEthereum && injectedEthereum.isMetaMask) {
         const encoder = new TextEncoder();
