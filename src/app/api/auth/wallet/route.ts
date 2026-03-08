@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
     };
 
     const messageAddressRaw = getLineValue("Адрес: ");
-    const nonce = getLineValue("Nonce: ");
+    const nonce = getLineValue("Код: ");
     const messageIssuedAt = getLineValue("Выдан: ");
     const messageExpiresAt = getLineValue("Истекает: ");
 

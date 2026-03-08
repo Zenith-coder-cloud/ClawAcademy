@@ -7,7 +7,19 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
-const AUTH_VERSION = "2.0-plaintext" as const;
+const AUTH_VERSION = "2.1-injected" as const;
+
+// Get the real injected provider, not AppKit wrapped
+const getInjectedProvider = (): { request: (args: { method: string; params?: unknown[] }) => Promise<unknown> } | null => {
+  if (typeof window === "undefined") return null;
+  const eth = (window as { ethereum?: { providers?: unknown[]; isMetaMask?: boolean; request: (args: { method: string; params?: unknown[] }) => Promise<unknown> } }).ethereum;
+  if (!eth) return null;
+  const providers = eth.providers as Array<{ isMetaMask?: boolean; isWalletConnect?: boolean; request: (args: { method: string; params?: unknown[] }) => Promise<unknown> }> | undefined;
+  if (providers) {
+    return providers.find((p) => p.isMetaMask && !p.isWalletConnect) || providers[0];
+  }
+  return eth;
+};
 
 export default function ConnectWalletButton() {
   const { open } = useAppKit();
@@ -43,33 +55,38 @@ export default function ConnectWalletButton() {
       const { nonce, issuedAt, expiresAt } = await nonceRes.json();
       if (!nonce) throw new Error("Failed to get nonce");
 
-      // 2. Build plain-text sign-in message
+      // 2. Get real injected provider (bypass AppKit wrapper)
+      const injected = getInjectedProvider();
+      if (!injected) throw new Error("MetaMask not found");
+
+      const accounts = await injected.request({ method: "eth_requestAccounts" }) as string[];
+      const signerAddress = accounts[0];
+      if (!signerAddress) throw new Error("No account returned");
+
+      // 3. Build plain-text sign-in message (avoid SIWE-like patterns)
       const signMessage = [
-        "Войти в ClawAcademy",
-        "",
-        "Адрес: " + address,
-        "Nonce: " + nonce,
+        "Claw Academy — вход",
+        "Адрес: " + signerAddress,
+        "Код: " + nonce,
         "Выдан: " + issuedAt,
         "Истекает: " + expiresAt,
       ].join("\n");
 
-      // 3. Request wallet signature
-      const provider = (window as { ethereum?: { request: (args: { method: string; params: unknown[] }) => Promise<string> } }).ethereum;
-      if (!provider) throw new Error("MetaMask not found");
+      // 4. Request wallet signature via injected provider directly
       const encoder = new TextEncoder();
       const bytes = encoder.encode(signMessage);
       const msgHex = "0x" + Array.from(bytes).map(b => b.toString(16).padStart(2, "0")).join("");
-      const signature = await provider.request({
+      const signature = await injected.request({
         method: "personal_sign",
-        params: [msgHex, address],
-      });
+        params: [msgHex, signerAddress],
+      }) as string;
 
-      // 4. Verify on server
+      // 5. Verify on server
       const verifyRes = await fetch("/api/auth/wallet", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          address,
+          address: signerAddress,
           message: signMessage,
           signature,
           chainId,
@@ -84,7 +101,7 @@ export default function ConnectWalletButton() {
           "tg_user",
           JSON.stringify({ ...data.user, auth_at: Date.now() })
         );
-        localStorage.setItem("wallet_address", address);
+        localStorage.setItem("wallet_address", signerAddress);
         router.push("/dashboard");
       } else {
         console.error("Wallet auth failed:", data.error);
