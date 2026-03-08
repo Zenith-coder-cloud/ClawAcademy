@@ -181,9 +181,9 @@ export default function LoginPage() {
         <Image
           src="/logo.png"
           alt="Claw Academy"
-          width={480}
-          height={160}
-          className="h-48 w-auto"
+          width={800}
+          height={300}
+          className="w-72 h-auto"
         />
       </a>
 
