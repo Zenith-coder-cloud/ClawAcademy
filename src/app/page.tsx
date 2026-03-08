@@ -102,16 +102,18 @@ export default function Home() {
         </h2>
 
         {/* Free banner */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#141414] border border-[#2a2a2a] rounded-xl px-6 py-4 mb-8">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-l-4 border-[#FF4422] bg-[#FF4422]/5 rounded-r-xl pl-5 pr-6 py-4 mb-8">
           <div className="flex items-center gap-3">
-            <span className="text-xs font-bold tracking-widest uppercase text-[#FF4422]">Бесплатно</span>
-            <span className="text-white text-sm">Блок 0 открыт всем — начни прямо сейчас</span>
+            <span className="text-xs font-bold tracking-[0.15em] uppercase text-[#FF4422]">Бесплатно</span>
+            <span className="w-px h-4 bg-[#FF4422]/30" />
+            <span className="text-zinc-300 text-sm">Блок 0 открыт всем — начни прямо сейчас</span>
           </div>
           <button
             onClick={() => router.push('/login')}
-            className="text-[#FF4422] border border-[#FF4422]/40 hover:bg-[#FF4422]/10 text-sm font-semibold px-5 py-2 rounded-lg transition-colors whitespace-nowrap"
+            className="text-[#FF4422] hover:text-white text-sm font-semibold transition-colors whitespace-nowrap flex items-center gap-1 group"
           >
-            Начать бесплатно →
+            Начать бесплатно
+            <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
           </button>
         </div>
 
