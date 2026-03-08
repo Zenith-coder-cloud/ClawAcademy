@@ -1,3 +1,4 @@
+// v2 plain-text auth - no SIWE
 "use client";
 
 import { useAppKit } from "@reown/appkit/react";
@@ -5,6 +6,8 @@ import { useAccount, useChainId, useDisconnect } from "wagmi";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+
+const AUTH_VERSION = "2.0-plaintext" as const;
 
 export default function ConnectWalletButton() {
   const { open } = useAppKit();
@@ -35,6 +38,7 @@ export default function ConnectWalletButton() {
     setError(null);
     try {
       // 1. Fetch nonce + timestamps from server
+      console.log("[wallet-auth]", AUTH_VERSION, address);
       const nonceRes = await fetch("/api/auth/wallet");
       const { nonce, issuedAt, expiresAt } = await nonceRes.json();
       if (!nonce) throw new Error("Failed to get nonce");
