@@ -188,24 +188,31 @@ export async function POST(req: NextRequest) {
 
     // Upsert user with wallet address
     console.log("[wallet-auth POST] upserting user for wallet:", normalizedAddress.toLowerCase());
-    const { data: user, error: userError } = await db
-      .from("users")
-      .upsert(
-        {
-          wallet_address: normalizedAddress.toLowerCase(),
-          first_name: address.slice(0, 6) + "..." + address.slice(-4),
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "wallet_address" }
-      )
-      .select()
-      .single();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let user: any = null;
+    try {
+      const { data, error: userError } = await db
+        .from("users")
+        .upsert(
+          {
+            wallet_address: normalizedAddress.toLowerCase(),
+            first_name: address.slice(0, 6) + "..." + address.slice(-4),
+          },
+          { onConflict: "wallet_address" }
+        )
+        .select()
+        .single();
 
-    if (userError) {
-      console.error("[wallet-auth POST] upsert user failed:", userError.code, userError.message, userError.details);
+      if (userError) {
+        console.error("[wallet-auth POST] upsert user failed:", userError.code, userError.message, userError.details, userError.hint);
+        return NextResponse.json({ error: "Server error" }, { status: 500 });
+      }
+      user = data;
+      console.log("[wallet-auth POST] user upserted, id:", user?.id);
+    } catch (upsertErr) {
+      console.error("[wallet-auth POST] upsert threw unexpectedly:", upsertErr);
       return NextResponse.json({ error: "Server error" }, { status: 500 });
     }
-    console.log("[wallet-auth POST] user upserted, id:", user?.id);
 
     const sessionToken = await createSession({
       userId: user?.id,
