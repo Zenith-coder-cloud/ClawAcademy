@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Web3Provider from "@/components/Web3Provider";
+import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Claw Academy — Курс по ИИ-агентам | Заработок с искусственным интеллектом",
@@ -50,16 +51,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = await headers();
+  const cookies = headersList.get("cookie");
+
   return (
     <html lang="ru">
       <body className="bg-[#0d0d0d] text-white antialiased">
         <Header />
-        <Web3Provider>{children}</Web3Provider>
+        <Web3Provider cookies={cookies}>{children}</Web3Provider>
       </body>
     </html>
   );

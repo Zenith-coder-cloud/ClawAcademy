@@ -1,39 +1,21 @@
-import { createAppKit } from "@reown/appkit/react";
 import type { AppKitNetwork } from "@reown/appkit/networks";
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
 import { bsc, polygon, base, mainnet } from "@reown/appkit/networks";
+import { cookieStorage, createStorage } from "@wagmi/core";
 
-export const projectId = "4409af1c056154be6bf60898f13b84c4";
-
-const metadata = {
-  name: "Claw Academy",
-  description: "Первая русскоязычная платформа по заработку с ИИ-агентами",
-  url: "https://www.clawacademy.io",
-  icons: ["https://www.clawacademy.io/favicon.ico"],
-};
+export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
 
 export const networks = [bsc, polygon, base, mainnet] as [AppKitNetwork, ...AppKitNetwork[]];
 
-export const wagmiAdapter = new WagmiAdapter({
-  projectId,
-  networks,
-});
+if (!projectId) {
+  throw new Error("Project ID is not defined");
+}
 
-export const modal = createAppKit({
-  adapters: [wagmiAdapter],
+export const wagmiAdapter = new WagmiAdapter({
+  storage: createStorage({
+    storage: cookieStorage,
+  }),
+  ssr: true,
   projectId,
   networks,
-  defaultNetwork: bsc,
-  metadata,
-  features: {
-    analytics: false,
-    email: false,
-    socials: [],
-    emailShowWallets: false,
-  },
-  themeMode: "dark",
-  themeVariables: {
-    "--w3m-accent": "#FF4422",
-    "--w3m-border-radius-master": "8px",
-  },
 });
