@@ -15,14 +15,14 @@ const tiers = [
     name: "Genesis",
     price: "$49",
     description: "Блоки 1–2, базовый доступ к курсу",
-    button: "Купить Genesis",
+    button: "Купить",
     highlighted: false,
   },
   {
     name: "Pro",
     price: "$99",
     description: "Все модули + AI чат Zenith Junior + шаблоны",
-    button: "Купить Pro",
+    button: "Купить",
     highlighted: true,
     badge: "Рекомендуем",
   },
@@ -30,7 +30,7 @@ const tiers = [
     name: "Elite",
     price: "$249",
     description: "Всё + прямой доступ к создателю + кастомный агент",
-    button: "Купить Elite",
+    button: "Купить",
     highlighted: false,
     exclusive: true,
   },
@@ -104,7 +104,7 @@ export default function Home() {
         {/* Free banner */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#141414] border border-[#2a2a2a] rounded-xl px-6 py-4 mb-8">
           <div className="flex items-center gap-3">
-            <span className="text-xs font-semibold tracking-widest uppercase text-zinc-500">Бесплатно</span>
+            <span className="text-xs font-bold tracking-widest uppercase text-[#FF4422]">Бесплатно</span>
             <span className="text-white text-sm">Блок 0 открыт всем — начни прямо сейчас</span>
           </div>
           <button
@@ -142,7 +142,7 @@ export default function Home() {
               <button
                 onClick={() => handleBuyClick(tier.name)}
                 disabled={checkingSession === tier.name.toLowerCase()}
-                className={`py-3 px-6 rounded-lg font-semibold transition-colors w-full ${
+                className={`py-3 px-6 rounded-lg font-semibold transition-colors w-full whitespace-nowrap ${
                   tier.highlighted
                     ? "bg-white text-[#FF4422] hover:bg-gray-100"
                     : "bg-[#FF4422] text-white hover:bg-[#e63d1e]"
