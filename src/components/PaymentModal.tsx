@@ -142,6 +142,7 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Ошибка верификации');
+      try { await fetch('/api/auth/refresh-session', { method: 'POST' }); } catch {}
       setVerified(true);
       setStep(4);
     } catch (err: unknown) {
@@ -310,6 +311,7 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
                       });
                       const data = await res.json();
                       if (!res.ok) throw new Error(data.error || 'Ошибка верификации');
+                      try { await fetch('/api/auth/refresh-session', { method: 'POST' }); } catch {}
                       setVerified(true);
                     } catch (err: unknown) {
                       setError(err instanceof Error ? err.message : 'Ошибка верификации');
@@ -379,8 +381,12 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
               <div>
                 <h2 className="text-white text-xl font-bold mb-4">Доступ активирован!</h2>
                 <button
-                  onClick={() => {
+                  onClick={async () => {
+                    try {
+                      await fetch('/api/auth/refresh-session', { method: 'POST' });
+                    } catch {}
                     onClose();
+                    router.refresh();
                     router.push('/dashboard');
                   }}
                   className="py-3 px-8 rounded-xl text-sm font-semibold bg-[#e63329] text-white hover:bg-[#c92a22] transition-colors"
