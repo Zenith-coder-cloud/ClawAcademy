@@ -1,13 +1,20 @@
-// v2 plain-text auth - no SIWE
+// v3 optimistic nonce prefetch - no SIWE
 "use client";
 
 import { useAppKit } from "@reown/appkit/react";
 import { useAccount, useChainId, useDisconnect, useSignMessage } from "wagmi";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-const AUTH_VERSION = "2.2-wagmi" as const;
+const AUTH_VERSION = "3.0-prefetch" as const;
+
+interface PrefetchedNonce {
+  nonce: string;
+  issuedAt: string;
+  expiresAt: string;
+  fetchedAt: number;
+}
 
 export default function ConnectWalletButton() {
   const { open } = useAppKit();
@@ -19,10 +26,42 @@ export default function ConnectWalletButton() {
   const [signing, setSigning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [nonceReady, setNonceReady] = useState(false);
+  const prefetchedNonce = useRef<PrefetchedNonce | null>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Optimistic nonce prefetch — fetch when wallet connects / address changes
+  const fetchNonce = useCallback(async () => {
+    try {
+      const res = await fetch("/api/auth/wallet");
+      if (!res.ok) {
+        console.error("[wallet-auth] nonce prefetch failed:", res.status);
+        return;
+      }
+      const { nonce, issuedAt, expiresAt } = await res.json();
+      if (nonce) {
+        prefetchedNonce.current = { nonce, issuedAt, expiresAt, fetchedAt: Date.now() };
+        setNonceReady(true);
+        console.log("[wallet-auth] nonce prefetched for", address?.slice(0, 8));
+      }
+    } catch (err) {
+      console.error("[wallet-auth] nonce prefetch error:", err);
+    }
+  }, [address]);
+
+  useEffect(() => {
+    if (isConnected && address && connector) {
+      prefetchedNonce.current = null;
+      setNonceReady(false);
+      fetchNonce();
+    } else {
+      prefetchedNonce.current = null;
+      setNonceReady(false);
+    }
+  }, [isConnected, address, connector, fetchNonce]);
 
   const authenticate = async () => {
     const hostname = window.location.hostname;
@@ -35,16 +74,25 @@ export default function ConnectWalletButton() {
       setError("Кошелёк не подключён. Попробуйте переподключить.");
       return;
     }
+
+    // Check if prefetched nonce is still valid (not older than 4 min)
+    const cached = prefetchedNonce.current;
+    if (!cached || Date.now() - cached.fetchedAt > 4 * 60 * 1000) {
+      // Nonce expired or missing — refetch and ask user to click again
+      setError("Подготовка... Нажмите ещё раз.");
+      prefetchedNonce.current = null;
+      setNonceReady(false);
+      fetchNonce();
+      return;
+    }
+
     setSigning(true);
     setError(null);
     try {
-      // 1. Fetch nonce + timestamps from server
+      const { nonce, issuedAt, expiresAt } = cached;
       console.log("[wallet-auth]", AUTH_VERSION, address);
-      const nonceRes = await fetch("/api/auth/wallet");
-      const { nonce, issuedAt, expiresAt } = await nonceRes.json();
-      if (!nonce) throw new Error("Failed to get nonce");
 
-      // 2. Build plain-text sign-in message (avoid SIWE-like patterns)
+      // Build plain-text sign-in message
       const signMessage = [
         "Claw Academy — вход",
         "Адрес: " + address,
@@ -53,10 +101,10 @@ export default function ConnectWalletButton() {
         "Истекает: " + expiresAt,
       ].join("\n");
 
-      // 3. Sign — use wagmi for all connectors
+      // Sign — called immediately on user click, no prior await
       const signature = await signMessageAsync({ message: signMessage });
 
-      // 4. Verify on server
+      // Verify on server
       const verifyRes = await fetch("/api/auth/wallet", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -80,9 +128,19 @@ export default function ConnectWalletButton() {
         router.push("/dashboard");
       } else {
         console.error("Wallet auth failed:", data.error);
+        setError("Ошибка входа: " + (data.error || "неизвестно"));
+        // Refresh nonce for retry
+        prefetchedNonce.current = null;
+        setNonceReady(false);
+        fetchNonce();
       }
     } catch (err: unknown) {
       console.error("Wallet sign-in error:", err);
+      // Refresh nonce for retry
+      prefetchedNonce.current = null;
+      setNonceReady(false);
+      fetchNonce();
+
       if (err instanceof Error && err.name === "ConnectorNotConnectedError") {
         setError("Кошелёк отключился. Пожалуйста, переподключите.");
       } else if (err instanceof Error && err.message.includes("User rejected")) {
@@ -115,7 +173,11 @@ export default function ConnectWalletButton() {
           disabled={signing}
           className="w-full py-3.5 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-semibold rounded-xl transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-60"
         >
-          {signing ? "Подписание..." : `${address.slice(0, 6)}...${address.slice(-4)}`}
+          {signing
+            ? "Подтвердите в кошельке..."
+            : nonceReady
+              ? `${address.slice(0, 6)}...${address.slice(-4)}`
+              : "Подготовка..."}
         </button>
         {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
         <span
