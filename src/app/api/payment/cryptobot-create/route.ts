@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { supabaseAdmin } from "@/lib/server/supabaseAdmin";
 import { verifySession, SESSION_COOKIE } from "@/lib/server/session";
 import { TIERS, type TierKey } from "@/lib/paymentConfig";
 
@@ -69,45 +68,8 @@ export async function POST(req: NextRequest) {
 
     const invoice = invoiceData.result;
 
-    // Save pending payment
-    const db = supabaseAdmin();
-
-    // Look up user
-    let userId: string | null = null;
-    if (session.telegramId) {
-      const { data: user } = await db
-        .from("users")
-        .select("id")
-        .eq("telegram_id", session.telegramId)
-        .single();
-      userId = user?.id ?? null;
-    } else if (session.walletAddress) {
-      const { data: user } = await db
-        .from("users")
-        .select("id")
-        .eq("wallet_address", session.walletAddress.toLowerCase())
-        .single();
-      userId = user?.id ?? null;
-    }
-
-    const { error: insertError } = await db.from("payments").insert({
-      user_id: userId,
-      wallet_address: session.walletAddress?.toLowerCase() ?? null,
-      telegram_id: session.telegramId ?? null,
-      tier,
-      chain_id: 0,
-      token: "USDT",
-      amount: priceUsd.toString(),
-      amount_usd: priceUsd,
-      status: "pending",
-      payment_method: "cryptobot",
-      cryptobot_invoice_id: invoice.invoice_id.toString(),
-    });
-
-    if (insertError) {
-      console.error("Failed to insert CryptoBot payment:", insertError);
-      return NextResponse.json({ error: "Server error" }, { status: 500 });
-    }
+    // Note: CryptoBot payments tracked via webhook — no DB insert needed here
+    // Tier update happens in /api/payment/cryptobot-webhook on invoice_paid event
 
     return NextResponse.json({
       invoice_url: invoice.pay_url,
