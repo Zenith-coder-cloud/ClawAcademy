@@ -183,7 +183,7 @@ export default function LoginPage() {
           alt="Claw Academy"
           width={480}
           height={160}
-          className="h-36 w-auto"
+          className="h-48 w-auto"
         />
       </a>
 
