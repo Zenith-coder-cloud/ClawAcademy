@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useAppKit } from "@reown/appkit/react";
+import { useAccount, useSignMessage } from "wagmi";
 import PaymentModal from "@/components/PaymentModal";
 
 const allModules = [
@@ -57,9 +59,50 @@ function validateStoredUser(stored: string): TgUser | null {
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { open } = useAppKit();
+  const { address, isConnected } = useAccount();
+  const { signMessageAsync } = useSignMessage();
   const [user, setUser] = useState<TgUser | null>(null);
   const [tierData, setTierData] = useState<{ tier: string; blocks: number[] } | null>(null);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
+  const [linkWalletStatus, setLinkWalletStatus] = useState<'idle' | 'signing' | 'linking' | 'done' | 'error'>('idle');
+  const [linkWalletError, setLinkWalletError] = useState<string | null>(null);
+
+  const needsWalletLink = !!(user?.id && !user?.wallet_address);
+
+  const handleLinkWallet = useCallback(async () => {
+    if (!address || !isConnected) return;
+    setLinkWalletStatus('signing');
+    setLinkWalletError(null);
+    try {
+      const message = [
+        "Claw Academy — привязка кошелька",
+        "Адрес: " + address,
+        "Время: " + new Date().toISOString(),
+      ].join("\n");
+
+      const signature = await signMessageAsync({ message });
+      setLinkWalletStatus('linking');
+
+      const res = await fetch('/api/auth/link-wallet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address, message, signature }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Ошибка привязки');
+
+      setLinkWalletStatus('done');
+      setUser((prev) => prev ? { ...prev, wallet_address: address.toLowerCase() } : prev);
+    } catch (err: unknown) {
+      setLinkWalletStatus('error');
+      if (err instanceof Error && err.message.includes('User rejected')) {
+        setLinkWalletError('Подпись отклонена');
+      } else {
+        setLinkWalletError(err instanceof Error ? err.message : 'Ошибка привязки кошелька');
+      }
+    }
+  }, [address, isConnected, signMessageAsync]);
 
   useEffect(() => {
     // Validate session via httpOnly cookie (server-side check)
@@ -165,6 +208,45 @@ export default function DashboardPage() {
             </button>
           </div>
         </div>
+
+        {/* Link Wallet CTA for TG users without wallet */}
+        {needsWalletLink && linkWalletStatus !== 'done' && (
+          <div className="mb-8 p-5 rounded-xl bg-[#1a1a1a] border border-[#333]">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <p className="text-white font-semibold">Привяжите кошелёк</p>
+                <p className="text-[#888888] text-sm mt-1">
+                  Для оплаты крипто-кошельком привяжите EVM-адрес к аккаунту
+                </p>
+              </div>
+              <div className="flex flex-col items-end gap-2 shrink-0">
+                {!isConnected ? (
+                  <button
+                    onClick={() => open()}
+                    className="px-5 py-2.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white font-semibold rounded-lg transition-colors text-sm"
+                  >
+                    Подключить кошелёк
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleLinkWallet}
+                    disabled={linkWalletStatus === 'signing' || linkWalletStatus === 'linking'}
+                    className="px-5 py-2.5 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-semibold rounded-lg transition-colors text-sm disabled:opacity-60"
+                  >
+                    {linkWalletStatus === 'signing'
+                      ? 'Подтвердите в кошельке...'
+                      : linkWalletStatus === 'linking'
+                        ? 'Привязываем...'
+                        : `Привязать ${address!.slice(0, 6)}...${address!.slice(-4)}`}
+                  </button>
+                )}
+                {linkWalletError && (
+                  <p className="text-red-400 text-xs">{linkWalletError}</p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Modules */}
         <h2 className="text-xl font-semibold text-white mb-6">
