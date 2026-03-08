@@ -1,3 +1,4 @@
+// page-v2 2026-03-09
 "use client";
 
 import Image from "next/image";
@@ -153,7 +154,7 @@ export default function LoginPage() {
         encodeURIComponent(window.location.origin) +
         "&return_to=" +
         encodeURIComponent(window.location.origin + "/login") +
-        "&request_access=write&embed=0";
+        "&request_access=write&embed=0&v=2";
     }
   };
 
