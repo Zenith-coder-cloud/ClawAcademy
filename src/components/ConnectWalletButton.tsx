@@ -8,15 +8,21 @@ import Image from "next/image";
 
 export default function ConnectWalletButton() {
   const { open } = useAppKit();
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, connector } = useAccount();
   const chainId = useChainId();
   const { disconnect } = useDisconnect();
   const { signMessageAsync } = useSignMessage();
   const router = useRouter();
   const [signing, setSigning] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const authenticate = async () => {
+    if (!isConnected || !address || !connector) {
+      setError("Кошелёк не подключён. Попробуйте переподключить.");
+      return;
+    }
     setSigning(true);
+    setError(null);
     try {
       // 1. Fetch nonce + timestamps from server
       const nonceRes = await fetch("/api/auth/wallet");
@@ -61,14 +67,21 @@ export default function ConnectWalletButton() {
       } else {
         console.error("Wallet auth failed:", data.error);
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Wallet sign-in error:", err);
+      if (err instanceof Error && err.name === "ConnectorNotConnectedError") {
+        setError("Кошелёк отключился. Пожалуйста, переподключите.");
+      } else if (err instanceof Error && err.message.includes("User rejected")) {
+        setError("Подпись отклонена.");
+      } else {
+        setError("Ошибка входа. Попробуйте ещё раз.");
+      }
     } finally {
       setSigning(false);
     }
   };
 
-  if (isConnected && address) {
+  if (isConnected && address && connector) {
     return (
       <div className="flex flex-col items-center w-full">
         <button
@@ -78,6 +91,7 @@ export default function ConnectWalletButton() {
         >
           {signing ? "Подписание..." : `${address.slice(0, 6)}...${address.slice(-4)} — Подписать и войти`}
         </button>
+        {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
         <span
           onClick={() => disconnect()}
           className="text-zinc-500 text-xs underline cursor-pointer mt-1"

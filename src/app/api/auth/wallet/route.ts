@@ -34,7 +34,6 @@ export async function GET(req: NextRequest) {
     const { error } = await db.from("auth_nonces").insert({
       nonce,
       expires_at: expiresAt,
-      used: false,
     });
 
     if (error) {
@@ -146,9 +145,12 @@ export async function POST(req: NextRequest) {
       .from("auth_nonces")
       .select("*")
       .eq("nonce", nonce)
-      .or("used.is.null,used.eq.false")
       .gt("expires_at", new Date().toISOString())
       .single();
+
+    if (nonceError) {
+      console.error("Nonce lookup failed:", nonceError);
+    }
 
     if (nonceError || !nonceRecord) {
       return NextResponse.json(
@@ -171,14 +173,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Mark nonce as used
-    const { error: updateError } = await db
+    // Mark nonce as used — delete it so it can't be reused
+    const { error: deleteError } = await db
       .from("auth_nonces")
-      .update({ used: true, address: normalizedAddress })
+      .delete()
       .eq("id", nonceRecord.id);
 
-    if (updateError) {
-      console.error("Failed to mark nonce as used:", updateError);
+    if (deleteError) {
+      console.error("Failed to delete used nonce:", deleteError);
     }
 
     // Upsert user with wallet address
