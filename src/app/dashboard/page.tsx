@@ -98,6 +98,21 @@ export default function DashboardPage() {
       .catch(() => {});
   }, [router]);
 
+  // Re-fetch tier if redirected after payment upgrade
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('tier_updated')) {
+      fetch("/api/user/tier")
+        .then((res) => res.ok ? res.json() : null)
+        .then((data) => {
+          if (data?.tier) setTierData({ tier: data.tier, blocks: data.blocks ?? [0, 1, 2] });
+        })
+        .catch(() => {});
+      // Clean URL
+      window.history.replaceState({}, '', '/dashboard');
+    }
+  }, []);
+
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
     localStorage.removeItem("tg_user");
