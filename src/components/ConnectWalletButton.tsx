@@ -29,13 +29,15 @@ export default function ConnectWalletButton() {
         if (!nonce) throw new Error("Failed to get nonce");
 
         // 2. Build EIP-4361 SIWE message
+        const domain = window.location.host; // e.g. www.clawacademy.io
+        const uri = window.location.origin;  // e.g. https://www.clawacademy.io
         const siweMessage = [
-          'clawacademy.io wants you to sign in with your Ethereum account:',
+          domain + ' wants you to sign in with your Ethereum account:',
           address,
           '',
           'Sign in to Claw Academy',
           '',
-          'URI: https://www.clawacademy.io',
+          'URI: ' + uri,
           'Version: 1',
           'Chain ID: ' + chainId,
           'Nonce: ' + nonce,
