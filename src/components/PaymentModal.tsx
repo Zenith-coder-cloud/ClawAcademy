@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAccount, useSendTransaction, useWriteContract, useChainId, useSwitchChain } from 'wagmi';
-import { parseUnits } from 'viem';
+import { useAccount, useSendTransaction, useWriteContract, useWaitForTransactionReceipt, useChainId, useSwitchChain } from 'wagmi';
+import { parseUnits, parseEther } from 'viem';
 import { TIERS, SUPPORTED_CHAINS, PAYMENT_ADDRESS, type TierKey } from '@/lib/paymentConfig';
 
 interface PaymentModalProps {
@@ -32,9 +32,11 @@ const ERC20_TRANSFER_ABI = [
   },
 ] as const;
 
+type PayStatus = 'idle' | 'sending' | 'waiting' | 'verifying' | 'success' | 'error';
+
 export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentModalProps) {
   const router = useRouter();
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
   const { sendTransactionAsync } = useSendTransaction();
@@ -44,10 +46,14 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
   const [selectedTier, setSelectedTier] = useState<TierKey | null>(initialTier ?? null);
   const [selectedChain, setSelectedChain] = useState<(typeof SUPPORTED_CHAINS)[number]>(SUPPORTED_CHAINS[0]);
   const [selectedToken, setSelectedToken] = useState<'usdt' | 'native'>('usdt');
-  const [txHash, setTxHash] = useState<string | null>(null);
+  const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
+  const [manualTxHash, setManualTxHash] = useState('');
+  const [payStatus, setPayStatus] = useState<PayStatus>('idle');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [verified, setVerified] = useState(false);
+
+  const { isSuccess: isTxConfirmed } = useWaitForTransactionReceipt({ hash: txHash });
 
   useEffect(() => {
     if (initialTier) {
@@ -55,6 +61,14 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
       setStep(2);
     }
   }, [initialTier]);
+
+  // Auto-verify when on-chain tx is confirmed
+  useEffect(() => {
+    if (isTxConfirmed && txHash && payStatus === 'waiting') {
+      handleAutoVerify(txHash);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isTxConfirmed, txHash, payStatus]);
 
   if (!isOpen) return null;
 
@@ -101,55 +115,82 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
     }
   }
 
-  async function handleSendPayment() {
+  async function handleAutoPay() {
     if (!selectedTier || !address) return;
-    setLoading(true);
+    setPayStatus('sending');
     setError(null);
     try {
-      let hash: string;
+      let hash: `0x${string}`;
       if (selectedToken === 'usdt') {
-        const result = await writeContractAsync({
+        hash = await writeContractAsync({
           address: selectedChain.usdtAddress as `0x${string}`,
           abi: ERC20_TRANSFER_ABI,
           functionName: 'transfer',
           args: [PAYMENT_ADDRESS as `0x${string}`, parseUnits(tierPrice.toString(), 6)],
         });
-        hash = result;
       } else {
-        const result = await sendTransactionAsync({
+        hash = await sendTransactionAsync({
           to: PAYMENT_ADDRESS as `0x${string}`,
-          value: parseUnits(nativeAmount, 18),
+          value: parseEther(nativeAmount),
         });
-        hash = result;
       }
       setTxHash(hash);
+      setPayStatus('waiting');
     } catch (err: unknown) {
+      setPayStatus('error');
       setError(err instanceof Error ? err.message : 'Ошибка отправки транзакции');
-    } finally {
-      setLoading(false);
     }
   }
 
-  async function handleVerify() {
-    if (!txHash || !address) return;
-    setLoading(true);
+  async function handleAutoVerify(hash: string) {
+    if (!address) return;
+    setPayStatus('verifying');
     setError(null);
     try {
       const res = await fetch('/api/payment/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tx_hash: txHash, wallet_address: address }),
+        body: JSON.stringify({ tx_hash: hash, wallet_address: address }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Ошибка верификации');
       try { await fetch('/api/auth/refresh-session', { method: 'POST' }); } catch {}
+      setPayStatus('success');
       setVerified(true);
       setStep(4);
     } catch (err: unknown) {
+      setPayStatus('error');
       setError(err instanceof Error ? err.message : 'Ошибка верификации');
-    } finally {
-      setLoading(false);
     }
+  }
+
+  async function handleManualVerify() {
+    if (!manualTxHash.trim() || !address) return;
+    setPayStatus('verifying');
+    setError(null);
+    try {
+      const res = await fetch('/api/payment/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tx_hash: manualTxHash.trim(), wallet_address: address }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Ошибка верификации');
+      try { await fetch('/api/auth/refresh-session', { method: 'POST' }); } catch {}
+      setPayStatus('success');
+      setVerified(true);
+      setStep(4);
+    } catch (err: unknown) {
+      setPayStatus('error');
+      setError(err instanceof Error ? err.message : 'Ошибка верификации');
+    }
+  }
+
+  function resetPaymentState() {
+    setPayStatus('idle');
+    setTxHash(undefined);
+    setManualTxHash('');
+    setError(null);
   }
 
   return (
@@ -274,11 +315,12 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
           </div>
         )}
 
-        {/* STEP 3 — Send payment */}
+        {/* STEP 3 — Payment: auto-pay + manual fallback */}
         {step === 3 && (
           <div>
             <h2 className="text-white text-xl font-bold mb-6">Отправка платежа</h2>
 
+            {/* Payment summary */}
             <div className="bg-zinc-900 rounded-xl p-4 space-y-3 mb-6">
               <div className="flex justify-between">
                 <span className="text-zinc-400 text-sm">Адрес</span>
@@ -294,15 +336,14 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
               </div>
             </div>
 
-            {process.env.NEXT_PUBLIC_PAYMENT_TEST_MODE === 'true' && !txHash && (
+            {/* Test mode button */}
+            {process.env.NEXT_PUBLIC_PAYMENT_TEST_MODE === 'true' && payStatus === 'idle' && (
               <button
                 onClick={() => {
-                  setTxHash('test');
-                  setStep(4);
-                  // Auto-verify after moving to step 4
-                  setTimeout(async () => {
+                  setManualTxHash('test');
+                  setPayStatus('verifying');
+                  (async () => {
                     if (!address) return;
-                    setLoading(true);
                     try {
                       const res = await fetch('/api/payment/verify', {
                         method: 'POST',
@@ -312,13 +353,14 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
                       const data = await res.json();
                       if (!res.ok) throw new Error(data.error || 'Ошибка верификации');
                       try { await fetch('/api/auth/refresh-session', { method: 'POST' }); } catch {}
+                      setPayStatus('success');
                       setVerified(true);
+                      setStep(4);
                     } catch (err: unknown) {
+                      setPayStatus('error');
                       setError(err instanceof Error ? err.message : 'Ошибка верификации');
-                    } finally {
-                      setLoading(false);
                     }
-                  }, 500);
+                  })();
                 }}
                 className="w-full py-3 rounded-xl text-sm font-semibold bg-yellow-600 text-white hover:bg-yellow-700 transition-colors mb-3"
               >
@@ -326,45 +368,104 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
               </button>
             )}
 
-            {needsChainSwitch ? (
-              <button
-                onClick={() => switchChain({ chainId: selectedChain.id })}
-                className="w-full py-3 rounded-xl text-sm font-semibold bg-yellow-600 text-white hover:bg-yellow-700 transition-colors"
-              >
-                Переключить сеть
-              </button>
-            ) : !txHash ? (
-              <button
-                onClick={handleSendPayment}
-                disabled={loading}
-                className="w-full py-3 rounded-xl text-sm font-semibold bg-[#e63329] text-white hover:bg-[#c92a22] transition-colors disabled:opacity-50"
-              >
-                {loading ? 'Отправка...' : 'Отправить платеж'}
-              </button>
-            ) : (
-              <div>
-                <div className="bg-zinc-900 rounded-xl p-4 mb-4">
-                  <p className="text-zinc-400 text-sm">Хеш транзакции:</p>
-                  <p className="text-white text-sm font-mono">{shortenAddress(txHash)}</p>
-                </div>
+            {/* Status displays for in-progress states */}
+            {payStatus === 'sending' && (
+              <div className="text-center py-6">
+                <div className="w-10 h-10 border-2 border-[#e63329] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                <p className="text-zinc-400">Подтверждайте в кошельке...</p>
+              </div>
+            )}
+
+            {payStatus === 'waiting' && txHash && (
+              <div className="text-center py-6">
+                <div className="w-10 h-10 border-2 border-[#e63329] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                <p className="text-zinc-400 mb-2">Ожидаем подтверждения...</p>
+                <p className="text-zinc-500 text-sm font-mono">{shortenAddress(txHash)}</p>
+              </div>
+            )}
+
+            {payStatus === 'verifying' && (
+              <div className="text-center py-6">
+                <div className="w-10 h-10 border-2 border-[#e63329] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                <p className="text-zinc-400">Проверяем платёж...</p>
+              </div>
+            )}
+
+            {/* Error state with retry */}
+            {payStatus === 'error' && (
+              <div className="text-center py-4">
+                <p className="text-red-500 text-sm mb-4">{error}</p>
                 <button
-                  onClick={handleVerify}
-                  disabled={loading}
-                  className="w-full py-3 rounded-xl text-sm font-semibold bg-[#e63329] text-white hover:bg-[#c92a22] transition-colors disabled:opacity-50"
+                  onClick={resetPaymentState}
+                  className="py-2 px-6 rounded-xl text-sm font-semibold bg-[#e63329] text-white hover:bg-[#c92a22] transition-colors"
                 >
-                  {loading ? 'Проверка...' : 'Подтвердить оплату'}
+                  Попробовать снова
                 </button>
               </div>
             )}
 
-            {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
+            {/* Idle state: show both payment options */}
+            {payStatus === 'idle' && (
+              <>
+                {/* Option 1 — Auto-pay via wallet */}
+                {isConnected ? (
+                  needsChainSwitch ? (
+                    <button
+                      onClick={() => switchChain({ chainId: selectedChain.id })}
+                      className="w-full py-3 rounded-xl text-sm font-semibold bg-yellow-600 text-white hover:bg-yellow-700 transition-colors"
+                    >
+                      Переключить сеть на {selectedChain.name}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleAutoPay}
+                      className="w-full py-3 rounded-xl text-sm font-semibold bg-[#e63329] text-white hover:bg-[#c92a22] transition-colors"
+                    >
+                      Оплатить через кошелёк
+                    </button>
+                  )
+                ) : (
+                  <p className="text-zinc-500 text-sm text-center py-2">
+                    Подключите кошелёк для авто-оплаты
+                  </p>
+                )}
 
-            <button
-              onClick={() => { setStep(2); setTxHash(null); setError(null); }}
-              className="w-full mt-3 py-2 text-zinc-500 hover:text-white text-sm transition-colors"
-            >
-              Назад
-            </button>
+                {/* Separator */}
+                <div className="flex items-center gap-3 my-5">
+                  <div className="flex-1 h-px bg-zinc-800" />
+                  <span className="text-zinc-600 text-xs">или введите TX hash вручную</span>
+                  <div className="flex-1 h-px bg-zinc-800" />
+                </div>
+
+                {/* Option 2 — Manual TX hash */}
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={manualTxHash}
+                    onChange={(e) => setManualTxHash(e.target.value)}
+                    placeholder="0x..."
+                    className="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm font-mono placeholder:text-zinc-600 focus:outline-none focus:border-zinc-500"
+                  />
+                  <button
+                    onClick={handleManualVerify}
+                    disabled={!manualTxHash.trim()}
+                    className="px-5 py-2 rounded-lg text-sm font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    Проверить
+                  </button>
+                </div>
+              </>
+            )}
+
+            {/* Back button (hide during in-progress states) */}
+            {(payStatus === 'idle' || payStatus === 'error') && (
+              <button
+                onClick={() => { setStep(2); resetPaymentState(); }}
+                className="w-full mt-4 py-2 text-zinc-500 hover:text-white text-sm transition-colors"
+              >
+                Назад
+              </button>
+            )}
           </div>
         )}
 
@@ -399,7 +500,7 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
               <div>
                 <p className="text-red-500 mb-4">{error}</p>
                 <button
-                  onClick={handleVerify}
+                  onClick={() => { setStep(3); resetPaymentState(); }}
                   className="py-3 px-8 rounded-xl text-sm font-semibold bg-[#e63329] text-white hover:bg-[#c92a22] transition-colors"
                 >
                   Повторить
