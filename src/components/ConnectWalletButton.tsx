@@ -1,7 +1,7 @@
 "use client";
 
 import { useAppKit } from "@reown/appkit/react";
-import { useAccount, useChainId, useDisconnect, useSignMessage } from "wagmi";
+import { useAccount, useChainId, useDisconnect } from "wagmi";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -11,7 +11,6 @@ export default function ConnectWalletButton() {
   const { address, isConnected, connector } = useAccount();
   const chainId = useChainId();
   const { disconnect } = useDisconnect();
-  const { signMessageAsync } = useSignMessage();
   const router = useRouter();
   const [signing, setSigning] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -61,7 +60,13 @@ export default function ConnectWalletButton() {
       ].join('\n');
 
       // 3. Request wallet signature
-      const signature = await signMessageAsync({ message: siweMessage });
+      const provider = (window as any).ethereum;
+      if (!provider) throw new Error("MetaMask not found");
+      const msgHex = "0x" + Buffer.from(siweMessage, "utf8").toString("hex");
+      const signature = await provider.request({
+        method: "personal_sign",
+        params: [msgHex, address],
+      });
 
       // 4. Verify on server
       const verifyRes = await fetch("/api/auth/wallet", {
