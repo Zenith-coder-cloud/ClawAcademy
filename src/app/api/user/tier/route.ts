@@ -28,7 +28,8 @@ export async function GET(req: NextRequest) {
     let query = db.from("users").select("tier, wallet_address, telegram_id");
 
     if (session.walletAddress) {
-      query = query.eq("wallet_address", session.walletAddress.toLowerCase());
+      const lower = session.walletAddress.toLowerCase();
+      query = query.or(`wallet_address.eq.${lower},wallet_address.eq.${session.walletAddress}`);
     } else if (session.telegramId) {
       query = query.eq("telegram_id", session.telegramId);
     } else {
