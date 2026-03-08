@@ -115,7 +115,7 @@ export default function ConnectWalletButton() {
           disabled={signing}
           className="w-full py-3.5 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-semibold rounded-xl transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-60"
         >
-          {signing ? "Подписание..." : `${address.slice(0, 6)}...${address.slice(-4)} — Подписать и войти`}
+          {signing ? "Подписание..." : `${address.slice(0, 6)}...${address.slice(-4)}`}
         </button>
         {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
         <span
