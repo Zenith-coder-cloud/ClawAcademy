@@ -167,7 +167,7 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
           <div>
             <h2 className="text-white text-xl font-bold mb-6">Выбор тарифа</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {(Object.keys(TIERS) as TierKey[]).map((key) => {
+              {(Object.keys(TIERS) as TierKey[]).filter((key) => key !== 'free').map((key) => {
                 const tier = TIERS[key];
                 const isSelected = selectedTier === key;
                 return (
