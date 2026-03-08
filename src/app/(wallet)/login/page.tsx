@@ -145,17 +145,15 @@ export default function LoginPage() {
   };
 
   const handleTelegramClick = () => {
-    const iframe = document.querySelector('iframe[src*="telegram"]') as HTMLIFrameElement;
-    if (iframe) {
-      iframe.click();
-    } else {
-      window.location.href =
-        "https://oauth.telegram.org/auth?bot_id=8663052035&origin=" +
-        encodeURIComponent(window.location.origin) +
+    // Always use direct OAuth URL — iframe is hidden and unreliable
+    window.open(
+      "https://oauth.telegram.org/auth?bot_id=8663052035&origin=" +
+        encodeURIComponent("https://www.clawacademy.io") +
         "&return_to=" +
-        encodeURIComponent(window.location.origin + "/login") +
-        "&request_access=write&embed=0&v=2";
-    }
+        encodeURIComponent("https://www.clawacademy.io/login") +
+        "&request_access=write&embed=0",
+      "_self"
+    );
   };
 
   return (
@@ -218,7 +216,7 @@ export default function LoginPage() {
             onClick={() => setShowCodeForm(true)}
             className="w-full py-3.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-xl flex items-center justify-center gap-3 text-white text-sm font-semibold transition-colors"
           >
-            <Image src="/robot-icon.png" width={36} height={36} alt="bot" className="rounded-full" />
+            <Image src="/robot-icon.png" width={20} height={20} alt="bot" className="rounded-full" />
             Войти через @ClawAcademyBot
           </button>
         ) : (
