@@ -22,10 +22,7 @@ export default function ConnectWalletButton() {
 
   const authenticate = async () => {
     const hostname = window.location.hostname;
-    if (
-      hostname.endsWith("clawacademy.io") &&
-      hostname !== "www.clawacademy.io"
-    ) {
+    if (hostname === "clawacademy.io") {
       window.location.href =
         "https://www.clawacademy.io" + window.location.pathname;
       return;

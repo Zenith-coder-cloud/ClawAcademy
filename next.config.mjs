@@ -25,7 +25,7 @@ const nextConfig = {
           {
             key: "Content-Security-Policy",
             value: [
-              "default-src 'self'",
+              "default-src 'self' 'unsafe-eval'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://telegram.org https://oauth.telegram.org https://cdn.jsdelivr.net",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https: blob:",
