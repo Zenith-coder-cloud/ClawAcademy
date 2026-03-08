@@ -145,16 +145,21 @@ export default function LoginPage() {
   };
 
   const handleTelegramClick = () => {
-    // Open in new tab so user can cancel and return to login page
-    window.open(
+    const oauthUrl =
       "https://oauth.telegram.org/auth?bot_id=8663052035&origin=" +
-        encodeURIComponent("https://www.clawacademy.io") +
-        "&return_to=" +
-        encodeURIComponent("https://www.clawacademy.io/login") +
-        "&request_access=write&embed=0",
-      "_blank",
-      "noopener,noreferrer,width=550,height=600"
-    );
+      encodeURIComponent("https://www.clawacademy.io") +
+      "&return_to=" +
+      encodeURIComponent("https://www.clawacademy.io/login") +
+      "&request_access=write&embed=0";
+
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      // Mobile: open in same tab (popups are blocked on mobile browsers)
+      window.location.href = oauthUrl;
+    } else {
+      // Desktop: open in popup window
+      window.open(oauthUrl, "_blank", "noopener,noreferrer,width=550,height=600");
+    }
   };
 
   return (
