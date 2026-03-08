@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     if (session.userId) {
       query = query.eq("id", session.userId);
     } else if (session.walletAddress) {
-      query = query.eq("wallet_address", session.walletAddress);
+      query = query.eq("wallet_address", session.walletAddress.toLowerCase());
     } else {
       return NextResponse.json({ error: "No user identifier" }, { status: 400 });
     }
