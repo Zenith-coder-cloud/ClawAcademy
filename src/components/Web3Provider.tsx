@@ -19,6 +19,7 @@ createAppKit({
   networks,
   defaultNetwork: networks[0],
   metadata,
+  allowUnsupportedChain: true,
   features: {
     analytics: false,
     email: false,
