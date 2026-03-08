@@ -69,7 +69,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { address, message, signature, chainId, issuedAt, expiresAt } = parsed.data;
+    const { address, message, signature, chainId, issuedAt, expiresAt } =
+      parsed.data;
 
     // Validate expiration — message must not be expired
     const now = Date.now();
@@ -89,14 +90,30 @@ export async function POST(req: NextRequest) {
     }
     const nonce = nonceMatch[1];
 
+    // Extract domain + uri from message (do not hardcode)
+    const lines = message.split("\n");
+    const domainLine = lines[0] || "";
+    const domainMatch = domainLine.match(
+      /^(.*) wants you to sign in with your Ethereum account:$/
+    );
+    const domain = domainMatch?.[1]?.trim();
+    const uriLine = lines.find((line) => line.startsWith("URI: ")) || "";
+    const uri = uriLine.replace("URI: ", "").trim();
+    if (!domain || !uri) {
+      return NextResponse.json(
+        { error: "Invalid message format" },
+        { status: 400 }
+      );
+    }
+
     // Reconstruct expected SIWE message and verify it matches
     const expectedMessage = [
-      'clawacademy.io wants you to sign in with your Ethereum account:',
+      domain + " wants you to sign in with your Ethereum account:",
       address,
       '',
       'Sign in to Claw Academy',
       '',
-      'URI: https://www.clawacademy.io',
+      'URI: ' + uri,
       'Version: 1',
       'Chain ID: ' + chainId,
       'Nonce: ' + nonce,
