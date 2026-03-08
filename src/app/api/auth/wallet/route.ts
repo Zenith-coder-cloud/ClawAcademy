@@ -59,10 +59,12 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
+    console.log("[wallet-auth POST] body keys:", Object.keys(body));
 
     // S8 — Validate input
     const parsed = walletAuthSchema.safeParse(body);
     if (!parsed.success) {
+      console.error("[wallet-auth POST] zod validation failed:", parsed.error.format());
       return NextResponse.json(
         { error: "Invalid request data" },
         { status: 400 }
@@ -71,15 +73,19 @@ export async function POST(req: NextRequest) {
 
     const { address, message, signature, issuedAt, expiresAt } =
       parsed.data;
+    console.log("[wallet-auth POST] parsed address:", address);
+    console.log("[wallet-auth POST] message lines:", message.split("\n"));
 
     // Validate expiration — message must not be expired
     const now = Date.now();
     if (new Date(expiresAt).getTime() <= now) {
+      console.error("[wallet-auth POST] message expired, expiresAt:", expiresAt, "now:", new Date().toISOString());
       return NextResponse.json({ error: "Message expired" }, { status: 400 });
     }
 
     // Validate issuedAt — must not be older than 10 minutes
     if (now - new Date(issuedAt).getTime() > 10 * 60 * 1000) {
+      console.error("[wallet-auth POST] message too old, issuedAt:", issuedAt, "now:", new Date().toISOString());
       return NextResponse.json({ error: "Message too old" }, { status: 400 });
     }
 
@@ -94,7 +100,15 @@ export async function POST(req: NextRequest) {
     const messageIssuedAt = getLineValue("Выдан: ");
     const messageExpiresAt = getLineValue("Истекает: ");
 
+    console.log("[wallet-auth POST] parsed from message — address:", messageAddressRaw, "nonce:", nonce?.slice(0, 8) + "...", "issuedAt:", messageIssuedAt, "expiresAt:", messageExpiresAt);
+
     if (!messageAddressRaw || !nonce || !messageIssuedAt || !messageExpiresAt) {
+      console.error("[wallet-auth POST] invalid message format — missing fields:", {
+        hasAddress: !!messageAddressRaw,
+        hasNonce: !!nonce,
+        hasIssuedAt: !!messageIssuedAt,
+        hasExpiresAt: !!messageExpiresAt,
+      });
       return NextResponse.json(
         { error: "Invalid message format" },
         { status: 400 }
@@ -106,21 +120,25 @@ export async function POST(req: NextRequest) {
     try {
       normalizedAddress = getAddress(address as `0x${string}`);
       normalizedMessageAddress = getAddress(messageAddressRaw as `0x${string}`);
-    } catch {
+    } catch (addrErr) {
+      console.error("[wallet-auth POST] getAddress failed:", addrErr);
       return NextResponse.json({ error: "Invalid address" }, { status: 400 });
     }
 
     if (normalizedAddress !== normalizedMessageAddress) {
+      console.error("[wallet-auth POST] address mismatch:", normalizedAddress, "vs", normalizedMessageAddress);
       return NextResponse.json({ error: "Address mismatch" }, { status: 400 });
     }
 
     if (messageIssuedAt !== issuedAt || messageExpiresAt !== expiresAt) {
+      console.error("[wallet-auth POST] timestamp mismatch — message:", messageIssuedAt, messageExpiresAt, "body:", issuedAt, expiresAt);
       return NextResponse.json({ error: "Message mismatch" }, { status: 400 });
     }
 
     const db = supabaseAdmin();
 
     // Check nonce exists, not used, not expired
+    console.log("[wallet-auth POST] looking up nonce:", nonce.slice(0, 8) + "...");
     const { data: nonceRecord, error: nonceError } = await db
       .from("auth_nonces")
       .select("*")
@@ -129,7 +147,7 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (nonceError) {
-      console.error("Nonce lookup failed:", nonceError);
+      console.error("[wallet-auth POST] nonce lookup failed:", nonceError.code, nonceError.message, nonceError.details);
     }
 
     if (nonceError || !nonceRecord) {
@@ -138,13 +156,21 @@ export async function POST(req: NextRequest) {
         { status: 401 }
       );
     }
+    console.log("[wallet-auth POST] nonce found, id:", nonceRecord.id);
 
     // Verify signature using viem
-    const isValid = await verifyMessage({
-      address: normalizedAddress,
-      message,
-      signature: signature as `0x${string}`,
-    });
+    let isValid: boolean;
+    try {
+      isValid = await verifyMessage({
+        address: normalizedAddress,
+        message,
+        signature: signature as `0x${string}`,
+      });
+      console.log("[wallet-auth POST] verifyMessage result:", isValid);
+    } catch (verifyErr) {
+      console.error("[wallet-auth POST] verifyMessage threw:", verifyErr);
+      return NextResponse.json({ error: "Signature verification failed" }, { status: 401 });
+    }
 
     if (!isValid) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
@@ -157,10 +183,11 @@ export async function POST(req: NextRequest) {
       .eq("id", nonceRecord.id);
 
     if (deleteError) {
-      console.error("Failed to delete used nonce:", deleteError);
+      console.error("[wallet-auth POST] failed to delete used nonce:", deleteError);
     }
 
     // Upsert user with wallet address
+    console.log("[wallet-auth POST] upserting user for wallet:", normalizedAddress.toLowerCase());
     const { data: user, error: userError } = await db
       .from("users")
       .upsert(
@@ -175,15 +202,18 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (userError) {
-      console.error("Failed to upsert user:", userError);
+      console.error("[wallet-auth POST] upsert user failed:", userError.code, userError.message, userError.details);
       return NextResponse.json({ error: "Server error" }, { status: 500 });
     }
+    console.log("[wallet-auth POST] user upserted, id:", user?.id);
 
     const sessionToken = await createSession({
       userId: user?.id,
       walletAddress: normalizedAddress.toLowerCase(),
       tier: (user?.tier as string) || "free",
     });
+    console.log("[wallet-auth POST] session created successfully");
+
     const response = NextResponse.json({
       ok: true,
       user: {
@@ -202,7 +232,8 @@ export async function POST(req: NextRequest) {
     });
     return response;
   } catch (err) {
-    console.error("POST /api/auth/wallet error:", err);
+    console.error("[wallet-auth POST] UNCAUGHT error:", err);
+    console.error("[wallet-auth POST] error stack:", err instanceof Error ? err.stack : "no stack");
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
