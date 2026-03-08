@@ -102,12 +102,17 @@ export default function DashboardPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('tier_updated')) {
-      fetch("/api/user/tier")
-        .then((res) => res.ok ? res.json() : null)
-        .then((data) => {
-          if (data?.tier) setTierData({ tier: data.tier, blocks: data.blocks ?? [0, 1, 2] });
-        })
-        .catch(() => {});
+      // First refresh the session cookie with new tier, then fetch tier
+      fetch("/api/auth/refresh-session", { method: "POST" })
+        .catch(() => {})
+        .finally(() => {
+          fetch("/api/user/tier")
+            .then((res) => res.ok ? res.json() : null)
+            .then((data) => {
+              if (data?.tier) setTierData({ tier: data.tier, blocks: data.blocks ?? [0, 1, 2] });
+            })
+            .catch(() => {});
+        });
       // Clean URL
       window.history.replaceState({}, '', '/dashboard');
     }
