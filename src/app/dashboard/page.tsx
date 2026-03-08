@@ -150,7 +150,7 @@ export default function DashboardPage() {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {allModules.map((m) => {
-            const locked = !tierData.blocks.includes(m.id);
+            const locked = m.id === 0 ? false : !tierData.blocks.includes(m.id);
 
             const handleStart = () => {
               const tier = tierData.tier;

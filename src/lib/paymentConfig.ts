@@ -1,6 +1,7 @@
 export const PAYMENT_ADDRESS = "0xe5ccd1E4c6350A7d91DcF02D4ceEadc702a1571D";
 
 export const TIERS = {
+  free: { name: "Free", price_usd: 0, blocks: [0] },
   genesis: { name: "Genesis", price_usd: 49, blocks: [0, 1, 2] },
   pro: { name: "Pro", price_usd: 99, blocks: [0, 1, 2, 3, 4, 5] },
   elite: { name: "Elite", price_usd: 249, blocks: [0, 1, 2, 3, 4, 5], maxSeats: 50 },
