@@ -145,14 +145,15 @@ export default function LoginPage() {
   };
 
   const handleTelegramClick = () => {
-    // Always use direct OAuth URL — iframe is hidden and unreliable
+    // Open in new tab so user can cancel and return to login page
     window.open(
       "https://oauth.telegram.org/auth?bot_id=8663052035&origin=" +
         encodeURIComponent("https://www.clawacademy.io") +
         "&return_to=" +
         encodeURIComponent("https://www.clawacademy.io/login") +
         "&request_access=write&embed=0",
-      "_self"
+      "_blank",
+      "noopener,noreferrer,width=550,height=600"
     );
   };
 
