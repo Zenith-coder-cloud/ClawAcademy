@@ -34,14 +34,13 @@ const tiers = [
     highlighted: true,
     badge: "Рекомендуем",
   },
-  {
-    name: "Elite",
-    price: "$249",
-    description: "Всё + прямой доступ к создателю + кастомный агент",
-    button: "Купить Elite",
-    highlighted: false,
-  },
 ];
+
+const eliteTier = {
+  name: "Elite",
+  price: "$249",
+  description: "Всё + прямой доступ к создателю + кастомный агент",
+};
 
 const features = [
   { icon: "/stickers/sticker-robot.png", title: "AI ментор внутри", description: "Твой личный AI-эксперт по OpenClaw — отвечает на вопросы, помогает разобраться и ведёт тебя на каждом шагу" },
@@ -144,6 +143,33 @@ export default function Home() {
               </button>
             </div>
           ))}
+        </div>
+
+        {/* Elite VIP Strip */}
+        <div className="border-t-2 border-amber-500/30 mt-8">
+          <div className="bg-gradient-to-r from-[#1a1400] via-[#2a1f00] to-[#1a1400] border border-amber-500/40 rounded-2xl p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6 mt-8">
+            <div className="flex flex-col gap-2">
+              <h3 className="text-2xl md:text-3xl font-bold text-amber-400">
+                👑 Elite
+              </h3>
+              <p className="text-4xl md:text-5xl font-extrabold text-white">
+                {eliteTier.price}
+              </p>
+              <p className="text-zinc-400">{eliteTier.description}</p>
+            </div>
+            <div className="flex flex-col items-center gap-3">
+              <span className="text-amber-400 text-sm font-medium">
+                Осталось мест: 50
+              </span>
+              <button
+                onClick={() => handleBuyClick("Elite")}
+                disabled={checkingSession === "elite"}
+                className="bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-bold py-3 px-8 rounded-lg hover:from-amber-400 hover:to-yellow-300 transition-colors disabled:opacity-60"
+              >
+                {checkingSession === "elite" ? "Загрузка..." : "Купить Elite"}
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 
