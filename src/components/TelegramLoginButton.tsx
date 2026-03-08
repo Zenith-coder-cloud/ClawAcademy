@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useCallback } from "react";
 
 export default function TelegramLoginButton() {
@@ -38,9 +39,7 @@ export default function TelegramLoginButton() {
       return;
     }
     // Fallback: redirect to Telegram OAuth
-    const botId = "ClawAcademyBot";
-    const redirectUri = encodeURIComponent(`${window.location.origin}/login`);
-    window.location.href = `https://oauth.telegram.org/auth?bot_id=${botId}&origin=${encodeURIComponent(window.location.origin)}&request_access=write&return_to=${redirectUri}`;
+    window.location.href = 'https://oauth.telegram.org/auth?bot_id=8663052035&origin=' + encodeURIComponent(window.location.origin) + '&return_to=' + encodeURIComponent(window.location.origin + '/login') + '&request_access=write';
   }, []);
 
   return (
@@ -63,17 +62,10 @@ export default function TelegramLoginButton() {
       <button
         type="button"
         onClick={handleClick}
-        className="w-full flex items-center gap-3 rounded-xl border border-zinc-700 bg-[#1a1a1a] py-3 px-4 text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+        className="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 hover:border-[#FF4422] rounded-xl px-5 py-3 flex items-center justify-center gap-3 text-white text-sm font-medium w-full transition-all"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="#2AABEE"
-          className="w-6 h-6 flex-shrink-0"
-        >
-          <path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.53 8.16l-1.87 8.83c-.14.63-.51.79-1.03.49l-2.85-2.1-1.37 1.32c-.15.15-.28.28-.58.28l.2-2.92 5.27-4.76c.23-.2-.05-.32-.36-.12l-6.51 4.1-2.8-.88c-.61-.19-.62-.61.13-.9l10.95-4.22c.5-.19.95.12.78.88z" />
-        </svg>
-        <span className="text-sm font-medium">Войти через Telegram</span>
+        <Image src="/robot-icon.png" width={24} height={24} alt="robot" className="rounded-full" />
+        Войти через Telegram
       </button>
     </>
   );
