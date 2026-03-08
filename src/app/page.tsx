@@ -12,9 +12,17 @@ import type { TierKey } from "@/lib/paymentConfig";
 
 const tiers = [
   {
+    name: "Free",
+    price: "0$",
+    description: "Блок 0 — вводный блок бесплатно всем зарегистрированным пользователям",
+    button: "Войти",
+    highlighted: false,
+    isFree: true,
+  },
+  {
     name: "Genesis",
     price: "$49",
-    description: "Блоки 0–2, базовый доступ",
+    description: "Блоки 1–2, базовый доступ",
     button: "Купить Genesis",
     highlighted: false,
   },
@@ -124,7 +132,7 @@ export default function Home() {
                 {tier.description}
               </p>
               <button
-                onClick={() => handleBuyClick(tier.name)}
+                onClick={() => (tier as { isFree?: boolean }).isFree ? router.push('/login') : handleBuyClick(tier.name)}
                 disabled={checkingSession === tier.name.toLowerCase()}
                 className={`mt-auto py-3 px-6 rounded-lg font-semibold transition-colors ${
                   tier.highlighted
