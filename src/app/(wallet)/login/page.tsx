@@ -178,16 +178,10 @@ export default function LoginPage() {
 
         {/* Telegram section — two methods grouped */}
         <div className="flex flex-col gap-3">
-          {/* Section header */}
-          <div className="flex items-center gap-2">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8l-1.7 8.02c-.13.58-.47.72-.95.45l-2.62-1.93-1.27 1.22c-.14.14-.26.26-.53.26l.19-2.72 4.96-4.48c.22-.19-.05-.29-.33-.1l-6.13 3.86-2.64-.82c-.57-.18-.58-.57.12-.84l10.33-3.98c.47-.17.89.12.57.96z" fill="#29B6F6"/>
-            </svg>
-            <span className="text-zinc-400 text-sm font-medium">Войти через Telegram</span>
+          {/* Method 1: Telegram widget — stretched to full width */}
+          <div className="w-full [&>div]:w-full [&>div>iframe]:w-full [&_iframe]:w-full [&_iframe]:!min-w-full">
+            <TelegramLoginButton />
           </div>
-
-          {/* Method 1: phone number widget */}
-          <TelegramLoginButton />
 
           {/* Method 2: bot code */}
           <div className="flex flex-col gap-1">
@@ -196,7 +190,7 @@ export default function LoginPage() {
                 onClick={() => setShowCodeForm(true)}
                 className="bg-[#229ED9] hover:bg-[#1a8abf] rounded-xl px-5 py-3 flex items-center justify-center gap-3 text-white text-sm font-semibold w-full transition-all"
               >
-                <Image src="/robot-icon.png" width={24} height={24} alt="bot" className="rounded-full" />
+                <Image src="/robot-icon.png" width={20} height={20} alt="bot" className="rounded-full" />
                 Войти через @ClawAcademyBot
               </button>
             ) : (
