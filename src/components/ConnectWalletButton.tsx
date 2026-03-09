@@ -31,11 +31,25 @@ export default function ConnectWalletButton({ variant = "default" }: ConnectWall
   const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   const [nonceReady, setNonceReady] = useState(false);
+  const [alreadyAuthenticated, setAlreadyAuthenticated] = useState(false);
   const prefetchedNonce = useRef<PrefetchedNonce | null>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    fetch("/api/auth/session")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.ok) {
+          setAlreadyAuthenticated(true);
+        } else {
+          setAlreadyAuthenticated(false);
+        }
+      })
+      .catch(() => {});
+  }, [isConnected, address]);
 
   // Optimistic nonce prefetch — fetch when wallet connects / address changes
   const fetchNonce = useCallback(async () => {
@@ -161,6 +175,9 @@ export default function ConnectWalletButton({ variant = "default" }: ConnectWall
   const autoSignTriggered = useRef(false);
 
   useEffect(() => {
+    if (alreadyAuthenticated) {
+      return;
+    }
     // Reset flag when wallet disconnects
     if (!isConnected || !address) {
       autoSignTriggered.current = false;
@@ -176,7 +193,7 @@ export default function ConnectWalletButton({ variant = "default" }: ConnectWall
       };
       runAutoSign();
     }
-  }, [isConnected, address, connector, nonceReady, close]);
+  }, [alreadyAuthenticated, isConnected, address, connector, nonceReady, close]);
 
   const isHero = variant === "hero";
   const isBanner = variant === "banner";
@@ -202,6 +219,17 @@ export default function ConnectWalletButton({ variant = "default" }: ConnectWall
       >
         <Image src="/walletconnect.svg" alt="WalletConnect" width={22} height={15} className="w-6 h-auto" />
         Подключить кошелёк
+      </button>
+    );
+  }
+
+  if (alreadyAuthenticated) {
+    return (
+      <button
+        onClick={() => router.push("/dashboard")}
+        className={`${connectedButtonClass} flex items-center justify-center gap-2 ${isHero ? "" : "w-full"}`}
+      >
+        Мой кабинет →
       </button>
     );
   }
