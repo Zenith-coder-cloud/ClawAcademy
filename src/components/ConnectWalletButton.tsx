@@ -147,7 +147,7 @@ export default function ConnectWalletButton() {
         setError("Кошелёк отключился. Пожалуйста, переподключите.");
       } else if (err instanceof Error && err.message.includes("User rejected")) {
         setError("Подпись отклонена.");
-        autoSignTriggered.current = false;
+        
       } else {
         setError("Ошибка входа. Попробуйте ещё раз.");
       }

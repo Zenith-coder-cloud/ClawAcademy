@@ -5,8 +5,6 @@ import { supabaseAdmin } from "@/lib/server/supabaseAdmin";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
-  const adminSecret = req.headers.get("x-admin-secret");
-  // Allow both admin and self-debug (no secret = debug own session)
   
   const token = req.cookies.get(SESSION_COOKIE)?.value;
   if (!token) return NextResponse.json({ error: "No ca_session cookie" });

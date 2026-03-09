@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { useRouter } from 'next/navigation';
+
 import { useAccount, useSendTransaction, useWriteContract, useWaitForTransactionReceipt, useChainId, useSwitchChain } from 'wagmi';
 import { parseUnits, parseEther } from 'viem';
 import { TIERS, SUPPORTED_CHAINS, PAYMENT_ADDRESS, type TierKey } from '@/lib/paymentConfig';
@@ -37,7 +37,6 @@ type PayStatus = 'idle' | 'sending' | 'waiting' | 'verifying' | 'success' | 'err
 type PaymentMethod = 'crypto' | 'cryptobot';
 
 export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentModalProps) {
-  const router = useRouter();
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
