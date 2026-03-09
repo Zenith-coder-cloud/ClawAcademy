@@ -17,7 +17,7 @@ interface PrefetchedNonce {
 }
 
 export default function ConnectWalletButton() {
-  const { open } = useAppKit();
+  const { open, close } = useAppKit();
   const { address, isConnected, connector } = useAccount();
   const chainId = useChainId();
   const { disconnect } = useDisconnect();
@@ -165,9 +165,14 @@ export default function ConnectWalletButton() {
     // Auto-sign once when wallet connects and nonce is ready
     if (isConnected && address && connector && nonceReady && !autoSignTriggered.current) {
       autoSignTriggered.current = true;
-      authenticateRef.current?.(true);
+      const runAutoSign = async () => {
+        close();
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        authenticateRef.current?.(true);
+      };
+      runAutoSign();
     }
-  }, [isConnected, address, connector, nonceReady]);
+  }, [isConnected, address, connector, nonceReady, close]);
 
   if (!mounted) {
     return (
@@ -186,10 +191,6 @@ export default function ConnectWalletButton() {
       <div className="flex flex-col items-center w-full">
         <button
           onClick={() => {
-            if (window.location.hostname === "clawacademy.io") {
-              window.location.href = "https://www.clawacademy.io" + window.location.pathname;
-              return;
-            }
             authenticate();
           }}
           disabled={signing}
