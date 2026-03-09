@@ -227,7 +227,7 @@ export default function ConnectWalletButton({ variant = "default" }: ConnectWall
     return (
       <button
         onClick={() => router.push("/dashboard")}
-        className={`${connectedButtonClass} flex items-center justify-center gap-2 ${isHero ? "" : "w-full"}`}
+        className={`${connectedButtonClass} flex items-center justify-center gap-2 w-full`}
       >
         Мой кабинет →
       </button>
@@ -242,7 +242,7 @@ export default function ConnectWalletButton({ variant = "default" }: ConnectWall
             authenticate();
           }}
           disabled={signing}
-          className={`${connectedButtonClass} flex items-center justify-center gap-2 disabled:opacity-60 ${isHero ? "" : "w-full"}`}
+          className={`${connectedButtonClass} flex items-center justify-center gap-2 disabled:opacity-60 w-full`}
         >
           {signing
             ? "Подтвердите в кошельке..."
@@ -264,7 +264,7 @@ export default function ConnectWalletButton({ variant = "default" }: ConnectWall
   return (
     <button
       onClick={() => open()}
-      className={`${baseButtonClassHover} flex items-center justify-center gap-3 ${isHero ? "" : "w-full"}`}
+      className={`${baseButtonClassHover} flex items-center justify-center gap-3 w-full`}
     >
       <Image src="/walletconnect.svg" alt="WalletConnect" width={22} height={15} className="w-6 h-auto" />
       Подключить кошелёк

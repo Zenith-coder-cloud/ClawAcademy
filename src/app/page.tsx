@@ -92,10 +92,12 @@ export default function Home() {
           Больше чем курсы: прикладная база для тех, кто готов внедрять ИИ во все сферы жизни
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
-      <ConnectWalletButton variant="hero" />
+          <div className="min-w-[260px]">
+            <ConnectWalletButton variant="hero" />
+          </div>
           <button
             onClick={handleTelegramLogin}
-            className="px-8 py-4 border border-[#FF4422] text-[#FF4422] font-semibold rounded-lg hover:bg-[#FF4422] hover:text-white transition-colors text-lg"
+            className="min-w-[260px] px-8 py-4 border border-[#FF4422] text-[#FF4422] font-semibold rounded-lg hover:bg-[#FF4422] hover:text-white transition-colors text-lg"
           >
             Войти через Telegram
           </button>
