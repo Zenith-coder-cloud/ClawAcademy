@@ -165,14 +165,7 @@ export default function LoginPage() {
       encodeURIComponent("https://www.clawacademy.io/login") +
       "&request_access=write&embed=0";
 
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    if (isMobile) {
-      // Mobile: open in same tab (popups are blocked on mobile browsers)
-      window.location.href = oauthUrl;
-    } else {
-      // Desktop: open in popup window
-      window.open(oauthUrl, "tgauth", "width=550,height=600,left=200,top=100");
-    }
+    window.location.href = oauthUrl;
   };
 
   return (
