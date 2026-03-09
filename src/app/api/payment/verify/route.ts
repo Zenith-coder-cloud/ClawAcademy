@@ -79,10 +79,23 @@ export async function POST(req: NextRequest) {
           .eq("id", mockPayment.id);
       }
 
-      await db
+      const { data: updatedUsers, error: updateError } = await db
         .from("users")
         .update({ tier: mockTier, tier_updated_at: new Date().toISOString() })
-        .eq("wallet_address", wallet_address.toLowerCase());
+        .eq("wallet_address", wallet_address.toLowerCase())
+        .select("id, tier");
+
+      console.log("[mock-verify] update result:", updatedUsers, updateError);
+
+      if (updateError || !updatedUsers || updatedUsers.length === 0) {
+        console.error("[mock-verify] FAILED to update tier:", updateError, "wallet:", wallet_address.toLowerCase());
+        // Try by ilike as fallback
+        const { error: ilikeError } = await db
+          .from("users")
+          .update({ tier: mockTier, tier_updated_at: new Date().toISOString() })
+          .ilike("wallet_address", wallet_address);
+        console.log("[mock-verify] ilike fallback error:", ilikeError);
+      }
 
       return NextResponse.json({ success: true, tier: mockTier });
     }
