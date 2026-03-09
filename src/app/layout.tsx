@@ -62,8 +62,10 @@ export default async function RootLayout({
   return (
     <html lang="ru">
       <body className="bg-[#0d0d0d] text-white antialiased">
-        <Header />
-        <Web3Provider cookies={cookies}>{children}</Web3Provider>
+        <Web3Provider cookies={cookies}>
+          <Header />
+          {children}
+        </Web3Provider>
       </body>
     </html>
   );
