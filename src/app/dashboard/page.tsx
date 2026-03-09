@@ -198,7 +198,7 @@ export default function DashboardPage() {
                 </p>
               </div>
               <div className="flex flex-col items-end gap-2 shrink-0">
-                {!isConnected ? (
+                {!isConnected || !address ? (
                   <button
                     onClick={() => open()}
                     className="px-5 py-2.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white font-semibold rounded-lg transition-colors text-sm"
@@ -215,7 +215,7 @@ export default function DashboardPage() {
                       ? 'Подтвердите в кошельке...'
                       : linkWalletStatus === 'linking'
                         ? 'Привязываем...'
-                        : `Привязать ${address!.slice(0, 6)}...${address!.slice(-4)}`}
+                        : `Привязать ${address?.slice(0, 6) ?? ""}...${address?.slice(-4) ?? ""}`}
                   </button>
                 )}
                 {linkWalletError && (
