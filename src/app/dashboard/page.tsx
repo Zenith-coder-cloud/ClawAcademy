@@ -303,19 +303,23 @@ export default function DashboardPage() {
         </div>
 
         {/* Upgrade CTA */}
-        {(tierData.tier === "free" || tierData.tier === "genesis") && (
+        {tierData.tier !== "elite" && (
           <div className="mt-10 p-6 rounded-xl bg-[#1a1a1a] border border-[#333] flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-              <p className="text-white font-semibold">Хочешь больше?</p>
+              <p className="text-white font-semibold">
+                {tierData.tier === "pro" ? "Хочешь максимум?" : "Хочешь больше?"}
+              </p>
               <p className="text-[#888888] text-sm">
-                Pro и Elite открывают все блоки + AI-чат Zenith Junior
+                {tierData.tier === "pro"
+                  ? "Elite — эксклюзивный доступ + персональный разбор + приоритетная поддержка"
+                  : "Pro и Elite открывают все блоки + AI-чат Zenith Junior"}
               </p>
             </div>
             <button
               onClick={() => setIsPaymentOpen(true)}
               className="px-6 py-3 bg-[#FF4422] text-white font-semibold rounded-lg hover:bg-[#e63d1e] transition-colors whitespace-nowrap"
             >
-              Улучшить доступ
+              {tierData.tier === "pro" ? "Улучшить до Elite" : "Улучшить доступ"}
             </button>
           </div>
         )}
