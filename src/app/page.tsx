@@ -92,9 +92,7 @@ export default function Home() {
           Больше чем курсы: прикладная база для тех, кто готов внедрять ИИ во все сферы жизни
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
-          <div className="w-full sm:w-auto sm:min-w-[220px]">
-            <ConnectWalletButton />
-          </div>
+      <ConnectWalletButton variant="hero" />
           <button
             onClick={handleTelegramLogin}
             className="px-8 py-4 border border-[#FF4422] text-[#FF4422] font-semibold rounded-lg hover:bg-[#FF4422] hover:text-white transition-colors text-lg"
@@ -117,9 +115,9 @@ export default function Home() {
             <span className="w-px h-4 bg-[#FF4422]/30" />
             <span className="text-zinc-300 text-sm">Блок 0 открыт всем — начни прямо сейчас</span>
           </div>
-          <div className="w-full sm:w-auto sm:min-w-[220px]">
-            <ConnectWalletButton />
-          </div>
+      <div className="w-full sm:w-auto sm:min-w-[220px]">
+        <ConnectWalletButton />
+      </div>
         </div>
 
         {/* Paid tiers: Genesis | Pro | Elite */}

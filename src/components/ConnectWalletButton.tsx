@@ -16,7 +16,11 @@ interface PrefetchedNonce {
   fetchedAt: number;
 }
 
-export default function ConnectWalletButton() {
+type ConnectWalletButtonProps = {
+  variant?: "default" | "hero";
+};
+
+export default function ConnectWalletButton({ variant = "default" }: ConnectWalletButtonProps) {
   const { open, close } = useAppKit();
   const { address, isConnected, connector } = useAccount();
   const chainId = useChainId();
@@ -174,11 +178,22 @@ export default function ConnectWalletButton() {
     }
   }, [isConnected, address, connector, nonceReady, close]);
 
+  const isHero = variant === "hero";
+  const baseButtonClass = isHero
+    ? "px-8 py-4 bg-[#FF4422] text-white font-semibold rounded-lg hover:bg-[#e63d1e] transition-colors text-lg"
+    : "w-full py-3.5 bg-zinc-800 border border-zinc-700 text-white font-semibold rounded-xl text-sm";
+  const baseButtonClassHover = isHero
+    ? "px-8 py-4 bg-[#FF4422] text-white font-semibold rounded-lg hover:bg-[#e63d1e] transition-colors text-lg"
+    : "w-full py-3.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white font-semibold rounded-xl transition-colors text-sm";
+  const connectedButtonClass = isHero
+    ? "px-8 py-4 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-semibold rounded-lg transition-colors text-lg"
+    : "w-full py-3.5 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-semibold rounded-xl transition-colors text-sm";
+
   if (!mounted) {
     return (
       <button
         disabled
-        className="w-full py-3.5 bg-zinc-800 border border-zinc-700 text-white font-semibold rounded-xl text-sm flex items-center justify-center gap-3 opacity-60"
+        className={`${baseButtonClass} flex items-center justify-center gap-3 opacity-60`}
       >
         <Image src="/walletconnect.svg" alt="WalletConnect" width={22} height={15} className="w-6 h-auto" />
         Подключить кошелёк
@@ -194,7 +209,7 @@ export default function ConnectWalletButton() {
             authenticate();
           }}
           disabled={signing}
-          className="w-full py-3.5 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-semibold rounded-xl transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-60"
+          className={`${connectedButtonClass} flex items-center justify-center gap-2 disabled:opacity-60 ${isHero ? "" : "w-full"}`}
         >
           {signing
             ? "Подтвердите в кошельке..."
@@ -216,7 +231,7 @@ export default function ConnectWalletButton() {
   return (
     <button
       onClick={() => open()}
-      className="w-full py-3.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white font-semibold rounded-xl transition-colors text-sm flex items-center justify-center gap-3"
+      className={`${baseButtonClassHover} flex items-center justify-center gap-3 ${isHero ? "" : "w-full"}`}
     >
       <Image src="/walletconnect.svg" alt="WalletConnect" width={22} height={15} className="w-6 h-auto" />
       Подключить кошелёк
