@@ -642,7 +642,7 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
                       await fetch('/api/auth/refresh-session', { method: 'POST' });
                     } catch {}
                     onClose();
-                    router.push('/dashboard?tier_updated=' + Date.now());
+                    window.location.href = '/dashboard?tier_updated=' + Date.now();
                   }}
                   className="py-3 px-8 rounded-xl text-sm font-semibold bg-[#e63329] text-white hover:bg-[#c92a22] transition-colors"
                 >
