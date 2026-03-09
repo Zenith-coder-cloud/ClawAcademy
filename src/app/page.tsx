@@ -116,7 +116,7 @@ export default function Home() {
             <span className="text-zinc-300 text-sm">Блок 0 открыт всем — начни прямо сейчас</span>
           </div>
       <div className="w-full sm:w-auto sm:min-w-[220px]">
-        <ConnectWalletButton />
+        <ConnectWalletButton variant="banner" />
       </div>
         </div>
 

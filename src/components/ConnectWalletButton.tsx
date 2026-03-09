@@ -17,7 +17,7 @@ interface PrefetchedNonce {
 }
 
 type ConnectWalletButtonProps = {
-  variant?: "default" | "hero";
+  variant?: "default" | "hero" | "banner";
 };
 
 export default function ConnectWalletButton({ variant = "default" }: ConnectWalletButtonProps) {
@@ -179,12 +179,17 @@ export default function ConnectWalletButton({ variant = "default" }: ConnectWall
   }, [isConnected, address, connector, nonceReady, close]);
 
   const isHero = variant === "hero";
+  const isBanner = variant === "banner";
   const baseButtonClass = isHero
-    ? "px-8 py-4 bg-[#FF4422] text-white font-semibold rounded-lg hover:bg-[#e63d1e] transition-colors text-lg"
-    : "w-full py-3.5 bg-zinc-800 border border-zinc-700 text-white font-semibold rounded-xl text-sm";
+    ? "px-8 py-4 border border-[#FF4422] text-[#FF4422] font-semibold rounded-lg hover:bg-[#FF4422] hover:text-white transition-colors text-lg"
+    : isBanner
+      ? "px-6 py-2.5 border border-[#FF4422] text-[#FF4422] font-semibold rounded-lg hover:bg-[#FF4422] hover:text-white transition-colors text-sm"
+      : "w-full py-3.5 bg-zinc-800 border border-zinc-700 text-white font-semibold rounded-xl text-sm";
   const baseButtonClassHover = isHero
-    ? "px-8 py-4 bg-[#FF4422] text-white font-semibold rounded-lg hover:bg-[#e63d1e] transition-colors text-lg"
-    : "w-full py-3.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white font-semibold rounded-xl transition-colors text-sm";
+    ? "px-8 py-4 border border-[#FF4422] text-[#FF4422] font-semibold rounded-lg hover:bg-[#FF4422] hover:text-white transition-colors text-lg"
+    : isBanner
+      ? "px-6 py-2.5 border border-[#FF4422] text-[#FF4422] font-semibold rounded-lg hover:bg-[#FF4422] hover:text-white transition-colors text-sm"
+      : "w-full py-3.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white font-semibold rounded-xl transition-colors text-sm";
   const connectedButtonClass = isHero
     ? "px-8 py-4 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-semibold rounded-lg transition-colors text-lg"
     : "w-full py-3.5 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-semibold rounded-xl transition-colors text-sm";
