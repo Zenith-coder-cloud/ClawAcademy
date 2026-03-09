@@ -11,7 +11,6 @@ import HowItWorks from "@/components/HowItWorks";
 import PaymentModal from "@/components/PaymentModal";
 import type { TierKey } from "@/lib/paymentConfig";
 
-
 const tiers = [
   {
     name: "Genesis",
@@ -50,7 +49,6 @@ export default function Home() {
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [selectedTier, setSelectedTier] = useState<TierKey>("genesis");
   const [checkingSession, setCheckingSession] = useState<string | null>(null);
-
 
   const handleTelegramLogin = () => {
     const oauthUrl =
@@ -119,13 +117,9 @@ export default function Home() {
             <span className="w-px h-4 bg-[#FF4422]/30" />
             <span className="text-zinc-300 text-sm">Блок 0 открыт всем — начни прямо сейчас</span>
           </div>
-          <button
-            onClick={() => router.push('/login')}
-            className="text-[#FF4422] hover:text-white text-sm font-semibold transition-colors whitespace-nowrap flex items-center gap-1 group"
-          >
-            Начать бесплатно
-            <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
-          </button>
+          <div className="w-full sm:w-auto sm:min-w-[220px]">
+            <ConnectWalletButton />
+          </div>
         </div>
 
         {/* Paid tiers: Genesis | Pro | Elite */}
