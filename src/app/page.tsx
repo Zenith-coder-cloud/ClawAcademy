@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+
 import Image from "next/image";
 import CourseProgram from "@/components/CourseProgram";
 import FAQ from "@/components/FAQ";
 import HowItWorks from "@/components/HowItWorks";
 import PaymentModal from "@/components/PaymentModal";
 import type { TierKey } from "@/lib/paymentConfig";
+import { useAppKit } from "@reown/appkit/react";
 
 const tiers = [
   {
@@ -48,6 +49,22 @@ export default function Home() {
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [selectedTier, setSelectedTier] = useState<TierKey>("genesis");
   const [checkingSession, setCheckingSession] = useState<string | null>(null);
+  const { open: openWallet } = useAppKit();
+
+  const handleTelegramLogin = () => {
+    const oauthUrl =
+      "https://oauth.telegram.org/auth?bot_id=8663052035&origin=" +
+      encodeURIComponent("https://www.clawacademy.io") +
+      "&return_to=" +
+      encodeURIComponent("https://www.clawacademy.io/login") +
+      "&request_access=write&embed=0";
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      window.location.href = oauthUrl;
+    } else {
+      window.open(oauthUrl, "tgauth", "width=550,height=600,left=200,top=100");
+    }
+  };
 
   const handleBuyClick = async (tierName: string) => {
     const tierKey = tierName.toLowerCase() as TierKey;
@@ -80,18 +97,18 @@ export default function Home() {
           Больше чем курсы: прикладная база для тех, кто готов внедрять ИИ во все сферы жизни
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
-          <Link
-            href="/login"
+          <button
+            onClick={() => openWallet()}
             className="px-8 py-4 bg-[#FF4422] text-white font-semibold rounded-lg hover:bg-[#e63d1e] transition-colors text-lg"
           >
             Подключить кошелёк
-          </Link>
-          <Link
-            href="/login"
+          </button>
+          <button
+            onClick={handleTelegramLogin}
             className="px-8 py-4 border border-[#FF4422] text-[#FF4422] font-semibold rounded-lg hover:bg-[#FF4422] hover:text-white transition-colors text-lg"
           >
             Войти через Telegram
-          </Link>
+          </button>
         </div>
       </section>
 
