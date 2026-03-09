@@ -63,15 +63,9 @@ export default function ConnectWalletButton() {
     }
   }, [isConnected, address, connector, fetchNonce]);
 
-  const authenticateRef = useRef<(() => Promise<void>) | null>(null);
+  const authenticateRef = useRef<((isAutoSign?: boolean) => Promise<void>) | null>(null);
 
-  const authenticate = useCallback(async () => {
-    const hostname = window.location.hostname;
-    if (hostname === "clawacademy.io") {
-      window.location.href =
-        "https://www.clawacademy.io" + window.location.pathname;
-      return;
-    }
+  const authenticate = useCallback(async (isAutoSign = false) => {
     if (!isConnected || !address || !connector) {
       setError("Кошелёк не подключён. Попробуйте переподключить.");
       return;
@@ -80,11 +74,13 @@ export default function ConnectWalletButton() {
     // Check if prefetched nonce is still valid (not older than 4 min)
     const cached = prefetchedNonce.current;
     if (!cached || Date.now() - cached.fetchedAt > 4 * 60 * 1000) {
-      // Nonce expired or missing — refetch and ask user to click again
-      setError("Подготовка... Нажмите ещё раз.");
+      // Nonce expired or missing — refetch
       prefetchedNonce.current = null;
       setNonceReady(false);
       fetchNonce();
+      if (!isAutoSign) {
+        setError("Подготовка... Нажмите ещё раз.");
+      }
       return;
     }
 
@@ -169,7 +165,7 @@ export default function ConnectWalletButton() {
     // Auto-sign once when wallet connects and nonce is ready
     if (isConnected && address && connector && nonceReady && !autoSignTriggered.current) {
       autoSignTriggered.current = true;
-      authenticateRef.current?.();
+      authenticateRef.current?.(true);
     }
   }, [isConnected, address, connector, nonceReady]);
 
@@ -189,7 +185,13 @@ export default function ConnectWalletButton() {
     return (
       <div className="flex flex-col items-center w-full">
         <button
-          onClick={authenticate}
+          onClick={() => {
+            if (window.location.hostname === "clawacademy.io") {
+              window.location.href = "https://www.clawacademy.io" + window.location.pathname;
+              return;
+            }
+            authenticate();
+          }}
           disabled={signing}
           className="w-full py-3.5 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-semibold rounded-xl transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-60"
         >
