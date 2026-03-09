@@ -15,6 +15,7 @@ export const dynamic = "force-dynamic";
 const verifySchema = z.object({
   tx_hash: z.string().regex(/^(0x[a-fA-F0-9]{64}|test|0xtest.*)$/, 'Invalid transaction hash format'),
   wallet_address: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
+  tier: z.enum(["genesis", "pro", "elite"]).optional(),
 });
 
 const IS_MOCK_MODE = process.env.PAYMENT_TEST_MODE === "true";
@@ -37,7 +38,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { tx_hash, wallet_address } = parsed.data;
+    const { tx_hash, wallet_address, tier: requestTier } = parsed.data;
 
     // Block test transactions in production
     if ((tx_hash === "test" || tx_hash.startsWith("0xtest")) && !IS_MOCK_MODE) {
@@ -58,7 +59,8 @@ export async function POST(req: NextRequest) {
 
     // Mock mode: skip on-chain verification for test transactions
     if (IS_MOCK_MODE && (tx_hash === "test" || tx_hash.startsWith("0xtest"))) {
-      const { data: mockPayment, error: mockErr } = await db
+      // Try to find pending payment first
+      const { data: mockPayment } = await db
         .from("payments")
         .select("*")
         .eq("wallet_address", wallet_address.toLowerCase())
@@ -67,31 +69,22 @@ export async function POST(req: NextRequest) {
         .limit(1)
         .single();
 
-      if (mockErr || !mockPayment) {
-        return NextResponse.json(
-          { success: false, error: "No pending payment found" },
-          { status: 404 }
-        );
+      // Use tier from pending payment OR from request body OR fallback to genesis
+      const mockTier = mockPayment?.tier || requestTier || "genesis";
+
+      if (mockPayment) {
+        await db
+          .from("payments")
+          .update({ status: "confirmed", tx_hash, confirmed_at: new Date().toISOString() })
+          .eq("id", mockPayment.id);
       }
 
       await db
-        .from("payments")
-        .update({
-          status: "confirmed",
-          tx_hash,
-          confirmed_at: new Date().toISOString(),
-        })
-        .eq("id", mockPayment.id);
-
-      await db
         .from("users")
-        .update({
-          tier: mockPayment.tier,
-          tier_updated_at: new Date().toISOString(),
-        })
+        .update({ tier: mockTier, tier_updated_at: new Date().toISOString() })
         .eq("wallet_address", wallet_address.toLowerCase());
 
-      return NextResponse.json({ success: true, tier: mockPayment.tier });
+      return NextResponse.json({ success: true, tier: mockTier });
     }
 
     // 1) Find pending payment

@@ -503,7 +503,7 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
                       const res = await fetch('/api/payment/verify', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ tx_hash: 'test', wallet_address: address }),
+                        body: JSON.stringify({ tx_hash: 'test', wallet_address: address, tier: selectedTier }),
                       });
                       const data = await res.json();
                       if (!res.ok) throw new Error(data.error || 'Ошибка верификации');
