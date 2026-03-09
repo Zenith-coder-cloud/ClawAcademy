@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
 
   // Always read tier fresh from DB
   const db = supabaseAdmin();
-  let query = db.from("users").select("tier");
+  let query = db.from("users").select("tier, telegram_username, first_name");
   if (session.walletAddress) {
     query = query.eq("wallet_address", session.walletAddress.toLowerCase());
   } else if (session.telegramId) {
@@ -31,5 +31,15 @@ export async function GET(req: NextRequest) {
   const tier = (user?.tier || "free") as TierKey;
   const tierConfig = TIERS[tier];
   const blocks = tierConfig ? [...tierConfig.blocks] : [0];
-  return NextResponse.json({ ok: true, session: { ...session, tier }, tier, blocks });
+  return NextResponse.json({
+    ok: true,
+    session: {
+      ...session,
+      tier,
+      telegramUsername: user?.telegram_username ?? null,
+      firstName: user?.first_name ?? null,
+    },
+    tier,
+    blocks,
+  });
 }

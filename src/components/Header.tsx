@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 export default function Header() {
   const router = useRouter();
   const [userLabel, setUserLabel] = useState<string | null>(null);
+  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     fetch("/api/auth/session")
@@ -18,18 +19,26 @@ export default function Header() {
         if (s?.walletAddress) {
           setUserLabel(s.walletAddress.slice(0, 6) + "..." + s.walletAddress.slice(-4));
         } else if (s?.telegramId) {
-          const stored = localStorage.getItem("tg_user");
-          if (stored) {
-            try {
-              const u = JSON.parse(stored);
-              setUserLabel("@" + (u.username || u.first_name || s.telegramId));
-            } catch { setUserLabel("TG #" + s.telegramId); }
+          // Prefer DB fields from session API, fall back to localStorage
+          if (s.telegramUsername) {
+            setUserLabel("@" + s.telegramUsername);
+          } else if (s.firstName) {
+            setUserLabel(s.firstName);
           } else {
-            setUserLabel("TG #" + s.telegramId);
+            const stored = localStorage.getItem("tg_user");
+            if (stored) {
+              try {
+                const u = JSON.parse(stored);
+                setUserLabel("@" + (u.username || u.first_name || s.telegramId));
+              } catch { setUserLabel("TG #" + s.telegramId); }
+            } else {
+              setUserLabel("TG #" + s.telegramId);
+            }
           }
         }
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setChecked(true));
   }, []);
 
   const handleLogout = async () => {
@@ -64,14 +73,14 @@ export default function Header() {
               Выйти
             </button>
           </div>
-        ) : (
+        ) : checked ? (
           <Link
             href="/login"
             className="text-sm text-zinc-400 hover:text-white transition"
           >
             Войти →
           </Link>
-        )}
+        ) : null}
       </div>
     </header>
   );

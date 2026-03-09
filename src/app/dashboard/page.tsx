@@ -125,7 +125,7 @@ export default function DashboardPage() {
         });
         // Set tier from session (already reads from DB)
         if (data.tier) {
-          setTierData({ tier: data.tier, blocks: data.blocks ?? [0, 1, 2] });
+          setTierData({ tier: data.tier, blocks: data.blocks ?? [0] });
         }
       })
       .catch((err) => console.error("[dashboard] session fetch failed:", err));
