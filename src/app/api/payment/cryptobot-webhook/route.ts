@@ -85,15 +85,19 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Failed to update tier" }, { status: 500 });
       }
     } else if (walletAddress) {
+      const lower = walletAddress.toLowerCase();
       const { error: userError } = await db
         .from("users")
         .update(tierUpdate)
-        .eq("wallet_address", walletAddress.toLowerCase());
+        .or(`wallet_address.eq.${lower},wallet_address.eq.${walletAddress}`);
 
       if (userError) {
         console.error("CryptoBot webhook: user tier update failed:", userError);
         return NextResponse.json({ error: "Failed to update tier" }, { status: 500 });
       }
+    } else {
+      console.error("CryptoBot webhook: payload has neither telegramId nor walletAddress:", JSON.stringify(parsed));
+      return NextResponse.json({ error: "No user identifier in payload" }, { status: 400 });
     }
 
     return NextResponse.json({ ok: true });

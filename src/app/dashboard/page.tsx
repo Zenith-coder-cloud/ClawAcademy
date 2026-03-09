@@ -128,7 +128,7 @@ export default function DashboardPage() {
           setTierData({ tier: data.tier, blocks: data.blocks ?? [0, 1, 2] });
         }
       })
-      .catch(() => {});
+      .catch((err) => console.error("[dashboard] session fetch failed:", err));
 
     // Clean URL if tier_updated param present
     if (window.location.search.includes("tier_updated")) {

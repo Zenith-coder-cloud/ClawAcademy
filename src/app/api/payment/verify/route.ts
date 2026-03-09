@@ -260,22 +260,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Server error" }, { status: 500 });
     }
 
-    // 6) Update user tier
-    const { error: updateUserError } = await db
+    // 6) Update user tier — use .or() for case-insensitive wallet match
+    const lower = wallet_address.toLowerCase();
+    const { data: updatedUsers, error: updateUserError } = await db
       .from("users")
       .update({
         tier: payment.tier,
         tier_updated_at: new Date().toISOString(),
       })
-      .eq("wallet_address", wallet_address.toLowerCase());
+      .or(`wallet_address.eq.${lower},wallet_address.eq.${wallet_address}`)
+      .select("id, tier");
 
     if (updateUserError) {
       console.error("Failed to update user tier:", updateUserError);
     }
 
+    console.log("[verify] tier update result:", JSON.stringify(updatedUsers), "error:", updateUserError?.message);
+
     return NextResponse.json({
       success: true,
       tier: payment.tier,
+      updated: updatedUsers?.length ?? 0,
     });
   } catch (err) {
     console.error("POST /api/payment/verify error:", err);
