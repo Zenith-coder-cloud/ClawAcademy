@@ -99,7 +99,7 @@ export default function Home() {
             onClick={handleTelegramLogin}
             className="min-w-[260px] px-8 py-4 border border-[#FF4422] text-[#FF4422] font-semibold rounded-lg hover:bg-[#FF4422] hover:text-white transition-colors text-lg flex items-center justify-center gap-3"
           >
-            <Image src="/telegram.svg" alt="Telegram" width={22} height={22} className="w-6 h-6" />
+            <Image src="/telegram.svg" alt="Telegram" width={18} height={18} className="w-5 h-5" />
             Войти через Telegram
           </button>
         </div>
