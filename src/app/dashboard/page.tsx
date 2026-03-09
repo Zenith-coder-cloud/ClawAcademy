@@ -302,6 +302,26 @@ export default function DashboardPage() {
           })}
         </div>
 
+        {/* Junior Chat CTA */}
+        {(tierData.tier === "pro" || tierData.tier === "elite") && (
+          <div className="mt-10">
+            <button
+              onClick={() => router.push("/dashboard/chat")}
+              className="w-full p-6 rounded-xl bg-[#1a1a1a] border border-[#333] hover:border-[#FF4422] transition-colors flex items-center gap-4 text-left"
+            >
+              <div className="w-12 h-12 rounded-full bg-[#FF4422] flex items-center justify-center text-2xl shrink-0">
+                🤖
+              </div>
+              <div>
+                <p className="text-white font-semibold text-lg">Чат с Junior</p>
+                <p className="text-[#888888] text-sm">
+                  AI-помощник по курсу, OpenClaw и заработку с агентами
+                </p>
+              </div>
+            </button>
+          </div>
+        )}
+
         {/* Upgrade CTA */}
         {tierData.tier !== "elite" && (
           <div className="mt-10 p-6 rounded-xl bg-[#1a1a1a] border border-[#333] flex flex-col sm:flex-row items-center justify-between gap-4">
