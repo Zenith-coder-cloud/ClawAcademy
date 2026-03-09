@@ -105,7 +105,7 @@ export default function DashboardPage() {
   }, [address, isConnected, signMessageAsync]);
 
   useEffect(() => {
-    // Validate session via httpOnly cookie
+    // Validate session + get fresh tier from DB in one call
     fetch("/api/auth/session")
       .then((res) => res.ok ? res.json() : null)
       .then((data) => {
@@ -123,14 +123,10 @@ export default function DashboardPage() {
             ? data.session.walletAddress.slice(0, 6) + "..." + data.session.walletAddress.slice(-4)
             : "User",
         });
-      })
-      .catch(() => {});
-
-    // Always fetch tier fresh from DB — independent of session chain
-    fetch("/api/user/tier")
-      .then((res) => res.ok ? res.json() : null)
-      .then((data) => {
-        if (data?.tier) setTierData({ tier: data.tier, blocks: data.blocks ?? [0, 1, 2] });
+        // Set tier from session (already reads from DB)
+        if (data.tier) {
+          setTierData({ tier: data.tier, blocks: data.blocks ?? [0, 1, 2] });
+        }
       })
       .catch(() => {});
 
