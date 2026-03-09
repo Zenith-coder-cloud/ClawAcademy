@@ -39,84 +39,97 @@ export default function LoginPage() {
   // - Flat params:  ?id=...&first_name=...&hash=... (Telegram web)
   useEffect(() => {
     setMounted(true);
-    const hostname = window.location.hostname;
-    if (hostname === "clawacademy.io") {
-      const target =
-        "https://www.clawacademy.io" +
-        window.location.pathname +
-        window.location.search +
-        window.location.hash;
-      window.location.replace(target);
-      return;
-    }
 
-    const hash = window.location.hash;
-    const search = window.location.search;
-
-    let parsedUser: Record<string, unknown> | null = null;
-
-    // 1. Check hash: #tgAuthResult=BASE64
-    if (hash) {
-      const hashParams = new URLSearchParams(hash.startsWith("#") ? hash.slice(1) : hash);
-      const tgHash = hashParams.get("tgAuthResult");
-      if (tgHash) {
-        try {
-          parsedUser = decodeTelegramAuthResult(tgHash);
-        } catch {
-          setError("Ошибка обработки данных Telegram (hash)");
-          return;
-        }
+    try {
+      const hostname = window.location.hostname;
+      if (hostname === "clawacademy.io") {
+        const target =
+          "https://www.clawacademy.io" +
+          window.location.pathname +
+          window.location.search +
+          window.location.hash;
+        window.location.replace(target);
+        return;
       }
-    }
 
-    // 2. Check query: ?tgAuthResult=BASE64
-    if (!parsedUser && search) {
-      const params = new URLSearchParams(search);
-      const tgResult = params.get("tgAuthResult");
-      if (tgResult) {
-        try {
-          parsedUser = decodeTelegramAuthResult(tgResult);
-        } catch {
-          setError("Ошибка обработки данных Telegram (query)");
-          return;
+      const hash = window.location.hash;
+      const search = window.location.search;
+
+      let parsedUser: Record<string, unknown> | null = null;
+
+      // 1. Check hash: #tgAuthResult=BASE64
+      if (hash) {
+        const hashParams = new URLSearchParams(hash.startsWith("#") ? hash.slice(1) : hash);
+        const tgHash = hashParams.get("tgAuthResult");
+        if (tgHash) {
+          try {
+            parsedUser = decodeTelegramAuthResult(tgHash);
+          } catch {
+            setError("Ошибка обработки данных Telegram. Попробуйте войти ещё раз.");
+            return;
+          }
         }
       }
 
-      // 3. Flat params: ?id=...&first_name=...&hash=...
-      if (!parsedUser && params.has("id") && params.has("hash")) {
-        parsedUser = Object.fromEntries(params.entries());
-        parsedUser = normalizeTelegramUser(parsedUser);
-      }
-    }
-
-    if (!parsedUser) return;
-    parsedUser = normalizeTelegramUser(parsedUser);
-
-    // Clear hash and query params
-    window.history.replaceState(null, "", window.location.pathname);
-
-    setHashLoading(true);
-    fetch("/api/auth/telegram", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(parsedUser),
-    })
-      .then(async (res) => {
-        const data = await res.json();
-        if (res.ok && data.ok) {
-          localStorage.setItem("tg_user", JSON.stringify({ ...data.user, auth_at: Date.now() }));
-          localStorage.setItem("telegram_id", String(parsedUser!.id));
-          router.push("/dashboard");
-        } else {
-          setError(data.error || "Ошибка авторизации Telegram");
+      // 2. Check query: ?tgAuthResult=BASE64
+      if (!parsedUser && search) {
+        const params = new URLSearchParams(search);
+        const tgResult = params.get("tgAuthResult");
+        if (tgResult) {
+          try {
+            parsedUser = decodeTelegramAuthResult(tgResult);
+          } catch {
+            setError("Ошибка обработки данных Telegram. Попробуйте войти ещё раз.");
+            return;
+          }
         }
+
+        // 3. Flat params: ?id=...&first_name=...&hash=...
+        if (!parsedUser && params.has("id") && params.has("hash")) {
+          parsedUser = Object.fromEntries(params.entries());
+          parsedUser = normalizeTelegramUser(parsedUser);
+        }
+      }
+
+      if (!parsedUser) return;
+
+      if (typeof parsedUser !== "object" || Array.isArray(parsedUser)) {
+        setError("Некорректные данные авторизации Telegram.");
+        return;
+      }
+
+      parsedUser = normalizeTelegramUser(parsedUser);
+
+      // Clear hash and query params
+      window.history.replaceState(null, "", window.location.pathname);
+
+      setHashLoading(true);
+      fetch("/api/auth/telegram", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(parsedUser),
       })
-      .catch(() => {
-        setError("Ошибка подключения");
-      })
-      .finally(() => {
-        setHashLoading(false);
-      });
+        .then(async (res) => {
+          const data = await res.json();
+          if (res.ok && data.ok) {
+            localStorage.setItem("tg_user", JSON.stringify({ ...data.user, auth_at: Date.now() }));
+            localStorage.setItem("telegram_id", String(parsedUser!.id));
+            router.push("/dashboard");
+          } else {
+            setError(data.error || "Ошибка авторизации Telegram");
+          }
+        })
+        .catch(() => {
+          setError("Ошибка подключения к серверу. Попробуйте ещё раз.");
+        })
+        .finally(() => {
+          setHashLoading(false);
+        });
+    } catch (e) {
+      console.error("Login page error:", e);
+      setError("Произошла ошибка при входе. Попробуйте ещё раз.");
+      setHashLoading(false);
+    }
   }, [router]);
 
   const handleVerifyCode = async () => {
@@ -215,6 +228,11 @@ export default function LoginPage() {
           </svg>
           Войти через Telegram
         </button>
+
+        {/* Global error (e.g. from tgAuthResult) */}
+        {error && !showCodeForm && (
+          <p className="text-red-400 text-sm text-center py-2">{error}</p>
+        )}
 
         {/* Button 2: Bot code */}
         {!showCodeForm ? (
