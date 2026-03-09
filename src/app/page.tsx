@@ -9,7 +9,7 @@ import FAQ from "@/components/FAQ";
 import HowItWorks from "@/components/HowItWorks";
 import PaymentModal from "@/components/PaymentModal";
 import type { TierKey } from "@/lib/paymentConfig";
-import { useAppKit } from "@reown/appkit/react";
+
 
 const tiers = [
   {
@@ -49,7 +49,7 @@ export default function Home() {
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [selectedTier, setSelectedTier] = useState<TierKey>("genesis");
   const [checkingSession, setCheckingSession] = useState<string | null>(null);
-  const { open: openWallet } = useAppKit();
+
 
   const handleTelegramLogin = () => {
     const oauthUrl =
@@ -94,7 +94,7 @@ export default function Home() {
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
           <button
-            onClick={() => openWallet()}
+            onClick={() => router.push("/login")}
             className="px-8 py-4 bg-[#FF4422] text-white font-semibold rounded-lg hover:bg-[#e63d1e] transition-colors text-lg"
           >
             Подключить кошелёк
