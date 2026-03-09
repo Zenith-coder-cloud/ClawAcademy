@@ -158,6 +158,21 @@ export default function ConnectWalletButton() {
 
   authenticateRef.current = authenticate;
 
+  const autoSignTriggered = useRef(false);
+
+  useEffect(() => {
+    // Reset flag when wallet disconnects
+    if (!isConnected || !address) {
+      autoSignTriggered.current = false;
+      return;
+    }
+    // Auto-sign once when wallet connects and nonce is ready
+    if (isConnected && address && connector && nonceReady && !autoSignTriggered.current) {
+      autoSignTriggered.current = true;
+      authenticateRef.current?.();
+    }
+  }, [isConnected, address, connector, nonceReady]);
+
   if (!mounted) {
     return (
       <button
