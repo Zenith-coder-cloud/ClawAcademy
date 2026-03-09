@@ -9,6 +9,7 @@ import {
   type TierKey,
 } from "@/lib/paymentConfig";
 import { checkRateLimit, getClientIp } from "@/lib/server/rateLimit";
+import { verifySession, SESSION_COOKIE } from "@/lib/server/session";
 
 export const dynamic = "force-dynamic";
 
@@ -79,13 +80,58 @@ export async function POST(req: NextRequest) {
           .eq("id", mockPayment.id);
       }
 
-      // Use same .or() pattern as admin endpoint which is confirmed working
-      const lower = wallet_address.toLowerCase();
-      const { data: updatedUsers, error: updateError } = await db
-        .from("users")
-        .update({ tier: mockTier, tier_updated_at: new Date().toISOString() })
-        .or(`wallet_address.eq.${lower},wallet_address.eq.${wallet_address}`)
-        .select("id, tier");
+      const tierUpdate = { tier: mockTier, tier_updated_at: new Date().toISOString() };
+      const sessionToken = req.cookies.get(SESSION_COOKIE)?.value;
+      const session = sessionToken ? await verifySession(sessionToken) : null;
+
+      let updatedUsers: { id: string; tier: string }[] | null = null;
+      let updateError: { message?: string } | null = null;
+
+      if (session?.telegramId) {
+        const result = await db
+          .from("users")
+          .update(tierUpdate)
+          .eq("telegram_id", session.telegramId)
+          .select("id, tier");
+        updatedUsers = result.data ?? null;
+        updateError = result.error ?? null;
+      } else if (session?.walletAddress) {
+        const sessionLower = session.walletAddress.toLowerCase();
+        const result = await db
+          .from("users")
+          .update(tierUpdate)
+          .or(`wallet_address.eq.${sessionLower},wallet_address.eq.${session.walletAddress}`)
+          .select("id, tier");
+        updatedUsers = result.data ?? null;
+        updateError = result.error ?? null;
+      } else if (mockPayment?.user_id) {
+        const result = await db
+          .from("users")
+          .update(tierUpdate)
+          .eq("id", mockPayment.user_id)
+          .select("id, tier");
+        updatedUsers = result.data ?? null;
+        updateError = result.error ?? null;
+      } else if (mockPayment?.telegram_id) {
+        const result = await db
+          .from("users")
+          .update(tierUpdate)
+          .eq("telegram_id", mockPayment.telegram_id)
+          .select("id, tier");
+        updatedUsers = result.data ?? null;
+        updateError = result.error ?? null;
+      }
+
+      if (!updatedUsers || updatedUsers.length === 0) {
+        const lower = wallet_address.toLowerCase();
+        const result = await db
+          .from("users")
+          .update(tierUpdate)
+          .or(`wallet_address.eq.${lower},wallet_address.eq.${wallet_address}`)
+          .select("id, tier");
+        updatedUsers = result.data ?? null;
+        updateError = result.error ?? null;
+      }
 
       console.log("[mock-verify] update result:", JSON.stringify(updatedUsers), "error:", updateError?.message);
 
@@ -260,59 +306,78 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Server error" }, { status: 500 });
     }
 
-    // 6) Update user tier — use .or() for case-insensitive wallet match
-    const lower = wallet_address.toLowerCase();
-    const { data: updatedUsers, error: updateUserError } = await db
-      .from("users")
-      .update({
-        tier: payment.tier,
-        tier_updated_at: new Date().toISOString(),
-      })
-      .or(`wallet_address.eq.${lower},wallet_address.eq.${wallet_address}`)
-      .select("id, tier");
+    // 6) Update user tier
+    const tierUpdate = {
+      tier: payment.tier,
+      tier_updated_at: new Date().toISOString(),
+    };
 
-    if (updateUserError) {
-      console.error("Failed to update user tier:", updateUserError);
+    const sessionToken = req.cookies.get(SESSION_COOKIE)?.value;
+    const session = sessionToken ? await verifySession(sessionToken) : null;
+
+    let updatedUsers: { id: string; tier: string }[] | null = null;
+    let updateUserError: { message?: string } | null = null;
+
+    // 6.1) Primary: session user (telegram_id preferred, else wallet_address)
+    if (session?.telegramId) {
+      const result = await db
+        .from("users")
+        .update(tierUpdate)
+        .eq("telegram_id", session.telegramId)
+        .select("id, tier");
+      updatedUsers = result.data ?? null;
+      updateUserError = result.error ?? null;
+    } else if (session?.walletAddress) {
+      const sessionLower = session.walletAddress.toLowerCase();
+      const result = await db
+        .from("users")
+        .update(tierUpdate)
+        .or(`wallet_address.eq.${sessionLower},wallet_address.eq.${session.walletAddress}`)
+        .select("id, tier");
+      updatedUsers = result.data ?? null;
+      updateUserError = result.error ?? null;
+    } else if (payment.user_id) {
+      const result = await db
+        .from("users")
+        .update(tierUpdate)
+        .eq("id", payment.user_id)
+        .select("id, tier");
+      updatedUsers = result.data ?? null;
+      updateUserError = result.error ?? null;
+    } else if (payment.telegram_id) {
+      const result = await db
+        .from("users")
+        .update(tierUpdate)
+        .eq("telegram_id", payment.telegram_id)
+        .select("id, tier");
+      updatedUsers = result.data ?? null;
+      updateUserError = result.error ?? null;
     }
 
-    console.log("[verify] tier update result:", JSON.stringify(updatedUsers), "error:", updateUserError?.message);
+    if (updateUserError) {
+      console.error("Failed to update user tier (primary):", updateUserError);
+    }
 
-    // Fallback: if wallet update hit 0 rows, try session-based update
+    console.log("[verify] primary tier update result:", JSON.stringify(updatedUsers), "error:", updateUserError?.message);
+
+    // 6.2) Fallback: payer wallet address from payment/tx
     if (!updatedUsers || updatedUsers.length === 0) {
-      const sessionToken = req.cookies.get("ca_session")?.value;
-      if (sessionToken) {
-        const { verifySession } = await import("@/lib/server/session");
-        const session = await verifySession(sessionToken);
-        if (session?.telegramId) {
-          const { data: tgUpdated, error: tgError } = await db
-            .from("users")
-            .update({
-              tier: payment.tier,
-              tier_updated_at: new Date().toISOString(),
-            })
-            .eq("telegram_id", session.telegramId)
-            .select("id, tier");
-          console.log(
-            "[verify] fallback tg update:",
-            JSON.stringify(tgUpdated),
-            "error:",
-            tgError?.message
-          );
-          if (tgUpdated && tgUpdated.length > 0) {
-            // Also link the wallet to this user
-            await db
-              .from("users")
-              .update({ wallet_address: wallet_address.toLowerCase() })
-              .eq("telegram_id", session.telegramId);
-          }
-          return NextResponse.json({
-            success: true,
-            tier: payment.tier,
-            updated: tgUpdated?.length ?? 0,
-          });
-        }
+      const lower = wallet_address.toLowerCase();
+      const result = await db
+        .from("users")
+        .update(tierUpdate)
+        .or(`wallet_address.eq.${lower},wallet_address.eq.${wallet_address}`)
+        .select("id, tier");
+      updatedUsers = result.data ?? null;
+      updateUserError = result.error ?? null;
+
+      if (updateUserError) {
+        console.error("Failed to update user tier (wallet fallback):", updateUserError);
       }
-      // If still no update, return error
+      console.log("[verify] wallet fallback update result:", JSON.stringify(updatedUsers), "error:", updateUserError?.message);
+    }
+
+    if (!updatedUsers || updatedUsers.length === 0) {
       return NextResponse.json(
         { success: false, error: "User not found for tier update" },
         { status: 404 }

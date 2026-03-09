@@ -18,34 +18,94 @@ export async function GET(req: NextRequest) {
 
   // Always read tier fresh from DB
   const db = supabaseAdmin();
-  let query = db.from("users").select("tier, telegram_username, first_name, wallet_address");
-  if (session.walletAddress) {
+  let users: Array<{
+    tier: string | null;
+    telegram_username: string | null;
+    first_name: string | null;
+    wallet_address: string | null;
+    telegram_id: number | null;
+  }> = [];
+  let dbError: unknown = null;
+
+  if (session.walletAddress && session.telegramId) {
     const lower = session.walletAddress.toLowerCase();
-    query = query.or(`wallet_address.eq.${lower},wallet_address.eq.${session.walletAddress}`);
+    const result = await db
+      .from("users")
+      .select("tier, telegram_username, first_name, wallet_address, telegram_id")
+      .or(`telegram_id.eq.${session.telegramId},wallet_address.eq.${lower},wallet_address.eq.${session.walletAddress}`);
+    users = result.data ?? [];
+    dbError = result.error ?? null;
+  } else if (session.walletAddress) {
+    const lower = session.walletAddress.toLowerCase();
+    const result = await db
+      .from("users")
+      .select("tier, telegram_username, first_name, wallet_address, telegram_id")
+      .or(`wallet_address.eq.${lower},wallet_address.eq.${session.walletAddress}`);
+    users = result.data ?? [];
+    dbError = result.error ?? null;
   } else if (session.telegramId) {
-    query = query.eq("telegram_id", session.telegramId);
+    const result = await db
+      .from("users")
+      .select("tier, telegram_username, first_name, wallet_address, telegram_id")
+      .eq("telegram_id", session.telegramId);
+    users = result.data ?? [];
+    dbError = result.error ?? null;
   } else {
     return NextResponse.json({ ok: true, session });
   }
-  const { data: user, error: dbError } = await query.maybeSingle();
-  console.log("[session] db lookup:", { walletAddress: session.walletAddress, telegramId: session.telegramId, user, dbError });
-  const tier = (user?.tier || "free") as TierKey;
-  const tierConfig = TIERS[tier];
+
+  const tierRank: Record<TierKey, number> = {
+    free: 0,
+    genesis: 1,
+    pro: 2,
+    elite: 3,
+  };
+
+  const bestTier = users.reduce<TierKey>((acc, u) => {
+    const key = (u.tier as TierKey) || "free";
+    return tierRank[key] > tierRank[acc] ? key : acc;
+  }, "free");
+
+  const tgUser = session.telegramId
+    ? users.find((u) => u.telegram_id === session.telegramId)
+    : null;
+  const walletUser = session.walletAddress
+    ? users.find(
+        (u) =>
+          u.wallet_address?.toLowerCase() ===
+          session.walletAddress?.toLowerCase()
+      )
+    : null;
+  const displayUser = tgUser ?? walletUser ?? users[0] ?? null;
+
+  console.log("[session] db lookup:", {
+    walletAddress: session.walletAddress,
+    telegramId: session.telegramId,
+    usersCount: users.length,
+    dbError,
+  });
+
+  const tierConfig = TIERS[bestTier];
   const blocks = tierConfig ? [...tierConfig.blocks] : [0];
-  const walletAddress = user?.wallet_address ?? session.walletAddress ?? null;
+  const walletAddress =
+    tgUser?.wallet_address ??
+    walletUser?.wallet_address ??
+    session.walletAddress ??
+    null;
+
   return NextResponse.json({
     ok: true,
     session: {
       ...session,
-      tier,
+      tier: bestTier,
       walletAddress,
-      telegramUsername: user?.telegram_username ?? null,
-      firstName: user?.first_name ?? null,
+      telegramUsername: tgUser?.telegram_username ?? null,
+      firstName: tgUser?.first_name ?? displayUser?.first_name ?? null,
     },
-    tier,
+    tier: bestTier,
     blocks,
     walletAddress,
-    telegramUsername: user?.telegram_username ?? null,
-    firstName: user?.first_name ?? null,
+    telegramUsername: tgUser?.telegram_username ?? null,
+    firstName: tgUser?.first_name ?? displayUser?.first_name ?? null,
   });
 }

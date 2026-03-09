@@ -8,6 +8,7 @@ import {
   type TierKey,
 } from "@/lib/paymentConfig";
 import { checkRateLimit, getClientIp } from "@/lib/server/rateLimit";
+import { verifySession, SESSION_COOKIE } from "@/lib/server/session";
 
 export const dynamic = "force-dynamic";
 
@@ -59,6 +60,21 @@ export async function POST(req: NextRequest) {
 
     const db = supabaseAdmin();
 
+    const sessionToken = req.cookies.get(SESSION_COOKIE)?.value;
+    const session = sessionToken ? await verifySession(sessionToken) : null;
+
+    let sessionUserId: string | null = session?.userId ?? null;
+    const sessionTelegramId: number | null = session?.telegramId ?? null;
+
+    if (!sessionUserId && sessionTelegramId) {
+      const { data: tgUser } = await db
+        .from("users")
+        .select("id")
+        .eq("telegram_id", sessionTelegramId)
+        .single();
+      sessionUserId = tgUser?.id ?? null;
+    }
+
     // Look up user by wallet_address (may not exist)
     const { data: user } = await db
       .from("users")
@@ -69,8 +85,9 @@ export async function POST(req: NextRequest) {
     const { data: payment, error: insertError } = await db
       .from("payments")
       .insert({
-        user_id: user?.id ?? null,
+        user_id: sessionUserId ?? user?.id ?? null,
         wallet_address: wallet_address.toLowerCase(),
+        telegram_id: sessionTelegramId,
         tier,
         chain_id,
         token,
