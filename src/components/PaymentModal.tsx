@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 
-import { useAccount, useSendTransaction, useWriteContract, useWaitForTransactionReceipt, useChainId, useSwitchChain, useSignMessage } from 'wagmi';
+import { useAccount, useSendTransaction, useWriteContract, useWaitForTransactionReceipt, useChainId, useSwitchChain } from 'wagmi';
 import { useAppKit } from '@reown/appkit/react';
 import { parseUnits, parseEther } from 'viem';
 import { TIERS, SUPPORTED_CHAINS, PAYMENT_ADDRESS, type TierKey } from '@/lib/paymentConfig';
@@ -40,28 +40,6 @@ type PaymentMethod = 'crypto' | 'cryptobot';
 export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentModalProps) {
   const { address, isConnected } = useAccount();
   const { open } = useAppKit();
-  const { signMessageAsync } = useSignMessage();
-  const [walletLinked, setWalletLinked] = useState(false);
-
-  // Auto-sign to link wallet when connected (for TG users)
-  useEffect(() => {
-    if (!isConnected || !address || walletLinked) return;
-    const linkWallet = async () => {
-      try {
-        const message = ["Claw Academy — привязка кошелька", "Адрес: " + address, "Время: " + new Date().toISOString()].join("\n");
-        const signature = await signMessageAsync({ message });
-        await fetch('/api/auth/link-wallet', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ address, message, signature }),
-        });
-        setWalletLinked(true);
-      } catch {
-        // User rejected or not TG user — ignore silently
-      }
-    };
-    linkWallet();
-  }, [isConnected, address, walletLinked, signMessageAsync]);
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
   const { sendTransactionAsync } = useSendTransaction();
