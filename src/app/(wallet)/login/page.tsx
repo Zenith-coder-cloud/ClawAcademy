@@ -106,7 +106,13 @@ export default function LoginPage() {
         if (res.ok && data.ok) {
           localStorage.setItem("tg_user", JSON.stringify({ ...data.user, auth_at: Date.now() }));
           localStorage.setItem("telegram_id", String(parsedUser!.id));
-          router.push("/dashboard");
+          // If opened in popup — notify opener and close
+          if (window.opener && !window.opener.closed) {
+            window.opener.location.href = "/dashboard";
+            window.close();
+          } else {
+            router.push("/dashboard");
+          }
         } else {
           setError(data.error || "Ошибка авторизации Telegram");
         }
