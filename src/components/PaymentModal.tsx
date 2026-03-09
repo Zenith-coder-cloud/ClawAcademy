@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 
 import { useAccount, useSendTransaction, useWriteContract, useWaitForTransactionReceipt, useChainId, useSwitchChain } from 'wagmi';
+import { useAppKit } from '@reown/appkit/react';
 import { parseUnits, parseEther } from 'viem';
 import { TIERS, SUPPORTED_CHAINS, PAYMENT_ADDRESS, type TierKey } from '@/lib/paymentConfig';
 
@@ -38,6 +39,7 @@ type PaymentMethod = 'crypto' | 'cryptobot';
 
 export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentModalProps) {
   const { address, isConnected } = useAccount();
+  const { open } = useAppKit();
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
   const { sendTransactionAsync } = useSendTransaction();
