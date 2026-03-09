@@ -79,23 +79,21 @@ export async function POST(req: NextRequest) {
           .eq("id", mockPayment.id);
       }
 
-      const { data: updatedUsers, error: updateError } = await db
-        .from("users")
-        .update({ tier: mockTier, tier_updated_at: new Date().toISOString() })
-        .eq("wallet_address", wallet_address.toLowerCase())
-        .select("id, tier");
-
-      console.log("[mock-verify] update result:", updatedUsers, updateError);
-
-      if (updateError || !updatedUsers || updatedUsers.length === 0) {
-        console.error("[mock-verify] FAILED to update tier:", updateError, "wallet:", wallet_address.toLowerCase());
-        // Try by ilike as fallback
-        const { error: ilikeError } = await db
-          .from("users")
-          .update({ tier: mockTier, tier_updated_at: new Date().toISOString() })
-          .ilike("wallet_address", wallet_address);
-        console.log("[mock-verify] ilike fallback error:", ilikeError);
+      // Use userId from session if available, otherwise wallet address
+      const sessionToken = req.cookies.get("ca_session")?.value;
+      const session = sessionToken ? await import("@/lib/server/session").then(m => m.verifySession(sessionToken)) : null;
+      
+      let updateQuery = db.from("users").update({ tier: mockTier, tier_updated_at: new Date().toISOString() });
+      
+      if (session?.userId) {
+        updateQuery = updateQuery.eq("id", session.userId);
+      } else {
+        const lower = wallet_address.toLowerCase();
+        updateQuery = updateQuery.or(`wallet_address.eq.${lower},wallet_address.ilike.${wallet_address}`);
       }
+      
+      const { data: updatedUsers, error: updateError } = await updateQuery.select("id, tier");
+      console.log("[mock-verify] update result:", updatedUsers, "error:", updateError);
 
       return NextResponse.json({ success: true, tier: mockTier });
     }
