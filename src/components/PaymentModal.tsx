@@ -601,12 +601,19 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
                 {/* Option 1 — Auto-pay via wallet */}
                 {isConnected ? (
                   needsChainSwitch ? (
-                    <button
-                      onClick={() => switchChain({ chainId: selectedChain.id })}
-                      className="w-full py-3 rounded-xl text-sm font-semibold bg-yellow-600 text-white hover:bg-yellow-700 transition-colors"
-                    >
-                      Переключить сеть на {selectedChain.name}
-                    </button>
+                    <div className="flex flex-col gap-2">
+                      <button
+                        onClick={() => {
+                          try { switchChain({ chainId: selectedChain.id }); } catch { /* ignore */ }
+                        }}
+                        className="w-full py-3 rounded-xl text-sm font-semibold bg-yellow-600 text-white hover:bg-yellow-700 transition-colors"
+                      >
+                        Переключить сеть на {selectedChain.name}
+                      </button>
+                      <p className="text-zinc-500 text-xs text-center">
+                        Если кнопка не работает — переключите сеть вручную в MetaMask на {selectedChain.name}, затем обновите страницу
+                      </p>
+                    </div>
                   ) : (
                     <button
                       onClick={handleAutoPay}
