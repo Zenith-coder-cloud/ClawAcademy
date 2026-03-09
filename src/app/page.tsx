@@ -115,9 +115,13 @@ export default function Home() {
             <span className="w-px h-4 bg-[#FF4422]/30" />
             <span className="text-zinc-300 text-sm">Блок 0 открыт всем — начни прямо сейчас</span>
           </div>
-      <div className="w-full sm:w-auto sm:min-w-[220px]">
-        <ConnectWalletButton variant="banner" />
-      </div>
+          <a
+            href="/login"
+            className="text-[#FF4422] hover:text-white text-sm font-semibold transition-colors whitespace-nowrap flex items-center gap-1 group"
+          >
+            Начать обучение
+            <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
+          </a>
         </div>
 
         {/* Paid tiers: Genesis | Pro | Elite */}
