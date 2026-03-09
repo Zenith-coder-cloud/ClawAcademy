@@ -277,6 +277,48 @@ export async function POST(req: NextRequest) {
 
     console.log("[verify] tier update result:", JSON.stringify(updatedUsers), "error:", updateUserError?.message);
 
+    // Fallback: if wallet update hit 0 rows, try session-based update
+    if (!updatedUsers || updatedUsers.length === 0) {
+      const sessionToken = req.cookies.get("ca_session")?.value;
+      if (sessionToken) {
+        const { verifySession } = await import("@/lib/server/session");
+        const session = await verifySession(sessionToken);
+        if (session?.telegramId) {
+          const { data: tgUpdated, error: tgError } = await db
+            .from("users")
+            .update({
+              tier: payment.tier,
+              tier_updated_at: new Date().toISOString(),
+            })
+            .eq("telegram_id", session.telegramId)
+            .select("id, tier");
+          console.log(
+            "[verify] fallback tg update:",
+            JSON.stringify(tgUpdated),
+            "error:",
+            tgError?.message
+          );
+          if (tgUpdated && tgUpdated.length > 0) {
+            // Also link the wallet to this user
+            await db
+              .from("users")
+              .update({ wallet_address: wallet_address.toLowerCase() })
+              .eq("telegram_id", session.telegramId);
+          }
+          return NextResponse.json({
+            success: true,
+            tier: payment.tier,
+            updated: tgUpdated?.length ?? 0,
+          });
+        }
+      }
+      // If still no update, return error
+      return NextResponse.json(
+        { success: false, error: "User not found for tier update" },
+        { status: 404 }
+      );
+    }
+
     return NextResponse.json({
       success: true,
       tier: payment.tier,

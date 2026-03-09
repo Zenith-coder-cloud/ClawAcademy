@@ -20,7 +20,8 @@ export async function GET(req: NextRequest) {
   const db = supabaseAdmin();
   let query = db.from("users").select("tier, telegram_username, first_name, wallet_address");
   if (session.walletAddress) {
-    query = query.eq("wallet_address", session.walletAddress.toLowerCase());
+    const lower = session.walletAddress.toLowerCase();
+    query = query.or(`wallet_address.eq.${lower},wallet_address.eq.${session.walletAddress}`);
   } else if (session.telegramId) {
     query = query.eq("telegram_id", session.telegramId);
   } else {

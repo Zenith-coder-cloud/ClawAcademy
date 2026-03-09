@@ -72,6 +72,37 @@ export default function DashboardPage() {
 
   const needsWalletLink = !!(user?.id && !dbWalletAddress);
 
+  const fetchSession = useCallback(() => {
+    // Validate session + get fresh tier from DB in one call
+    fetch("/api/auth/session")
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        if (!data?.ok) {
+          localStorage.removeItem("tg_user");
+          router.push("/login");
+          return;
+        }
+        const stored = localStorage.getItem("tg_user");
+        const displayUser = stored ? validateStoredUser(stored) : null;
+        setUser(displayUser || {
+          id: data.session?.telegramId,
+          wallet_address: data.session?.walletAddress,
+          first_name: data.session?.walletAddress
+            ? data.session.walletAddress.slice(0, 6) + "..." + data.session.walletAddress.slice(-4)
+            : "User",
+        });
+        // Set wallet address from DB
+        if (data.walletAddress) {
+          setDbWalletAddress(data.walletAddress);
+        }
+        // Set tier from session (already reads from DB)
+        if (data.tier) {
+          setTierData({ tier: data.tier, blocks: data.blocks ?? [0] });
+        }
+      })
+      .catch((err) => console.error("[dashboard] session fetch failed:", err));
+  }, [router]);
+
   const handleLinkWallet = useCallback(async () => {
     if (!address || !isConnected) return;
     setLinkWalletStatus('signing');
@@ -105,40 +136,13 @@ export default function DashboardPage() {
   }, [address, isConnected, signMessageAsync]);
 
   useEffect(() => {
-    // Validate session + get fresh tier from DB in one call
-    fetch("/api/auth/session")
-      .then((res) => res.ok ? res.json() : null)
-      .then((data) => {
-        if (!data?.ok) {
-          localStorage.removeItem("tg_user");
-          router.push("/login");
-          return;
-        }
-        const stored = localStorage.getItem("tg_user");
-        const displayUser = stored ? validateStoredUser(stored) : null;
-        setUser(displayUser || {
-          id: data.session?.telegramId,
-          wallet_address: data.session?.walletAddress,
-          first_name: data.session?.walletAddress
-            ? data.session.walletAddress.slice(0, 6) + "..." + data.session.walletAddress.slice(-4)
-            : "User",
-        });
-        // Set wallet address from DB
-        if (data.walletAddress) {
-          setDbWalletAddress(data.walletAddress);
-        }
-        // Set tier from session (already reads from DB)
-        if (data.tier) {
-          setTierData({ tier: data.tier, blocks: data.blocks ?? [0] });
-        }
-      })
-      .catch((err) => console.error("[dashboard] session fetch failed:", err));
+    fetchSession();
 
     // Clean URL if tier_updated param present
     if (window.location.search.includes("tier_updated")) {
       window.history.replaceState({}, "", "/dashboard");
     }
-  }, [router]);
+  }, [fetchSession]);
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -352,7 +356,10 @@ export default function DashboardPage() {
 
       <PaymentModal
         isOpen={isPaymentOpen}
-        onClose={() => setIsPaymentOpen(false)}
+        onClose={() => {
+          setIsPaymentOpen(false);
+          fetchSession();
+        }}
       />
     </main>
   );
