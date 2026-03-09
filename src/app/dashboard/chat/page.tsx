@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface Message {
   role: "user" | "assistant";
@@ -139,7 +140,7 @@ export default function JuniorChatPage() {
         <div className="max-w-2xl mx-auto space-y-4">
           {messages.length === 0 && !loading && (
             <div className="text-center text-[#888888] mt-20">
-              <div className="text-4xl mb-4">🤖</div>
+              <Image src="/junior-bot.png" alt="Junior" width={64} height={64} className="w-16 h-16 mx-auto mb-4" />
               <p className="text-lg font-medium text-white mb-2">Привет! Я Junior</p>
               <p>AI-помощник Claw Academy. Задай мне вопрос о курсе, OpenClaw или заработке с AI.</p>
             </div>

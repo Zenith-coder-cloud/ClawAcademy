@@ -318,8 +318,8 @@ export default function DashboardPage() {
               onClick={() => router.push("/dashboard/chat")}
               className="w-full p-6 rounded-xl bg-[#1a1a1a] border border-[#333] hover:border-[#FF4422] transition-colors flex items-center gap-4 text-left"
             >
-              <div className="w-12 h-12 rounded-full bg-[#FF4422] flex items-center justify-center text-2xl shrink-0">
-                🤖
+              <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 overflow-hidden">
+                <Image src="/junior-bot.png" alt="Junior" width={48} height={48} className="w-12 h-12 object-contain" />
               </div>
               <div>
                 <p className="text-white font-semibold text-lg">Чат с Junior</p>
