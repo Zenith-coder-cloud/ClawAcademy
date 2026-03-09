@@ -260,7 +260,7 @@ export default function DashboardPage() {
             return (
               <div
                 key={m.id}
-                className={`rounded-2xl shadow-xl overflow-hidden transition-transform ${
+                className={`rounded-2xl shadow-xl overflow-hidden transition-transform flex flex-col ${
                   locked
                     ? "bg-zinc-900 cursor-not-allowed"
                     : "bg-zinc-900 hover:scale-[1.02] cursor-pointer"
@@ -283,13 +283,14 @@ export default function DashboardPage() {
                   )}
                 </div>
                 {/* Info */}
-                <div className="p-5">
+                <div className="p-5 flex flex-col flex-1">
                   <p className="text-sm text-[#888888] mb-1">
                     {locked ? "🔒" : "🔓"} БЛОК {m.id}
                   </p>
                   <h3 className="font-semibold text-white text-lg mb-3">
                     {m.title}
                   </h3>
+                  <div className="mt-auto"></div>
                   {locked ? (
                     <button
                       onClick={() => setIsPaymentOpen(true)}
