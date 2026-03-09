@@ -22,12 +22,8 @@ export default function Header() {
         console.log("[Header] /api/auth/session response:", data);
         if (!data?.ok) return;
         const s = data.session;
-        // Prefer DB wallet, then telegramUsername, then firstName
-        if (data.walletAddress) {
-          setUserLabel(data.walletAddress.slice(0, 6) + "..." + data.walletAddress.slice(-4));
-        } else if (s?.walletAddress) {
-          setUserLabel(s.walletAddress.slice(0, 6) + "..." + s.walletAddress.slice(-4));
-        } else if (s?.telegramId) {
+        // Prefer Telegram identity, then wallet address
+        if (s?.telegramId) {
           if (s.telegramUsername || data.telegramUsername) {
             setUserLabel("@" + (s.telegramUsername || data.telegramUsername));
           } else if (s.firstName || data.firstName) {
@@ -43,6 +39,10 @@ export default function Header() {
               setUserLabel("TG #" + s.telegramId);
             }
           }
+        } else if (data.walletAddress) {
+          setUserLabel(data.walletAddress.slice(0, 6) + "..." + data.walletAddress.slice(-4));
+        } else if (s?.walletAddress) {
+          setUserLabel(s.walletAddress.slice(0, 6) + "..." + s.walletAddress.slice(-4));
         }
       })
       .catch(() => {})
