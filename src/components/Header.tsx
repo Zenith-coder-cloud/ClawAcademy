@@ -59,15 +59,15 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-black/90 backdrop-blur border-b border-zinc-800">
-      <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-4 h-20 flex items-center justify-between">
         <Link href="/" className="flex items-center">
           <Image
             src="/logo.png"
             alt="Claw Academy"
-            width={240}
-            height={80}
+            width={300}
+            height={100}
             priority
-            className="h-14 w-auto object-contain"
+            className="h-[4.5rem] w-auto object-contain"
           />
         </Link>
         {userLabel ? (
