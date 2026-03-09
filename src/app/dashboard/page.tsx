@@ -67,8 +67,9 @@ export default function DashboardPage() {
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [linkWalletStatus, setLinkWalletStatus] = useState<'idle' | 'signing' | 'linking' | 'done' | 'error'>('idle');
   const [linkWalletError, setLinkWalletError] = useState<string | null>(null);
+  const [dbWalletAddress, setDbWalletAddress] = useState<string | null>(null);
 
-  const needsWalletLink = !!(user?.id && !user?.wallet_address);
+  const needsWalletLink = !!(user?.id && !dbWalletAddress);
 
   const handleLinkWallet = useCallback(async () => {
     if (!address || !isConnected) return;
@@ -90,6 +91,7 @@ export default function DashboardPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Ошибка привязки');
       setLinkWalletStatus('done');
+      setDbWalletAddress(address.toLowerCase());
       setUser((prev) => prev ? { ...prev, wallet_address: address.toLowerCase() } : prev);
     } catch (err: unknown) {
       setLinkWalletStatus('error');
@@ -120,6 +122,10 @@ export default function DashboardPage() {
             ? data.session.walletAddress.slice(0, 6) + "..." + data.session.walletAddress.slice(-4)
             : "User",
         });
+        // Set wallet address from DB
+        if (data.walletAddress) {
+          setDbWalletAddress(data.walletAddress);
+        }
         // Set tier from session (already reads from DB)
         if (data.tier) {
           setTierData({ tier: data.tier, blocks: data.blocks ?? [0] });

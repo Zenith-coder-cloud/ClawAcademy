@@ -16,14 +16,16 @@ export default function Header() {
       .then((data) => {
         if (!data?.ok) return;
         const s = data.session;
-        // telegramUsername and firstName come from top-level data (DB), not JWT session
-        if (s?.walletAddress) {
+        // Prefer DB wallet, then telegramUsername, then firstName
+        if (data.walletAddress) {
+          setUserLabel(data.walletAddress.slice(0, 6) + "..." + data.walletAddress.slice(-4));
+        } else if (s?.walletAddress) {
           setUserLabel(s.walletAddress.slice(0, 6) + "..." + s.walletAddress.slice(-4));
         } else if (s?.telegramId) {
-          if (data.telegramUsername) {
-            setUserLabel("@" + data.telegramUsername);
-          } else if (data.firstName) {
-            setUserLabel(data.firstName);
+          if (s.telegramUsername || data.telegramUsername) {
+            setUserLabel("@" + (s.telegramUsername || data.telegramUsername));
+          } else if (s.firstName || data.firstName) {
+            setUserLabel(s.firstName || data.firstName);
           } else {
             const stored = localStorage.getItem("tg_user");
             if (stored) {
