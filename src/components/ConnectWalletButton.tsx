@@ -104,7 +104,7 @@ export default function ConnectWalletButton({ variant = "default" }: ConnectWall
       ].join("\n");
 
       // Sign — called immediately on user click, no prior await
-      const signature = await signMessageAsync({ message: signMessage });
+      const signature = await signMessageAsync({ message: signMessage, account: address });
 
       // Verify on server
       const verifyRes = await fetch("/api/auth/wallet", {
