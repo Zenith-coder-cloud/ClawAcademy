@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import Image from "next/image";
+import ConnectWalletButton from "@/components/ConnectWalletButton";
 import CourseProgram from "@/components/CourseProgram";
 import FAQ from "@/components/FAQ";
 import HowItWorks from "@/components/HowItWorks";
@@ -93,12 +94,9 @@ export default function Home() {
           Больше чем курсы: прикладная база для тех, кто готов внедрять ИИ во все сферы жизни
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
-          <button
-            onClick={() => router.push("/login")}
-            className="px-8 py-4 bg-[#FF4422] text-white font-semibold rounded-lg hover:bg-[#e63d1e] transition-colors text-lg"
-          >
-            Подключить кошелёк
-          </button>
+          <div className="w-full sm:w-auto sm:min-w-[220px]">
+            <ConnectWalletButton />
+          </div>
           <button
             onClick={handleTelegramLogin}
             className="px-8 py-4 border border-[#FF4422] text-[#FF4422] font-semibold rounded-lg hover:bg-[#FF4422] hover:text-white transition-colors text-lg"
