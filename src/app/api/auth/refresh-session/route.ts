@@ -23,17 +23,19 @@ export async function POST(req: NextRequest) {
 
     const db = supabaseAdmin();
 
-    // Look up fresh user data by userId or walletAddress
+    // Look up fresh user data by userId, walletAddress, or telegramId
     let query = db.from("users").select("id, tier, wallet_address, telegram_id");
     if (session.userId) {
       query = query.eq("id", session.userId);
     } else if (session.walletAddress) {
-      query = query.ilike("wallet_address", session.walletAddress);
+      query = query.eq("wallet_address", session.walletAddress.toLowerCase());
+    } else if (session.telegramId) {
+      query = query.eq("telegram_id", session.telegramId);
     } else {
       return NextResponse.json({ error: "No user identifier" }, { status: 400 });
     }
 
-    const { data: user, error: dbError } = await query.single();
+    const { data: user, error: dbError } = await query.maybeSingle();
     if (dbError || !user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
