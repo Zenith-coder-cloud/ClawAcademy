@@ -3,19 +3,23 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useDisconnect } from "wagmi";
 
 export default function Header() {
   const router = useRouter();
+  const pathname = usePathname();
   const { disconnect } = useDisconnect();
   const [userLabel, setUserLabel] = useState<string | null>(null);
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
+    setChecked(false);
+    setUserLabel(null);
     fetch("/api/auth/session")
       .then((r) => r.ok ? r.json() : null)
       .then((data) => {
+        console.log("[Header] /api/auth/session response:", data);
         if (!data?.ok) return;
         const s = data.session;
         // Prefer DB wallet, then telegramUsername, then firstName
@@ -43,7 +47,7 @@ export default function Header() {
       })
       .catch(() => {})
       .finally(() => setChecked(true));
-  }, []);
+  }, [pathname]);
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
