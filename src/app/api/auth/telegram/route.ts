@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { checkRateLimit, getClientIp } from "@/lib/server/rateLimit";
 import { createSession, SESSION_COOKIE, MAX_AGE } from "@/lib/server/session";
+import { supabaseAdmin } from "@/lib/server/supabaseAdmin";
 
 export const dynamic = "force-dynamic";
 
@@ -75,7 +76,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const token = await createSession({ telegramId: userData.id, tier: "free" });
+    // Upsert user in DB — create if not exists, update name/username
+    const db = supabaseAdmin();
+    await db.from("users").upsert({
+      telegram_id: userData.id,
+      first_name: userData.first_name,
+      telegram_username: (userData as Record<string, unknown>).username as string ?? null,
+    }, { onConflict: "telegram_id", ignoreDuplicates: false });
+
+    // Get actual tier from DB
+    const { data: dbUser } = await db.from("users").select("tier").eq("telegram_id", userData.id).single();
+    const userTier = dbUser?.tier || "free";
+
+    const token = await createSession({ telegramId: userData.id, tier: userTier });
     const response = NextResponse.json({
       ok: true,
       user: {
