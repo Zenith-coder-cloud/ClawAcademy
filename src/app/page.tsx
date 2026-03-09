@@ -58,12 +58,8 @@ export default function Home() {
       "&return_to=" +
       encodeURIComponent("https://www.clawacademy.io/login") +
       "&request_access=write&embed=0";
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    if (isMobile) {
-      window.location.href = oauthUrl;
-    } else {
-      window.open(oauthUrl, "tgauth", "width=550,height=600,left=200,top=100");
-    }
+    // Always same tab — most reliable across all browsers and devices
+    window.location.href = oauthUrl;
   };
 
   const handleBuyClick = async (tierName: string) => {
