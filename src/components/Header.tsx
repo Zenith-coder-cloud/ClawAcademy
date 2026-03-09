@@ -4,9 +4,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useDisconnect } from "wagmi";
 
 export default function Header() {
   const router = useRouter();
+  const { disconnect } = useDisconnect();
   const [userLabel, setUserLabel] = useState<string | null>(null);
   const [checked, setChecked] = useState(false);
 
@@ -46,6 +48,7 @@ export default function Header() {
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
     localStorage.removeItem("tg_user");
+    disconnect();
     setUserLabel(null);
     router.push("/");
   };

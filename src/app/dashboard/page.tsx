@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import PaymentModal from "@/components/PaymentModal";
 import { useAppKit } from "@reown/appkit/react";
-import { useAccount, useSignMessage } from "wagmi";
+import { useAccount, useDisconnect, useSignMessage } from "wagmi";
 
 const allModules = [
   { id: 0, title: "Вход — что такое ИИ-агент", cover: "/covers/block0.png" },
@@ -61,6 +61,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const { open } = useAppKit();
   const { address, isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
   const { signMessageAsync } = useSignMessage();
   const [user, setUser] = useState<TgUser | null>(null);
   const [tierData, setTierData] = useState<{ tier: string; blocks: number[] } | null>(null);
@@ -144,6 +145,7 @@ export default function DashboardPage() {
     localStorage.removeItem("tg_user");
     localStorage.removeItem("wallet_address");
     localStorage.removeItem("telegram_id");
+    disconnect();
     router.push("/");
   };
 
