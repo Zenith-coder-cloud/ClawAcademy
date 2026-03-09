@@ -79,23 +79,17 @@ export async function POST(req: NextRequest) {
           .eq("id", mockPayment.id);
       }
 
-      // Use userId from session if available, otherwise wallet address
-      const sessionToken = req.cookies.get("ca_session")?.value;
-      const session = sessionToken ? await import("@/lib/server/session").then(m => m.verifySession(sessionToken)) : null;
-      
-      let updateQuery = db.from("users").update({ tier: mockTier, tier_updated_at: new Date().toISOString() });
-      
-      if (session?.userId) {
-        updateQuery = updateQuery.eq("id", session.userId);
-      } else {
-        const lower = wallet_address.toLowerCase();
-        updateQuery = updateQuery.or(`wallet_address.eq.${lower},wallet_address.ilike.${wallet_address}`);
-      }
-      
-      const { data: updatedUsers, error: updateError } = await updateQuery.select("id, tier");
-      console.log("[mock-verify] update result:", updatedUsers, "error:", updateError);
+      // Use same .or() pattern as admin endpoint which is confirmed working
+      const lower = wallet_address.toLowerCase();
+      const { data: updatedUsers, error: updateError } = await db
+        .from("users")
+        .update({ tier: mockTier, tier_updated_at: new Date().toISOString() })
+        .or(`wallet_address.eq.${lower},wallet_address.eq.${wallet_address}`)
+        .select("id, tier");
 
-      return NextResponse.json({ success: true, tier: mockTier });
+      console.log("[mock-verify] update result:", JSON.stringify(updatedUsers), "error:", updateError?.message);
+
+      return NextResponse.json({ success: true, tier: mockTier, updated: updatedUsers?.length ?? 0 });
     }
 
     // 1) Find pending payment

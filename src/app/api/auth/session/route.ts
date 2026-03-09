@@ -17,22 +17,19 @@ export async function GET(req: NextRequest) {
   }
 
   // Always read tier fresh from DB
-  try {
-    const db = supabaseAdmin();
-    let query = db.from("users").select("tier");
-    if (session.walletAddress) {
-      query = query.eq("wallet_address", session.walletAddress.toLowerCase());
-    } else if (session.telegramId) {
-      query = query.eq("telegram_id", session.telegramId);
-    }
-    const { data: user } = await query.single();
-    if (user?.tier) {
-      const tier = user.tier as TierKey;
-      const tierConfig = TIERS[tier];
-      const blocks = tierConfig ? [...tierConfig.blocks] : [0, 1, 2];
-      return NextResponse.json({ ok: true, session: { ...session, tier }, tier, blocks });
-    }
-  } catch {}
-
-  return NextResponse.json({ ok: true, session });
+  const db = supabaseAdmin();
+  let query = db.from("users").select("tier");
+  if (session.walletAddress) {
+    query = query.eq("wallet_address", session.walletAddress.toLowerCase());
+  } else if (session.telegramId) {
+    query = query.eq("telegram_id", session.telegramId);
+  } else {
+    return NextResponse.json({ ok: true, session });
+  }
+  const { data: user, error: dbError } = await query.maybeSingle();
+  console.log("[session] db lookup:", { walletAddress: session.walletAddress, telegramId: session.telegramId, user, dbError });
+  const tier = (user?.tier || "free") as TierKey;
+  const tierConfig = TIERS[tier];
+  const blocks = tierConfig ? [...tierConfig.blocks] : [0];
+  return NextResponse.json({ ok: true, session: { ...session, tier }, tier, blocks });
 }
