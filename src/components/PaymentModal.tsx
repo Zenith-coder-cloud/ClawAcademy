@@ -102,7 +102,11 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
   }
 
   async function handleInitiatePayment() {
-    if (!selectedTier || !address) return;
+    if (!selectedTier) return;
+    if (!address) {
+      setError('Сначала подключи кошелёк — нажми кнопку подключения ниже');
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -393,13 +397,22 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
                   <p className="text-white text-2xl font-bold">{displayAmount}</p>
                 </div>
 
-                <button
-                  onClick={handleInitiatePayment}
-                  disabled={loading}
-                  className="w-full py-3 rounded-xl text-sm font-semibold bg-[#e63329] text-white hover:bg-[#c92a22] transition-colors disabled:opacity-50"
-                >
-                  {loading ? 'Загрузка...' : 'Далее'}
-                </button>
+                {!isConnected ? (
+                  <button
+                    onClick={() => open()}
+                    className="w-full py-3 rounded-xl text-sm font-semibold bg-zinc-700 text-white hover:bg-zinc-600 transition-colors"
+                  >
+                    🔗 Подключить кошелёк
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleInitiatePayment}
+                    disabled={loading}
+                    className="w-full py-3 rounded-xl text-sm font-semibold bg-[#e63329] text-white hover:bg-[#c92a22] transition-colors disabled:opacity-50"
+                  >
+                    {loading ? 'Загрузка...' : 'Далее'}
+                  </button>
+                )}
               </>
             )}
 
