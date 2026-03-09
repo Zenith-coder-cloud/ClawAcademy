@@ -158,7 +158,7 @@ export default function LoginPage() {
       window.location.href = oauthUrl;
     } else {
       // Desktop: open in popup window
-      window.open(oauthUrl, "_blank", "noopener,noreferrer,width=550,height=600");
+      window.open(oauthUrl, "tgauth", "width=550,height=600,left=200,top=100");
     }
   };
 
