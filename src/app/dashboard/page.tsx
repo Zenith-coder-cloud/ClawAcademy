@@ -105,7 +105,7 @@ export default function DashboardPage() {
   }, [address, isConnected, signMessageAsync]);
 
   useEffect(() => {
-    // Validate session via httpOnly cookie (server-side check)
+    // Validate session via httpOnly cookie
     fetch("/api/auth/session")
       .then((res) => res.ok ? res.json() : null)
       .then((data) => {
@@ -114,54 +114,31 @@ export default function DashboardPage() {
           router.push("/login");
           return;
         }
-
-        // Use localStorage for UX display only, auth is cookie-based
         const stored = localStorage.getItem("tg_user");
         const displayUser = stored ? validateStoredUser(stored) : null;
-        if (displayUser) {
-          setUser(displayUser);
-        } else {
-          // Fallback: build display from session
-          setUser({
-            id: data.session.telegramId,
-            wallet_address: data.session.walletAddress,
-            first_name: data.session.walletAddress
-              ? data.session.walletAddress.slice(0, 6) + "..." + data.session.walletAddress.slice(-4)
-              : "User",
-          });
-        }
-
-        // Skip tier fetch here if tier_updated — second useEffect handles it after refresh-session
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('tier_updated')) return;
-
-        // Fetch tier — cookie sent automatically
-        return fetch("/api/user/tier");
+        setUser(displayUser || {
+          id: data.session?.telegramId,
+          wallet_address: data.session?.walletAddress,
+          first_name: data.session?.walletAddress
+            ? data.session.walletAddress.slice(0, 6) + "..." + data.session.walletAddress.slice(-4)
+            : "User",
+        });
       })
-      .then((res) => res?.ok ? res.json() : null)
+      .catch(() => {});
+
+    // Always fetch tier fresh from DB — independent of session chain
+    fetch("/api/user/tier")
+      .then((res) => res.ok ? res.json() : null)
       .then((data) => {
         if (data?.tier) setTierData({ tier: data.tier, blocks: data.blocks ?? [0, 1, 2] });
       })
       .catch(() => {});
-  }, [router]);
 
-  // Re-fetch tier if redirected after payment upgrade
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('tier_updated')) {
-      // Fetch tier directly from DB (no refresh-session dependency)
-      fetch("/api/user/tier")
-        .then((res) => res.ok ? res.json() : null)
-        .then((data) => {
-          if (data?.tier) setTierData({ tier: data.tier, blocks: data.blocks ?? [0, 1, 2] });
-        })
-        .catch(() => {});
-      // Also refresh session cookie in background (non-blocking)
-      fetch("/api/auth/refresh-session", { method: "POST" }).catch(() => {});
-      // Clean URL
-      window.history.replaceState({}, '', '/dashboard');
+    // Clean URL if tier_updated param present
+    if (window.location.search.includes("tier_updated")) {
+      window.history.replaceState({}, "", "/dashboard");
     }
-  }, []);
+  }, [router]);
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
