@@ -247,7 +247,7 @@ export default function DashboardPage() {
               }
 
               if (hasAccess) {
-                router.push(`/dashboard/course/block/${m.id}/lesson/1`);
+                router.push(`/dashboard/course/block/${m.id}`);
               } else {
                 setIsPaymentOpen(true);
               }
