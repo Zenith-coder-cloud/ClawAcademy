@@ -72,6 +72,37 @@ export default function DashboardPage() {
 
   const needsWalletLink = !!(user?.id && !dbWalletAddress);
 
+  const fetchSession = useCallback(() => {
+    // Validate session + get fresh tier from DB in one call
+    fetch("/api/auth/session")
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        if (!data?.ok) {
+          localStorage.removeItem("tg_user");
+          router.push("/login");
+          return;
+        }
+        const stored = localStorage.getItem("tg_user");
+        const displayUser = stored ? validateStoredUser(stored) : null;
+        setUser(displayUser || {
+          id: data.session?.telegramId,
+          wallet_address: data.session?.walletAddress,
+          first_name: data.session?.walletAddress
+            ? data.session.walletAddress.slice(0, 6) + "..." + data.session.walletAddress.slice(-4)
+            : "User",
+        });
+        // Set wallet address from DB
+        if (data.walletAddress) {
+          setDbWalletAddress(data.walletAddress);
+        }
+        // Set tier from session (already reads from DB)
+        if (data.tier) {
+          setTierData({ tier: data.tier, blocks: data.blocks ?? [0] });
+        }
+      })
+      .catch((err) => console.error("[dashboard] session fetch failed:", err));
+  }, [router]);
+
   const handleLinkWallet = useCallback(async () => {
     if (!address || !isConnected) return;
     setLinkWalletStatus('signing');
@@ -105,40 +136,13 @@ export default function DashboardPage() {
   }, [address, isConnected, signMessageAsync]);
 
   useEffect(() => {
-    // Validate session + get fresh tier from DB in one call
-    fetch("/api/auth/session")
-      .then((res) => res.ok ? res.json() : null)
-      .then((data) => {
-        if (!data?.ok) {
-          localStorage.removeItem("tg_user");
-          router.push("/login");
-          return;
-        }
-        const stored = localStorage.getItem("tg_user");
-        const displayUser = stored ? validateStoredUser(stored) : null;
-        setUser(displayUser || {
-          id: data.session?.telegramId,
-          wallet_address: data.session?.walletAddress,
-          first_name: data.session?.walletAddress
-            ? data.session.walletAddress.slice(0, 6) + "..." + data.session.walletAddress.slice(-4)
-            : "User",
-        });
-        // Set wallet address from DB
-        if (data.walletAddress) {
-          setDbWalletAddress(data.walletAddress);
-        }
-        // Set tier from session (already reads from DB)
-        if (data.tier) {
-          setTierData({ tier: data.tier, blocks: data.blocks ?? [0] });
-        }
-      })
-      .catch((err) => console.error("[dashboard] session fetch failed:", err));
+    fetchSession();
 
     // Clean URL if tier_updated param present
     if (window.location.search.includes("tier_updated")) {
       window.history.replaceState({}, "", "/dashboard");
     }
-  }, [router]);
+  }, [fetchSession]);
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -256,7 +260,7 @@ export default function DashboardPage() {
             return (
               <div
                 key={m.id}
-                className={`rounded-2xl shadow-xl overflow-hidden transition-transform ${
+                className={`rounded-2xl shadow-xl overflow-hidden transition-transform flex flex-col ${
                   locked
                     ? "bg-zinc-900 cursor-not-allowed"
                     : "bg-zinc-900 hover:scale-[1.02] cursor-pointer"
@@ -279,13 +283,14 @@ export default function DashboardPage() {
                   )}
                 </div>
                 {/* Info */}
-                <div className="p-5">
+                <div className="p-5 flex flex-col flex-1">
                   <p className="text-sm text-[#888888] mb-1">
                     {locked ? "🔒" : "🔓"} БЛОК {m.id}
                   </p>
                   <h3 className="font-semibold text-white text-lg mb-3">
                     {m.title}
                   </h3>
+                  <div className="mt-auto"></div>
                   {locked ? (
                     <button
                       onClick={() => setIsPaymentOpen(true)}
@@ -314,8 +319,8 @@ export default function DashboardPage() {
               onClick={() => router.push("/dashboard/chat")}
               className="w-full p-6 rounded-xl bg-[#1a1a1a] border border-[#333] hover:border-[#FF4422] transition-colors flex items-center gap-4 text-left"
             >
-              <div className="w-12 h-12 rounded-full bg-[#FF4422] flex items-center justify-center text-2xl shrink-0">
-                🤖
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 overflow-hidden bg-[#1a1a1a]">
+                <Image src="/junior-bot.png" alt="Junior" width={64} height={64} className="w-16 h-16 object-cover" />
               </div>
               <div>
                 <p className="text-white font-semibold text-lg">Чат с Junior</p>
@@ -352,7 +357,10 @@ export default function DashboardPage() {
 
       <PaymentModal
         isOpen={isPaymentOpen}
-        onClose={() => setIsPaymentOpen(false)}
+        onClose={() => {
+          setIsPaymentOpen(false);
+          fetchSession();
+        }}
       />
     </main>
   );

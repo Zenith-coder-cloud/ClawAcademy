@@ -16,7 +16,11 @@ interface PrefetchedNonce {
   fetchedAt: number;
 }
 
-export default function ConnectWalletButton() {
+type ConnectWalletButtonProps = {
+  variant?: "default" | "hero" | "banner";
+};
+
+export default function ConnectWalletButton({ variant = "default" }: ConnectWalletButtonProps) {
   const { open, close } = useAppKit();
   const { address, isConnected, connector } = useAccount();
   const chainId = useChainId();
@@ -27,11 +31,25 @@ export default function ConnectWalletButton() {
   const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   const [nonceReady, setNonceReady] = useState(false);
+  const [alreadyAuthenticated, setAlreadyAuthenticated] = useState(false);
   const prefetchedNonce = useRef<PrefetchedNonce | null>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    fetch("/api/auth/session")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.ok) {
+          setAlreadyAuthenticated(true);
+        } else {
+          setAlreadyAuthenticated(false);
+        }
+      })
+      .catch(() => {});
+  }, [isConnected, address]);
 
   // Optimistic nonce prefetch — fetch when wallet connects / address changes
   const fetchNonce = useCallback(async () => {
@@ -100,7 +118,7 @@ export default function ConnectWalletButton() {
       ].join("\n");
 
       // Sign — called immediately on user click, no prior await
-      const signature = await signMessageAsync({ message: signMessage });
+      const signature = await signMessageAsync({ message: signMessage, account: address });
 
       // Verify on server
       const verifyRes = await fetch("/api/auth/wallet", {
@@ -157,6 +175,9 @@ export default function ConnectWalletButton() {
   const autoSignTriggered = useRef(false);
 
   useEffect(() => {
+    if (alreadyAuthenticated) {
+      return;
+    }
     // Reset flag when wallet disconnects
     if (!isConnected || !address) {
       autoSignTriggered.current = false;
@@ -172,16 +193,43 @@ export default function ConnectWalletButton() {
       };
       runAutoSign();
     }
-  }, [isConnected, address, connector, nonceReady, close]);
+  }, [alreadyAuthenticated, isConnected, address, connector, nonceReady, close]);
+
+  const isHero = variant === "hero";
+  const isBanner = variant === "banner";
+  const baseButtonClass = isHero
+    ? "px-8 py-4 border border-[#FF4422] text-[#FF4422] font-semibold rounded-lg hover:bg-[#FF4422] hover:text-white transition-colors text-lg"
+    : isBanner
+      ? "px-6 py-2.5 border border-[#FF4422] text-[#FF4422] font-semibold rounded-lg hover:bg-[#FF4422] hover:text-white transition-colors text-sm"
+      : "w-full py-3.5 bg-zinc-800 border border-zinc-700 text-white font-semibold rounded-xl text-sm";
+  const baseButtonClassHover = isHero
+    ? "px-8 py-4 border border-[#FF4422] text-[#FF4422] font-semibold rounded-lg hover:bg-[#FF4422] hover:text-white transition-colors text-lg"
+    : isBanner
+      ? "px-6 py-2.5 border border-[#FF4422] text-[#FF4422] font-semibold rounded-lg hover:bg-[#FF4422] hover:text-white transition-colors text-sm"
+      : "w-full py-3.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white font-semibold rounded-xl transition-colors text-sm";
+  const connectedButtonClass = isHero
+    ? "px-8 py-4 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-semibold rounded-lg transition-colors text-lg"
+    : "w-full py-3.5 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-semibold rounded-xl transition-colors text-sm";
 
   if (!mounted) {
     return (
       <button
         disabled
-        className="w-full py-3.5 bg-zinc-800 border border-zinc-700 text-white font-semibold rounded-xl text-sm flex items-center justify-center gap-3 opacity-60"
+        className={`${baseButtonClass} flex items-center justify-center gap-3 opacity-60`}
       >
         <Image src="/walletconnect.svg" alt="WalletConnect" width={22} height={15} className="w-6 h-auto" />
         Подключить кошелёк
+      </button>
+    );
+  }
+
+  if (alreadyAuthenticated) {
+    return (
+      <button
+        onClick={() => router.push("/dashboard")}
+        className={`${connectedButtonClass} flex items-center justify-center gap-2 w-full`}
+      >
+        Мой кабинет →
       </button>
     );
   }
@@ -194,7 +242,7 @@ export default function ConnectWalletButton() {
             authenticate();
           }}
           disabled={signing}
-          className="w-full py-3.5 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-semibold rounded-xl transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-60"
+          className={`${connectedButtonClass} flex items-center justify-center gap-2 disabled:opacity-60 w-full`}
         >
           {signing
             ? "Подтвердите в кошельке..."
@@ -216,7 +264,7 @@ export default function ConnectWalletButton() {
   return (
     <button
       onClick={() => open()}
-      className="w-full py-3.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white font-semibold rounded-xl transition-colors text-sm flex items-center justify-center gap-3"
+      className={`${baseButtonClassHover} flex items-center justify-center gap-3 w-full`}
     >
       <Image src="/walletconnect.svg" alt="WalletConnect" width={22} height={15} className="w-6 h-auto" />
       Подключить кошелёк

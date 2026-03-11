@@ -11,7 +11,6 @@ import HowItWorks from "@/components/HowItWorks";
 import PaymentModal from "@/components/PaymentModal";
 import type { TierKey } from "@/lib/paymentConfig";
 
-
 const tiers = [
   {
     name: "Genesis",
@@ -50,7 +49,6 @@ export default function Home() {
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [selectedTier, setSelectedTier] = useState<TierKey>("genesis");
   const [checkingSession, setCheckingSession] = useState<string | null>(null);
-
 
   const handleTelegramLogin = () => {
     const oauthUrl =
@@ -94,13 +92,14 @@ export default function Home() {
           Больше чем курсы: прикладная база для тех, кто готов внедрять ИИ во все сферы жизни
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
-          <div className="w-full sm:w-auto sm:min-w-[220px]">
-            <ConnectWalletButton />
+          <div className="min-w-[260px]">
+            <ConnectWalletButton variant="hero" />
           </div>
           <button
             onClick={handleTelegramLogin}
-            className="px-8 py-4 border border-[#FF4422] text-[#FF4422] font-semibold rounded-lg hover:bg-[#FF4422] hover:text-white transition-colors text-lg"
+            className="min-w-[260px] px-8 py-4 border border-[#FF4422] text-[#FF4422] font-semibold rounded-lg hover:bg-[#FF4422] hover:text-white transition-colors text-lg flex items-center justify-center gap-3"
           >
+            <Image src="/telegram.svg" alt="Telegram" width={18} height={18} className="w-5 h-5" />
             Войти через Telegram
           </button>
         </div>
@@ -119,13 +118,13 @@ export default function Home() {
             <span className="w-px h-4 bg-[#FF4422]/30" />
             <span className="text-zinc-300 text-sm">Блок 0 открыт всем — начни прямо сейчас</span>
           </div>
-          <button
-            onClick={() => router.push('/login')}
+          <a
+            href="/login"
             className="text-[#FF4422] hover:text-white text-sm font-semibold transition-colors whitespace-nowrap flex items-center gap-1 group"
           >
-            Начать бесплатно
+            Начать обучение
             <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
-          </button>
+          </a>
         </div>
 
         {/* Paid tiers: Genesis | Pro | Elite */}

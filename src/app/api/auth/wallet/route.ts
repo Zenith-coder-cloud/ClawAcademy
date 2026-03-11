@@ -4,7 +4,8 @@ import { getAddress, verifyMessage } from "viem";
 import { z } from "zod";
 import { supabaseAdmin } from "@/lib/server/supabaseAdmin";
 import { checkRateLimit, getClientIp } from "@/lib/server/rateLimit";
-import { createSession, SESSION_COOKIE, MAX_AGE } from "@/lib/server/session";
+import { createSession, verifySession, SESSION_COOKIE, MAX_AGE } from "@/lib/server/session";
+import { type TierKey } from "@/lib/paymentConfig";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +18,19 @@ const walletAuthSchema = z.object({
   issuedAt: z.string().datetime(),
   expiresAt: z.string().datetime(),
 });
+
+const TIER_ORDER: Record<TierKey, number> = {
+  free: 0,
+  genesis: 1,
+  pro: 2,
+  elite: 3,
+};
+
+function pickHigherTier(a?: string | null, b?: string | null): TierKey {
+  const aKey = (a as TierKey) || "free";
+  const bKey = (b as TierKey) || "free";
+  return TIER_ORDER[aKey] >= TIER_ORDER[bKey] ? aKey : bKey;
+}
 
 // GET — generate nonce
 export async function GET(req: NextRequest) {
@@ -186,36 +200,107 @@ export async function POST(req: NextRequest) {
       console.error("[wallet-auth POST] failed to delete used nonce:", deleteError);
     }
 
-    // Upsert user with wallet address
-    console.log("[wallet-auth POST] upserting user for wallet:", normalizedAddress.toLowerCase());
+    // If user has an active Telegram session, merge accounts
+    const existingSessionToken = req.cookies.get(SESSION_COOKIE)?.value;
+    const session = existingSessionToken ? await verifySession(existingSessionToken) : null;
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let user: any = null;
-    try {
-      const { data, error: userError } = await db
+
+    if (session?.telegramId) {
+      const walletLower = normalizedAddress.toLowerCase();
+
+      const { data: tgUser } = await db
         .from("users")
-        .upsert(
-          {
-            wallet_address: normalizedAddress.toLowerCase(),
-            first_name: address.slice(0, 6) + "..." + address.slice(-4),
-          },
-          { onConflict: "wallet_address" }
-        )
+        .select("id, tier, first_name, telegram_id, wallet_address")
+        .eq("telegram_id", session.telegramId)
+        .single();
+
+      if (!tgUser) {
+        console.error("[wallet-auth POST] telegram session but user not found");
+        return NextResponse.json({ error: "Telegram user not found" }, { status: 404 });
+      }
+
+      const { data: walletUser } = await db
+        .from("users")
+        .select("id, tier, telegram_id")
+        .eq("wallet_address", walletLower)
+        .single();
+
+      if (walletUser && walletUser.telegram_id && walletUser.telegram_id !== session.telegramId) {
+        return NextResponse.json(
+          { error: "Wallet already linked to another account" },
+          { status: 409 }
+        );
+      }
+
+      const highestTier = pickHigherTier(tgUser.tier, walletUser?.tier);
+
+      const { data: mergedUser, error: mergeError } = await db
+        .from("users")
+        .update({
+          wallet_address: walletLower,
+          wallet_linked_at: new Date().toISOString(),
+          tier: highestTier,
+        })
+        .eq("id", tgUser.id)
         .select()
         .single();
 
-      if (userError) {
-        console.error("[wallet-auth POST] upsert user failed:", userError.code, userError.message, userError.details, userError.hint);
+      if (mergeError || !mergedUser) {
+        console.error("[wallet-auth POST] merge update failed:", mergeError);
         return NextResponse.json({ error: "Server error" }, { status: 500 });
       }
-      user = data;
-      console.log("[wallet-auth POST] user upserted, id:", user?.id);
-    } catch (upsertErr) {
-      console.error("[wallet-auth POST] upsert threw unexpectedly:", upsertErr);
-      return NextResponse.json({ error: "Server error" }, { status: 500 });
+
+      if (walletUser && walletUser.id !== tgUser.id) {
+        await db
+          .from("payments")
+          .update({ user_id: tgUser.id })
+          .eq("user_id", walletUser.id);
+
+        const { error: deleteErrorUser } = await db
+          .from("users")
+          .delete()
+          .eq("id", walletUser.id);
+
+        if (deleteErrorUser) {
+          console.error("[wallet-auth POST] failed to delete orphan wallet user:", deleteErrorUser);
+        }
+      }
+
+      user = mergedUser;
+      console.log("[wallet-auth POST] merged user, id:", user?.id);
+    } else {
+      // Upsert user with wallet address
+      console.log("[wallet-auth POST] upserting user for wallet:", normalizedAddress.toLowerCase());
+      try {
+        const { data, error: userError } = await db
+          .from("users")
+          .upsert(
+            {
+              wallet_address: normalizedAddress.toLowerCase(),
+              first_name: address.slice(0, 6) + "..." + address.slice(-4),
+            },
+            { onConflict: "wallet_address" }
+          )
+          .select()
+          .single();
+
+        if (userError) {
+          console.error("[wallet-auth POST] upsert user failed:", userError.code, userError.message, userError.details, userError.hint);
+          return NextResponse.json({ error: "Server error" }, { status: 500 });
+        }
+        user = data;
+        console.log("[wallet-auth POST] user upserted, id:", user?.id);
+      } catch (upsertErr) {
+        console.error("[wallet-auth POST] upsert threw unexpectedly:", upsertErr);
+        return NextResponse.json({ error: "Server error" }, { status: 500 });
+      }
     }
 
     const sessionToken = await createSession({
       userId: user?.id,
+      telegramId: session?.telegramId ?? user?.telegram_id ?? undefined,
       walletAddress: normalizedAddress.toLowerCase(),
       tier: (user?.tier as string) || "free",
     });
