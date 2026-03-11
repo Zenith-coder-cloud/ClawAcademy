@@ -9,9 +9,11 @@ const cases = [
     id: 1,
     handle: "@kirillk_web3",
     postUrl: "https://x.com/kirillk_web3/status/2031009107780796639",
-    screenshotFile: "post_01_kirillk.jpg",
+    mediaFile: "/lesson3-media/posts/post_01_kirillk_video1.mp4",
+    mediaType: "video" as const,
     headline: "Китайский студент: $218K за 10 дней на Polymarket",
-    text: "Программист из китайского университета написал OpenClaw бот для торговли на Polymarket. Вкратце показал стратегию — и попросил не распространять. За 10 дней бот сгенерировал $218K. 354 предсказания, в основном Bitcoin рынки.",
+    originalText: `A Chinese University Programmer Built an OpenClaw bot that trades Polymarket. He briefly shared the strategy behind it… and then asked people not to spread it. In just 10 days it generated about $218K. Look at the profit curve above. 354 predictions. Mostly Bitcoin markets.`,
+    context: "Бот анализировал рынки Polymarket и делал ставки на основе вероятностной модели. 354 предсказания за 10 дней — в среднем 35 сделок в сутки. Основной акцент на Bitcoin рынках.",
     theme: "money",
     themeLabel: "💰 Трейдинг",
     keyNumbers: ["$218K", "10 дней", "354 сделки"],
@@ -21,21 +23,25 @@ const cases = [
     id: 2,
     handle: "@k1rallik",
     postUrl: "https://x.com/k1rallik/status/2028479741913698792",
-    screenshotFile: "post_02_k1rallik.jpg",
+    mediaFile: "/lesson3-media/posts/post_02_k1rallik_video.mp4",
+    mediaType: "video" as const,
     headline: "$50 → $1,000/день: 72 часа без остановки",
-    text: "OpenClaw работает 72 часа без перерыва — без сна, без пощады. Использует Claude Sonnet как шахматный движок: каждые 5 минут сканирует тысячи контрактов Polymarket, вычисляет реальную вероятность и ставит только когда есть настоящее преимущество.",
+    originalText: `$50 → $1,000/day. OpenClaw has been running for 72 hours straight. no breaks. no sleep. no mercy. it uses Claude Sonnet to read the market like a chess engine - every 5 minutes it scans thousands of Polymarket contracts. Calculates true probability, and only bets when the edge is real.`,
+    context: "Бот использует Claude Sonnet для анализа рынка. Каждые 5 минут — полный скан тысяч контрактов Polymarket. Ставит только при реальном статистическом преимуществе. Вырос с $50 до $1,000 в день за 72 часа работы.",
     theme: "money",
     themeLabel: "💰 Трейдинг",
-    keyNumbers: ["$50→$1K/день", "72 часа", "авто-торговля"],
+    keyNumbers: ["$50→$1K/день", "72 часа", "Claude Sonnet"],
     date: "Mar 2, 2026",
   },
   {
     id: 3,
     handle: "@everestchris6",
     postUrl: "https://x.com/everestchris6/status/2029653579657789603",
-    screenshotFile: "post_03_everestchris_agency.jpg",
+    mediaFile: "/lesson3-media/posts/post_03_everestchris_video.mp4",
+    mediaType: "video" as const,
     headline: "Полноценное веб-агентство на автопилоте",
-    text: "OpenClaw бот запускает целое агентство: находит сотни локальных бизнесов через Google Maps, AI аудирует каждый сайт (оценки A-D), строит кастомные сайты для худших, отправляет превью, AI голосовой агент звонит и закрывает сделку. Всё 24/7 без ручного труда.",
+    originalText: `My OpenClaw bot runs a complete website agency on autopilot: Finds 100's of local businesses via Google Maps, AI audits every site → grades them A-D, Builds custom websites for the worst ones, Texts them the preview link, AI voice agent calls to close the deal, Runs 24/7 with zero manual work.`,
+    context: "6 последовательных AI агентов: поиск → аудит → разработка → outreach → звонок → закрытие. Каждый этап полностью автоматизирован. Человек в цепочке не участвует.",
     theme: "automation",
     themeLabel: "🏢 Автоматизация",
     keyNumbers: ["100+ бизнесов", "24/7", "6 агентов"],
@@ -45,9 +51,11 @@ const cases = [
     id: 4,
     handle: "@everestchris6",
     postUrl: "https://x.com/everestchris6/status/2028939891342733823",
-    screenshotFile: "post_04_everestchris_leads.jpg",
+    mediaFile: "/lesson3-media/posts/post_04_everestchris_video.mp4",
+    mediaType: "video" as const,
     headline: "Автосайты + видео-питч для каждого лида",
-    text: "Инструмент парсит лиды из Google Maps, строит сайт для каждого бизнеса, записывает видео с их новым сайтом и отправляет как персональный холодный питч. Лид видит сайт сделанный специально для него — конверсия несравнимо выше.",
+    originalText: `I built an openclaw tool that automatically builds websites for leads it scrapes from google maps, auto-records the website as a video, and sends it to them as a cold pitch... It literally screen records the website that was made for THEIR business, so the lead will feel it's personalized.`,
+    context: "Система записывает скринкаст нового сайта, созданного конкретно для этого бизнеса. Лид получает видео «смотри, вот твой новый сайт». Персонализация без ручного труда.",
     theme: "automation",
     themeLabel: "🏢 Автоматизация",
     keyNumbers: ["Google Maps", "авто-сайт", "видео-питч"],
@@ -57,21 +65,25 @@ const cases = [
     id: 5,
     handle: "@TheAIHub111",
     postUrl: "https://x.com/TheAIHub111/status/2031109363000287232",
-    screenshotFile: "post_05_theaihub.jpg",
-    headline: "6 агентов закрывают продажи без участия человека",
-    text: "Бот управляет 6 агентами 24/7: находит бизнесы без сайта, строит демо, отправляет ссылку с оплатой, обрабатывает возражения, закрывает продажу. Полностью автономная цепочка от поиска до получения денег.",
+    mediaFile: "/lesson3-media/posts/post_05_theaihub_video.mp4",
+    mediaType: "video" as const,
+    headline: "6 агентов — от поиска клиента до получения денег",
+    originalText: `My OpenClaw bot runs 6 AI agents 24/7: Finds local businesses without a website, Builds a custom demo site for them automatically, Sends outreach with the preview + payment link, Handles objections and closes the sale. Most local businesses don't have a website, this system finds them, pitches them, and collects payment automatically.`,
+    context: "Большинство локальных бизнесов не имеют сайта. Система находит таких, создаёт демо и отправляет со ссылкой на оплату. Обработка возражений тоже автоматизирована.",
     theme: "automation",
     themeLabel: "🏢 Автоматизация",
-    keyNumbers: ["6 агентов", "24/7", "авто-продажи"],
+    keyNumbers: ["6 агентов", "24/7", "авто-оплата"],
     date: "Mar 10, 2026",
   },
   {
     id: 6,
     handle: "@kirillk_web3",
     postUrl: "https://x.com/kirillk_web3/status/2030340473043431749",
-    screenshotFile: "post_06_kirillk_500.jpg",
+    mediaFile: "/lesson3-media/posts/post_06_kirillk_img.jpg",
+    mediaType: "image" as const,
     headline: "$500 пока спал. Ещё $500 утром.",
-    text: "OpenClaw агент заработал $500 пока я спал. Проснулся — терминал всё ещё работает, ещё $500 добавилось. Я не делал ни одного предсказания. Просто понял механику. 8 часов на сборку, один вечер на архитектуру. Теперь работает в фоне.",
+    originalText: `This OpenClaw agent made $500 while I was asleep. Woke up to the terminal still running. Another $500 added overnight. I didn't predict a single market. I just understood the loop. It took 8 hours to build and one afternoon to figure out the architecture. Now it just runs in the background while I sleep.`,
+    context: "8 часов сборки + один вечер на архитектуру. Потом — полностью пассивный доход. Ключевая мысль: «Я просто понял механику цикла». Не нужно угадывать рынок — нужно понять логику.",
     theme: "money",
     themeLabel: "💰 Трейдинг",
     keyNumbers: ["$500 за ночь", "8ч на сборку", "пассивно"],
@@ -81,11 +93,13 @@ const cases = [
     id: 7,
     handle: "@Jacobsklug",
     postUrl: "https://x.com/Jacobsklug/status/2029187703745724518",
-    screenshotFile: "post_07_jacobsklug.jpg",
-    headline: "16 агентов за $400/мес — компания спит, система работает",
-    text: "Основатель запустил 16 OpenClaw агентов за $400/месяц. Вся компания работает пока он спит: ресёрч, контент, code review, аутрич — 24/7. Дешёвые LLM для простых задач, дорогие модели для кода. Полностью автономно.",
+    mediaFile: "/lesson3-media/posts/post_07_jacobsklug_video.mp4",
+    mediaType: "video" as const,
+    headline: "16 агентов за $400/мес — компания работает сама",
+    originalText: `This founder has 16 @openclaw agents for $400/month. His entire company operates while he sleeps. In the video: How he structured 16 sub-agents under one OpenClaw instance, The cron job system running research, content, code reviews, and outreach 24/7, Routing cheap LLMs for simple tasks, expensive models for coding.`,
+    context: "Архитектура: один главный OpenClaw + 16 специализированных агентов. Дешёвые модели для рутины, дорогие — для кода. Cron расписание: ресёрч, контент, code review, аутрич — всё по таймеру.",
     theme: "scale",
-    themeLabel: "🚀 Продукты",
+    themeLabel: "🚀 Масштаб",
     keyNumbers: ["16 агентов", "$400/мес", "24/7"],
     date: "Mar 4, 2026",
   },
@@ -93,9 +107,11 @@ const cases = [
     id: 8,
     handle: "@VadimStrizheus",
     postUrl: "https://x.com/VadimStrizheus/status/2028583969919238542",
-    screenshotFile: "post_08_vadim.jpg",
-    headline: "Один YT-линк на входе — готовые клипы на выходе",
-    text: "OpenClaw нарезал весь подкаст автоматически: нашёл вирусные моменты, добавил профессиональные субтитры, обрезал с face tracking, запланировал и опубликовал. Всё что нужно — отправить YT ссылку в Telegram бот.",
+    mediaFile: "/lesson3-media/posts/post_08_vadim_video.mp4",
+    mediaType: "video" as const,
+    headline: "Один YT-линк → готовые клипы с субтитрами",
+    originalText: `Clippers are DOOMED!! My OpenClaw clipped this entire podcast with @Vugola. - Found viral moments - Added professional captions - Cropped and face tracked - Scheduled and posted for me. All I had to do was send one YT link to my telegram bot. Social media growth has never been easier and cheaper until now.`,
+    context: "Отправил YT ссылку в Telegram бот → OpenClaw нашёл вирусные моменты, добавил субтитры, обрезал с face tracking, запланировал публикацию. Ноль ручного редактирования.",
     theme: "content",
     themeLabel: "🎬 Контент",
     keyNumbers: ["1 YT ссылка", "авто-нарезка", "авто-пост"],
@@ -105,11 +121,13 @@ const cases = [
     id: 9,
     handle: "@chrysb",
     postUrl: "https://x.com/chrysb/status/2022725723312865710",
-    screenshotFile: "post_09_chrysb.jpg",
-    headline: "Дала агенту $1K — она торгует акциями сама",
-    text: "Дал OpenClaw $1K бюджет и доступ к автономной торговле акциями. Она сама выработала процесс: глубокое исследование, построение тезисов, управление рисками. Просыпается в 6 утра, сканирует пре-маркет, делает решения до открытия. Я ничего не одобряю.",
+    mediaFile: "/lesson3-media/posts/post_09_chrysb_img.jpg",
+    mediaType: "image" as const,
+    headline: "Дала агенту $1K — он торгует акциями сам",
+    originalText: `I gave my @openclaw a $1K budget and access to trade stocks autonomously. she's developed a process for deep research, building theses, and managing risk. she wakes up at 6am, scans pre-market, and makes her own calls by market open. I don't approve anything.`,
+    context: "Агент сам выработал процесс: исследование → тезисы → управление риском. Просыпается в 6 утра, до открытия рынка уже готово решение. Владелец не одобряет ни одну сделку.",
     theme: "autonomous",
-    themeLabel: "🚀 Продукты",
+    themeLabel: "🤖 Автономия",
     keyNumbers: ["$1K бюджет", "6am старт", "без одобрения"],
     date: "Feb 15, 2026",
   },
@@ -117,9 +135,11 @@ const cases = [
     id: 10,
     handle: "@saviomartin7",
     postUrl: "https://x.com/saviomartin7/status/2018437642820731148",
-    screenshotFile: "post_10_saviomartin.jpg",
+    mediaFile: "/lesson3-media/posts/post_10_saviomartin_video.mp4",
+    mediaType: "video" as const,
     headline: "simpleclaw.com за выходные — 413K просмотров",
-    text: "Сайд-проект за выходные: simpleclaw.com — деплой OpenClaw за 1 минуту для обычных людей. Без технических знаний, один клик. 413K просмотров поста. Написан на OpenClaw — живой пример того что можно построить за 2 дня.",
+    originalText: `weekend side project: simpleclaw.com > ultra simple one-click deploy OpenClaw done under 1 min > built for all normal people`,
+    context: "simpleclaw.com — деплой OpenClaw за одну минуту без технических знаний. Построен за выходные. 413K просмотров поста. Живой пример: если есть идея, в пятницу вечером — к воскресенью уже продукт.",
     theme: "product",
     themeLabel: "🚀 Продукты",
     keyNumbers: ["413K просмотров", "1 мин деплой", "выходные"],
@@ -129,9 +149,11 @@ const cases = [
     id: 11,
     handle: "@TheMattBerman",
     postUrl: "https://x.com/TheMattBerman/status/2027220216409723296",
-    screenshotFile: "post_11_mattberman.jpg",
+    mediaFile: "/lesson3-media/posts/post_11_berman_video.mp4",
+    mediaType: "video" as const,
     headline: "Meta Ads на автопилоте за $0/месяц",
-    text: "Запускаю Meta рекламу через OpenClaw за $0/месяц. Система: ежедневная проверка кампаний, social-cli обёртывает Meta Marketing API (токены, rate limits), анализирует что работает и что кровоточит. Полностью без ручного труда.",
+    originalText: `I run my meta ads with @openclaw for $0/month. here's the system that runs autonomously: step 1: daily health check → social-cli wraps Meta's marketing API (token refresh, pagination, rate limits all handled) → am I on track? what's running? who's winning? who's bleeding? any fatigue?`,
+    context: "social-cli оборачивает Meta Marketing API — обновление токенов, pagination, rate limits. Ежедневная проверка: что работает, что теряет деньги, есть ли усталость у аудитории. Полностью автоматически.",
     theme: "ads",
     themeLabel: "🏢 Автоматизация",
     keyNumbers: ["$0/мес", "Meta Ads", "автономно"],
@@ -141,12 +163,14 @@ const cases = [
     id: 12,
     handle: "@jacobgrowth",
     postUrl: "https://x.com/jacobgrowth/status/2027816234964946977",
-    screenshotFile: "post_12_jacobgrowth.jpg",
+    mediaFile: "/lesson3-media/posts/post_12_jacobgrowth_img1.jpg",
+    mediaType: "image" as const,
     headline: "$10K на нарезке поп-культуры",
-    text: "OpenClaw агент принёс $10K на клипинге поп-культурного контента. Движок нарезает, пишет скрипты и дистрибутирует по каналам полностью на автопилоте. Собирает бренд-выплаты пока мы не за столом. Без камеры — только OpenClaw.",
+    originalText: `This OpenClaw AI Agent Made Me $10K Clipping Pop Culture Content... i'm going to show you how we built a content engine that clips, scripts, and distributes pop culture content across multiple channels. completely on autopilot and pulls brand payouts from content rewards while we're not even at our desks. we don't require any camera for this. just openclaw, doing the work.`,
+    context: "Движок нарезает, пишет скрипты и дистрибутирует поп-культурный контент по нескольким каналам. Бренд-выплаты приходят пока создатель не за столом. Не нужна камера, студия или монтаж.",
     theme: "content",
     themeLabel: "🎬 Контент",
-    keyNumbers: ["$10K", "2.3M просмотров", "автопилот"],
+    keyNumbers: ["$10K", "2.3M просмотров", "авто-дистрибуция"],
     date: "Mar 2, 2026",
   },
 ];
@@ -162,11 +186,15 @@ const filters = [
 const matchesFilter = (theme: string, filterId: string) => {
   if (filterId === "all") return true;
   if (filterId === "money") return theme === "money";
-  if (filterId === "automation") return theme === "automation" || theme === "ads";
+  if (filterId === "automation")
+    return theme === "automation" || theme === "ads";
   if (filterId === "content") return theme === "content";
-  if (filterId === "product") {
-    return theme === "scale" || theme === "autonomous" || theme === "product";
-  }
+  if (filterId === "product")
+    return (
+      theme === "scale" ||
+      theme === "autonomous" ||
+      theme === "product"
+    );
   return true;
 };
 
@@ -174,27 +202,39 @@ export default function Block0Lesson3Page() {
   const [activeFilter, setActiveFilter] = useState("all");
   const [expandedIds, setExpandedIds] = useState<number[]>([]);
 
-  const filteredCases = cases.filter((item) => matchesFilter(item.theme, activeFilter));
+  const filteredCases = cases.filter((item) =>
+    matchesFilter(item.theme, activeFilter)
+  );
 
   const toggleExpanded = (id: number) => {
-    setExpandedIds((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]));
+    setExpandedIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
   };
 
   return (
     <main className="min-h-screen bg-[#0D0D0D] text-white">
       <section className="max-w-6xl mx-auto px-4 pt-10 pb-8">
         <nav className="text-zinc-500 text-sm mb-4 flex items-center gap-1.5">
-          <Link href="/dashboard" className="hover:text-zinc-300 transition-colors">
+          <Link
+            href="/dashboard"
+            className="hover:text-zinc-300 transition-colors"
+          >
             Dashboard
           </Link>
           <span>/</span>
-          <span>Block 0</span>
+          <Link
+            href="/dashboard/course/block/0"
+            className="hover:text-zinc-300 transition-colors"
+          >
+            Блок 0
+          </Link>
           <span>/</span>
           <span className="text-zinc-300">Урок 3</span>
         </nav>
 
         <div className="flex flex-col gap-4">
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF4422]/15 text-[#FF4422] text-xs font-semibold tracking-wide">
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF4422]/15 text-[#FF4422] text-xs font-semibold tracking-wide w-fit">
             Кейсы • Реальные цифры
           </span>
           <h1 className="text-3xl md:text-5xl font-bold leading-tight">
@@ -244,7 +284,9 @@ export default function Block0Lesson3Page() {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <h3 className="text-xl font-semibold leading-snug">{item.headline}</h3>
+                  <h3 className="text-xl font-semibold leading-snug">
+                    {item.headline}
+                  </h3>
                   <span className="text-xs text-zinc-500">{item.date}</span>
                 </div>
 
@@ -270,26 +312,56 @@ export default function Block0Lesson3Page() {
 
                 {isExpanded && (
                   <div className="flex flex-col gap-4">
-                    <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden border border-zinc-800">
-                      <Image
-                        src={`/lesson3-media/${item.screenshotFile}`}
-                        alt={`Скриншот ${item.handle}`}
-                        fill
-                        className="object-cover"
+                    {/* Real media from post */}
+                    {item.mediaType === "video" ? (
+                      <video
+                        src={item.mediaFile}
+                        controls
+                        className="w-full rounded-xl border border-zinc-800 bg-black"
+                        style={{ maxHeight: "320px" }}
                       />
+                    ) : (
+                      <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden border border-zinc-800">
+                        <Image
+                          src={item.mediaFile}
+                          alt={`Медиа из поста ${item.handle}`}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    )}
+
+                    {/* Original post text */}
+                    <div className="bg-zinc-900/60 rounded-xl p-4 border border-zinc-800">
+                      <p className="text-xs text-zinc-500 mb-2 uppercase tracking-wide">
+                        Оригинальный пост
+                      </p>
+                      <p className="text-zinc-200 leading-relaxed text-sm italic">
+                        &ldquo;{item.originalText}&rdquo;
+                      </p>
                     </div>
-                    <p className="text-zinc-300 leading-relaxed">{item.text}</p>
+
+                    {/* Context */}
+                    <div>
+                      <p className="text-xs text-zinc-500 mb-1 uppercase tracking-wide">
+                        Что здесь происходит
+                      </p>
+                      <p className="text-zinc-300 leading-relaxed text-sm">
+                        {item.context}
+                      </p>
+                    </div>
+
                     <Link
                       href={item.postUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm font-semibold text-[#FF4422] hover:text-white transition-colors"
                     >
-                      🔗 Открыть пост
+                      🔗 Проверить пост →
                     </Link>
                     <button
                       onClick={() => toggleExpanded(item.id)}
-                      className="text-sm font-semibold text-[#FF4422] hover:text-white transition-colors self-start"
+                      className="text-sm font-semibold text-zinc-500 hover:text-white transition-colors self-start"
                     >
                       Свернуть ▲
                     </button>
@@ -302,18 +374,12 @@ export default function Block0Lesson3Page() {
       </section>
 
       <section className="max-w-6xl mx-auto px-4 pb-12">
-        <div className="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
+        <div className="flex justify-start">
           <Link
-            href="/dashboard/course/block/0/lesson/2"
+            href="/dashboard/course/block/0"
             className="px-5 py-3 rounded-xl border border-zinc-800 text-zinc-300 hover:text-white hover:border-[#FF4422] transition-colors"
           >
-            ← Назад к уроку 2
-          </Link>
-          <Link
-            href="/dashboard/course/block/0/lesson/4"
-            className="px-5 py-3 rounded-xl bg-[#FF4422] text-white font-semibold hover:bg-[#e63d1e] transition-colors"
-          >
-            Вперёд к уроку 4 →
+            ← Назад к блоку
           </Link>
         </div>
       </section>
