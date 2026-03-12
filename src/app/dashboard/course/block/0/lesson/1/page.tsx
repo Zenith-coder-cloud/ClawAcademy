@@ -91,19 +91,16 @@ function Check() {
 /* ------------------------------------------------------------------ */
 /*  Section image helper                                              */
 /* ------------------------------------------------------------------ */
-function SectionImage({ src, caption }: { src: string; caption: string }) {
+function SectionImage({ src, caption }: { src: string; caption?: string }) {
   return (
     <figure className="my-6">
       <Image
         src={src}
-        alt={caption}
+        alt={caption ?? ""}
         width={1200}
         height={675}
         className="rounded-xl w-full"
       />
-      <figcaption className="text-zinc-500 text-sm text-center mt-2">
-        {caption}
-      </figcaption>
     </figure>
   );
 }
