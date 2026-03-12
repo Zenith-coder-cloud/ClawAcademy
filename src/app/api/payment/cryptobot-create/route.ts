@@ -3,6 +3,7 @@ import { z } from "zod";
 import { supabaseAdmin } from "@/lib/server/supabaseAdmin";
 import { verifySession, SESSION_COOKIE } from "@/lib/server/session";
 import { TIERS, type TierKey } from "@/lib/paymentConfig";
+import { checkRateLimit, getClientIp } from "@/lib/server/rateLimit";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +23,12 @@ export async function POST(req: NextRequest) {
     const session = await verifySession(token);
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const rateLimitKey = `cryptobot-create:${session.telegramId ?? session.walletAddress ?? "anon"}`;
+    const allowed = await checkRateLimit(rateLimitKey, 5, 5);
+    if (!allowed) {
+      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
 
     const body = await req.json();

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { createPublicClient, http } from "viem";
+import { createPublicClient, http, parseEther } from "viem";
 import { supabaseAdmin } from "@/lib/server/supabaseAdmin";
 import {
   SUPPORTED_CHAINS,
@@ -231,11 +231,9 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      const expectedAmount = BigInt(
-        Math.round(
-          (tierConfig.price_usd / chain.nativeRate) * 1e18
-        )
-      );
+      const expectedAmount = payment.amount
+        ? parseEther(payment.amount)
+        : BigInt(Math.round((tierConfig.price_usd / chain.nativeRate) * 1e18));
 
       if (!withinTolerance(tx.value, expectedAmount)) {
         return NextResponse.json(

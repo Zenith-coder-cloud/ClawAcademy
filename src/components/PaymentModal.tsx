@@ -61,6 +61,7 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
   const [cryptobotInvoiceId, setCryptobotInvoiceId] = useState<number | null>(null);
   const [cryptobotLoading, setCryptobotLoading] = useState(false);
   const [cryptobotPolling, setCryptobotPolling] = useState(false);
+  const [initiatedAmount, setInitiatedAmount] = useState<string | null>(null);
 
   const handleCopyAddress = useCallback(() => {
     navigator.clipboard.writeText(PAYMENT_ADDRESS);
@@ -126,6 +127,10 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
         const data = await res.json();
         throw new Error(data.error || 'Ошибка инициализации платежа');
       }
+      const data = await res.json();
+      if (selectedToken === "native" && data.amount) {
+        setInitiatedAmount(data.amount);
+      }
       setStep(3);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Ошибка инициализации платежа');
@@ -150,7 +155,7 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
       } else {
         hash = await sendTransactionAsync({
           to: PAYMENT_ADDRESS as `0x${string}`,
-          value: parseEther(nativeAmount),
+          value: parseEther(initiatedAmount ?? nativeAmount),
         });
       }
       setTxHash(hash);
@@ -214,6 +219,7 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
     setCryptobotInvoiceId(null);
     setCryptobotLoading(false);
     setCryptobotPolling(false);
+    setInitiatedAmount(null);
   }
 
   async function handleCryptobotCreate() {

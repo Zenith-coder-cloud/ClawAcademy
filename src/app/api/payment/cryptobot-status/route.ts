@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/server/supabaseAdmin";
+import { checkRateLimit, getClientIp } from "@/lib/server/rateLimit";
 
 export const dynamic = "force-dynamic";
 
@@ -10,6 +11,13 @@ export async function GET(req: NextRequest) {
     const invoiceId = req.nextUrl.searchParams.get("invoice_id");
     if (!invoiceId) {
       return NextResponse.json({ error: "Missing invoice_id" }, { status: 400 });
+    }
+
+    const ip = getClientIp(req);
+    const rateLimitKey = `cryptobot-status:${invoiceId}:${ip}`;
+    const allowed = await checkRateLimit(rateLimitKey, 10, 1);
+    if (!allowed) {
+      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
 
     const apiToken = process.env.CRYPTOBOT_API_TOKEN;
