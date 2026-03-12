@@ -49,7 +49,7 @@ function TrackCard({
 function BlockStep({
   num, title, locked, items, highlight,
 }: {
-  num: number; title: string; locked?: boolean; items: string[]; highlight: string;
+  num: number; title: string; locked?: boolean; tier?: string; items: string[]; highlight: string;
 }) {
   return (
     <div className={`relative flex gap-4 ${locked ? "opacity-70" : ""}`}>
@@ -227,6 +227,8 @@ export default function Block0Lesson4Page() {
             />
             <BlockStep
               num={1}
+              locked
+              tier="Genesis"
               title="Block 1 — Первый агент за 15 минут"
               items={[
                 "Установка OpenClaw: Mac, Linux, Windows, VPS — пошагово",
@@ -238,6 +240,8 @@ export default function Block0Lesson4Page() {
             />
             <BlockStep
               num={2}
+              locked
+              tier="Genesis"
               title="Block 2 — Первые результаты"
               items={[
                 "Агент-автоответчик: клиенты получают ответ за 30 секунд в любое время",
