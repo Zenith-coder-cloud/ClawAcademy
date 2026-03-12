@@ -374,12 +374,18 @@ export default function Block0Lesson3Page() {
       </section>
 
       <section className="max-w-6xl mx-auto px-4 pb-12">
-        <div className="flex justify-start">
+        <div className="flex flex-col sm:flex-row gap-4 justify-between">
           <Link
-            href="/dashboard/course/block/0"
-            className="px-5 py-3 rounded-xl border border-zinc-800 text-zinc-300 hover:text-white hover:border-[#FF4422] transition-colors"
+            href="/dashboard/course/block/0/lesson/2"
+            className="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-lg text-zinc-200 text-center transition-colors"
           >
-            ← Назад к блоку
+            ← Предыдущий урок
+          </Link>
+          <Link
+            href="/dashboard/course/block/0/lesson/4"
+            className="px-6 py-3 bg-[#FF4422] hover:bg-[#e63d1e] rounded-lg text-white text-center font-semibold transition-colors"
+          >
+            Следующий урок →
           </Link>
         </div>
       </section>
