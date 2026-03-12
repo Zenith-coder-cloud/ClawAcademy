@@ -25,8 +25,7 @@ const lessons = [
     id: 4,
     title: "Твой результат и карта пути: от Block 0 до Block 5",
     href: "/dashboard/course/block/0/lesson/4",
-    available: false,
-    badge: "Скоро",
+    available: true,
   },
 ];
 
