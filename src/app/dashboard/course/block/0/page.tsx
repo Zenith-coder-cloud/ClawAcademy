@@ -11,16 +11,22 @@ const lessons = [
   },
   {
     id: 2,
-    title: "Установка OpenClaw",
+    title: "OpenClaw vs ChatGPT vs n8n",
     href: "/dashboard/course/block/0/lesson/2",
-    available: false,
-    badge: "Скоро",
+    available: true,
   },
   {
     id: 3,
     title: "Реальные истории успеха",
     href: "/dashboard/course/block/0/lesson/3",
     available: true,
+  },
+  {
+    id: 4,
+    title: "Установка OpenClaw",
+    href: "/dashboard/course/block/0/lesson/4",
+    available: false,
+    badge: "Скоро",
   },
 ];
 
@@ -99,7 +105,7 @@ export default function Block0IndexPage() {
         <h1 className="text-2xl md:text-4xl font-bold text-white mt-6">
           Блок 1: Вход — что такое ИИ-агент
         </h1>
-        <p className="text-zinc-500 mt-2">3 урока · ~45 минут</p>
+        <p className="text-zinc-500 mt-2">4 урока · ~60 минут</p>
 
         <div className="mt-8 flex flex-col gap-4">
           {lessons.map((lesson) => (
