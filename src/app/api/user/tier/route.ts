@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
     const sessionToken = req.cookies.get(SESSION_COOKIE)?.value;
     if (!sessionToken) {
       return NextResponse.json(
-        { tier: "free", blocks: [0, 1, 2] },
+        { tier: "free", blocks: [0] },
         { status: 200 }
       );
     }
@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
     const session = await verifySession(sessionToken);
     if (!session) {
       return NextResponse.json(
-        { tier: "free", blocks: [0, 1, 2] },
+        { tier: "free", blocks: [0] },
         { status: 200 }
       );
     }
@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
       query = query.eq("telegram_id", session.telegramId);
     } else {
       return NextResponse.json(
-        { tier: "free", blocks: [0, 1, 2] },
+        { tier: "free", blocks: [0] },
         { status: 200 }
       );
     }
@@ -42,14 +42,14 @@ export async function GET(req: NextRequest) {
 
     if (error || !user) {
       return NextResponse.json(
-        { tier: "free", blocks: [0, 1, 2] },
+        { tier: "free", blocks: [0] },
         { status: 200 }
       );
     }
 
     const tier = (user.tier as TierKey) || "free";
     const tierConfig = TIERS[tier as TierKey];
-    const blocks = tierConfig ? [...tierConfig.blocks] : [0, 1, 2];
+    const blocks = tierConfig ? [...tierConfig.blocks] : [0];
 
     return NextResponse.json({ tier, blocks });
   } catch (err) {
