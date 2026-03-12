@@ -47,7 +47,7 @@ function TrackCard({
 }
 
 function BlockStep({
-  num, title, locked, items, highlight,
+  num, title, locked, tier, items, highlight,
 }: {
   num: number; title: string; locked?: boolean; tier?: string; items: string[]; highlight: string;
 }) {
@@ -67,7 +67,7 @@ function BlockStep({
         <div className="flex items-center gap-2 mb-2">
           <h3 className="text-white font-bold">{title}</h3>
           {locked && (
-            <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-500">🔒 Pro / Elite</span>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-500">🔒 {tier ?? "Pro / Elite"}</span>
           )}
           {num === 0 && (
             <span className="text-xs px-2 py-0.5 rounded-full bg-[#FF4422]/20 text-[#FF4422]">Ты здесь</span>
