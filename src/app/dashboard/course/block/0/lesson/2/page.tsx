@@ -95,7 +95,7 @@ function SectionImage({ src, caption }: { src: string; caption?: string }) {
     <figure className="my-6">
       <Image
         src={src}
-        alt={caption}
+        alt={caption ?? ""}
         width={1200}
         height={675}
         className="rounded-xl w-full"
@@ -174,7 +174,7 @@ function Quiz() {
               className={`w-full text-left px-4 py-3 rounded-lg border transition-colors ${
                 showState
                   ? isCorrect
-                    ? "bg-green-900/50 border-green-500 text-green-300"
+                    ? "border-[#FF4422] bg-[#FF4422]/10 text-white"
                     : isSelected
                       ? "border-red-500/60 bg-red-500/10 text-white"
                       : "border-zinc-800 bg-zinc-950 text-zinc-400"

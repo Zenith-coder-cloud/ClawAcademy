@@ -3,7 +3,7 @@ import { z } from "zod";
 import { supabaseAdmin } from "@/lib/server/supabaseAdmin";
 import { verifySession, SESSION_COOKIE } from "@/lib/server/session";
 import { TIERS, type TierKey } from "@/lib/paymentConfig";
-import { checkRateLimit, getClientIp } from "@/lib/server/rateLimit";
+import { checkRateLimit } from "@/lib/server/rateLimit";
 
 export const dynamic = "force-dynamic";
 

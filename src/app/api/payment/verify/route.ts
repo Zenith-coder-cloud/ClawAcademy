@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { tx_hash, wallet_address, tier: requestTier } = parsed.data;
+    const { tx_hash, wallet_address } = parsed.data;
 
     const ip = getClientIp(req);
     const rateLimitKey = `payment-verify:${wallet_address || ip}`;
