@@ -35,7 +35,8 @@ const blocks: Block[] = [
   },
   {
     num: 1,
-    locked: false,
+    locked: true,
+    tier: "Genesis",
     title: "Установка и первый агент",
     subtitle: "«Первый агент за 15 минут»",
     desc: "Никакой теории — только практика. Ставим OpenClaw, запускаем первого агента и сразу видим результат. Неважно кто ты — к концу блока у тебя будет живой работающий агент.",
@@ -49,7 +50,8 @@ const blocks: Block[] = [
   },
   {
     num: 2,
-    locked: false,
+    locked: true,
+    tier: "Genesis",
     title: "Быстрый заработок: первые схемы",
     subtitle: "«Первые схемы — первые результаты»",
     desc: "Переходим от \"агент работает\" к \"агент приносит конкретную пользу\". Рабочие схемы для каждой категории — запускаешь сразу, видишь результат в первые дни.",
@@ -203,7 +205,7 @@ function BlockCard({ block }: { block: Block }) {
           </span>
           {block.locked && (
             <span className="bg-[#FF4422]/10 text-[#FF4422] text-xs px-3 py-1 rounded-full">
-              🔒 Pro / Elite
+              🔒 {block.tier ?? "Pro / Elite"}
             </span>
           )}
         </div>
