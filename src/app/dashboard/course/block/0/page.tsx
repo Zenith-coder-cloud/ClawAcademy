@@ -5,19 +5,19 @@ import Link from "next/link";
 const lessons = [
   {
     id: 1,
-    title: "Что такое ИИ-агент?",
+    title: "Что такое ИИ-агент и как он думает и действует",
     href: "/dashboard/course/block/0/lesson/1",
     available: true,
   },
   {
     id: 2,
-    title: "OpenClaw vs ChatGPT vs n8n",
+    title: "OpenClaw vs ChatGPT vs n8n — в чём принципиальная разница",
     href: "/dashboard/course/block/0/lesson/2",
     available: true,
   },
   {
     id: 3,
-    title: "Реальные истории успеха",
+    title: "Реальные кейсы: предприниматель, дизайнер, студент, фрилансер",
     href: "/dashboard/course/block/0/lesson/3",
     available: true,
   },
