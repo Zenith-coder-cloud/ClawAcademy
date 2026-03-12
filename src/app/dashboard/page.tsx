@@ -327,6 +327,33 @@ export default function DashboardPage() {
           </div>
         )}
 
+        {/* Elite Private Chat CTA */}
+        {tierData.tier === "elite" && (
+          <div className="mt-6">
+            <a
+              href="https://t.me/+SPGl0k7t2CplMDk9"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full p-6 rounded-xl bg-gradient-to-r from-[#1a1a1a] to-[#2a1a0a] border border-[#FF4422]/40 hover:border-[#FF4422] transition-colors flex items-center gap-4 text-left"
+            >
+              <div className="w-16 h-16 rounded-2xl bg-[#FF4422]/10 border border-[#FF4422]/30 flex items-center justify-center shrink-0 text-3xl">
+                👑
+              </div>
+              <div>
+                <p className="text-white font-semibold text-lg">Приватный чат Elite</p>
+                <p className="text-[#888888] text-sm">
+                  Закрытое сообщество — только Elite участники и Master
+                </p>
+              </div>
+              <div className="ml-auto shrink-0">
+                <span className="px-3 py-1.5 bg-[#FF4422] text-white text-xs font-bold rounded-lg">
+                  Войти →
+                </span>
+              </div>
+            </a>
+          </div>
+        )}
+
         {/* Upgrade CTA */}
         {tierData.tier !== "elite" && (
           <div className="mt-10 p-6 rounded-xl bg-[#1a1a1a] border border-[#333] flex flex-col sm:flex-row items-center justify-between gap-4">
