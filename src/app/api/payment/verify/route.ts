@@ -266,6 +266,7 @@ export async function POST(req: NextRequest) {
 
     if (updateUserError) {
       console.error("Failed to update user tier (primary):", updateUserError);
+      // Will attempt fallback below; if all fallbacks fail, rollback happens at end
     }
 
     console.log("[verify] primary tier update result:", JSON.stringify(updatedUsers), "error:", updateUserError?.message);
@@ -288,8 +289,15 @@ export async function POST(req: NextRequest) {
     }
 
     if (!updatedUsers || updatedUsers.length === 0) {
+      // Rollback: revert payment to pending so it can be retried
+      await db
+        .from("payments")
+        .update({ status: "pending", tx_hash: null, confirmed_at: null })
+        .eq("id", payment.id);
+
+      console.error("[verify] tier update failed — payment rolled back to pending:", payment.id);
       return NextResponse.json(
-        { success: false, error: "User not found for tier update" },
+        { success: false, error: "Payment received but user account not found. Please contact support." },
         { status: 404 }
       );
     }
