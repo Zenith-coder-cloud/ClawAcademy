@@ -341,8 +341,8 @@ export default function DashboardPage() {
               rel="noopener noreferrer"
               className="w-full p-6 rounded-xl bg-gradient-to-r from-[#1a1a1a] to-[#2a1a0a] border border-[#FF4422]/40 hover:border-[#FF4422] transition-colors flex items-center gap-4 text-left"
             >
-              <div className="w-16 h-16 rounded-2xl bg-[#FF4422]/10 border border-[#FF4422]/30 flex items-center justify-center shrink-0 text-3xl">
-                👑
+              <div className="w-16 h-16 rounded-2xl overflow-hidden shrink-0">
+                <Image src="/elite-lobster.png" alt="Elite Lobster" width={64} height={64} className="w-full h-full object-cover" />
               </div>
               <div>
                 <p className="text-white font-semibold text-lg">Приватный чат Elite</p>
