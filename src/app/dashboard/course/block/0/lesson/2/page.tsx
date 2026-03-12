@@ -174,7 +174,7 @@ function Quiz() {
               className={`w-full text-left px-4 py-3 rounded-lg border transition-colors ${
                 showState
                   ? isCorrect
-                    ? "border-[#FF4422] bg-[#FF4422]/10 text-white"
+                    ? "bg-green-900/50 border-green-500 text-green-300"
                     : isSelected
                       ? "border-red-500/60 bg-red-500/10 text-white"
                       : "border-zinc-800 bg-zinc-950 text-zinc-400"
