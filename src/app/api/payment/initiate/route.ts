@@ -8,6 +8,7 @@ import {
   type TierKey,
 } from "@/lib/paymentConfig";
 import { checkRateLimit, getClientIp } from "@/lib/server/rateLimit";
+import { getNativeTokenPrice } from "@/lib/server/priceOracle";
 
 export const dynamic = "force-dynamic";
 
@@ -54,7 +55,10 @@ export async function POST(req: NextRequest) {
     if (token === "USDT") {
       amount = priceUsd.toFixed(6);
     } else {
-      amount = (priceUsd / chain.nativeRate).toFixed(6);
+      const liveRate = await getNativeTokenPrice(
+        chain.nativeCurrency as "BNB" | "ETH" | "MATIC"
+      ).catch(() => chain.nativeRate);
+      amount = (priceUsd / liveRate).toFixed(6);
     }
 
     const db = supabaseAdmin();
