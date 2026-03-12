@@ -505,38 +505,6 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
               </div>
             </div>
 
-            {/* Test mode button */}
-            {process.env.NEXT_PUBLIC_PAYMENT_TEST_MODE === 'true' && payStatus === 'idle' && (
-              <button
-                onClick={() => {
-                  setManualTxHash('test');
-                  setPayStatus('verifying');
-                  (async () => {
-                    if (!address) return;
-                    try {
-                      const res = await fetch('/api/payment/verify', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ tx_hash: 'test', wallet_address: address, tier: selectedTier }),
-                      });
-                      const data = await res.json();
-                      if (!res.ok) throw new Error(data.error || 'Ошибка верификации');
-                      try { await fetch('/api/auth/refresh-session', { method: 'POST' }); } catch {}
-                      setPayStatus('success');
-                      setVerified(true);
-                      setStep(4);
-                    } catch (err: unknown) {
-                      setPayStatus('error');
-                      setError(err instanceof Error ? err.message : 'Ошибка верификации');
-                    }
-                  })();
-                }}
-                className="w-full py-3 rounded-xl text-sm font-semibold bg-yellow-600 text-white hover:bg-yellow-700 transition-colors mb-3"
-              >
-                Тест: пропустить оплату
-              </button>
-            )}
-
             {/* Status displays for in-progress states */}
             {payStatus === 'sending' && (
               <div className="text-center py-6">

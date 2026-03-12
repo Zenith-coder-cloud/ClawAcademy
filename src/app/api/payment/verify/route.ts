@@ -14,12 +14,10 @@ import { verifySession, SESSION_COOKIE } from "@/lib/server/session";
 export const dynamic = "force-dynamic";
 
 const verifySchema = z.object({
-  tx_hash: z.string().regex(/^(0x[a-fA-F0-9]{64}|test|0xtest.*)$/, 'Invalid transaction hash format'),
+  tx_hash: z.string().regex(/^0x[a-fA-F0-9]{64}$/, 'Invalid transaction hash format'),
   wallet_address: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
   tier: z.enum(["genesis", "pro", "elite"]).optional(),
 });
-
-const IS_MOCK_MODE = process.env.PAYMENT_TEST_MODE === "true";
 
 function withinTolerance(actual: bigint, expected: bigint): boolean {
   const diff =
@@ -41,14 +39,6 @@ export async function POST(req: NextRequest) {
 
     const { tx_hash, wallet_address, tier: requestTier } = parsed.data;
 
-    // Block test transactions in production
-    if ((tx_hash === "test" || tx_hash.startsWith("0xtest")) && !IS_MOCK_MODE) {
-      return NextResponse.json(
-        { error: "Test transactions not allowed in production" },
-        { status: 400 }
-      );
-    }
-
     const ip = getClientIp(req);
     const rateLimitKey = `payment-verify:${wallet_address || ip}`;
     const allowed = await checkRateLimit(rateLimitKey, 10, 5);
@@ -57,86 +47,6 @@ export async function POST(req: NextRequest) {
     }
 
     const db = supabaseAdmin();
-
-    // Mock mode: skip on-chain verification for test transactions
-    if (IS_MOCK_MODE && (tx_hash === "test" || tx_hash.startsWith("0xtest"))) {
-      // Try to find pending payment first
-      const { data: mockPayment } = await db
-        .from("payments")
-        .select("*")
-        .eq("wallet_address", wallet_address.toLowerCase())
-        .eq("status", "pending")
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .single();
-
-      // Use tier from pending payment OR from request body OR fallback to genesis
-      const mockTier = mockPayment?.tier || requestTier || "genesis";
-
-      if (mockPayment) {
-        await db
-          .from("payments")
-          .update({ status: "confirmed", tx_hash, confirmed_at: new Date().toISOString() })
-          .eq("id", mockPayment.id);
-      }
-
-      const tierUpdate = { tier: mockTier, tier_updated_at: new Date().toISOString() };
-      const sessionToken = req.cookies.get(SESSION_COOKIE)?.value;
-      const session = sessionToken ? await verifySession(sessionToken) : null;
-
-      let updatedUsers: { id: string; tier: string }[] | null = null;
-      let updateError: { message?: string } | null = null;
-
-      if (session?.telegramId) {
-        const result = await db
-          .from("users")
-          .update(tierUpdate)
-          .eq("telegram_id", session.telegramId)
-          .select("id, tier");
-        updatedUsers = result.data ?? null;
-        updateError = result.error ?? null;
-      } else if (session?.walletAddress) {
-        const sessionLower = session.walletAddress.toLowerCase();
-        const result = await db
-          .from("users")
-          .update(tierUpdate)
-          .or(`wallet_address.eq.${sessionLower},wallet_address.eq.${session.walletAddress}`)
-          .select("id, tier");
-        updatedUsers = result.data ?? null;
-        updateError = result.error ?? null;
-      } else if (mockPayment?.user_id) {
-        const result = await db
-          .from("users")
-          .update(tierUpdate)
-          .eq("id", mockPayment.user_id)
-          .select("id, tier");
-        updatedUsers = result.data ?? null;
-        updateError = result.error ?? null;
-      } else if (mockPayment?.telegram_id) {
-        const result = await db
-          .from("users")
-          .update(tierUpdate)
-          .eq("telegram_id", mockPayment.telegram_id)
-          .select("id, tier");
-        updatedUsers = result.data ?? null;
-        updateError = result.error ?? null;
-      }
-
-      if (!updatedUsers || updatedUsers.length === 0) {
-        const lower = wallet_address.toLowerCase();
-        const result = await db
-          .from("users")
-          .update(tierUpdate)
-          .or(`wallet_address.eq.${lower},wallet_address.eq.${wallet_address}`)
-          .select("id, tier");
-        updatedUsers = result.data ?? null;
-        updateError = result.error ?? null;
-      }
-
-      console.log("[mock-verify] update result:", JSON.stringify(updatedUsers), "error:", updateError?.message);
-
-      return NextResponse.json({ success: true, tier: mockTier, updated: updatedUsers?.length ?? 0 });
-    }
 
     // 1) Find pending payment
     const { data: payment, error: paymentError } = await db
