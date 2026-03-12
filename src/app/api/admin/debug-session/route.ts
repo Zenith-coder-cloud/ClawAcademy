@@ -5,7 +5,11 @@ import { supabaseAdmin } from "@/lib/server/supabaseAdmin";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
-  
+  const adminSecret = req.headers.get("x-admin-secret");
+  if (adminSecret !== process.env.ADMIN_SECRET) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const token = req.cookies.get(SESSION_COOKIE)?.value;
   if (!token) return NextResponse.json({ error: "No ca_session cookie" });
 
