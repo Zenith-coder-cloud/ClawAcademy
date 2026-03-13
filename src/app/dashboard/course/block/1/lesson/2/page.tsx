@@ -40,10 +40,16 @@ const telegramIssues: AccordionItem[] = [
       "Ищи по username который ввёл в BotFather. Убедись что username заканчивается на bot.",
   },
   {
-    title: "zsh: command not found: claude (Anthropic token)",
-    hint: "Установи Claude CLI: npm install -g @anthropic-ai/claude-code — затем запусти claude setup-token заново",
+    title: "zsh: command not found: claude",
+    hint: "1. Установи: npm install -g @anthropic-ai/claude-code\n2. Перезапусти терминал\n3. Запусти claude setup-token заново",
     content:
-      "Claude CLI не установлен. Команда claude setup-token требует claude-code. Установи через npm и повтори.",
+      "Claude CLI не установлен. Установи через npm: npm install -g @anthropic-ai/claude-code — затем закрой и снова открой терминал, после чего запусти claude setup-token.",
+  },
+  {
+    title: "command not found: compdef (openclaw.zsh:XXXX)",
+    hint: "Добавь в ~/.zshrc строку: autoload -Uz compinit && compinit — затем source ~/.zshrc",
+    content:
+      "Zsh completions не инициализированы. Добавь в ~/.zshrc: autoload -Uz compinit && compinit — или просто игнорируй, эта ошибка не мешает работе OpenClaw.",
   },
 ];
 
