@@ -9,6 +9,12 @@ import {
   type TierKey,
 } from "@/lib/paymentConfig";
 import { checkRateLimit, getClientIp } from "@/lib/server/rateLimit";
+import {
+  verifySession,
+  createSession,
+  SESSION_COOKIE,
+  MAX_AGE,
+} from "@/lib/server/session";
 
 export const dynamic = "force-dynamic";
 
@@ -89,7 +95,30 @@ export async function POST(req: NextRequest) {
 
       console.log("[mock-verify] update result:", JSON.stringify(updatedUsers), "error:", updateError?.message);
 
-      return NextResponse.json({ success: true, tier: mockTier, updated: updatedUsers?.length ?? 0 });
+      const token = req.cookies.get(SESSION_COOKIE)?.value;
+      const session = token ? await verifySession(token) : null;
+      const response = NextResponse.json({
+        success: true,
+        tier: mockTier,
+        updated: updatedUsers?.length ?? 0,
+      });
+
+      if (session !== null) {
+        const newToken = await createSession({
+          ...session,
+          tier: mockTier,
+        });
+
+        response.cookies.set(SESSION_COOKIE, newToken, {
+          httpOnly: true,
+          secure: true,
+          sameSite: "lax",
+          maxAge: MAX_AGE,
+          path: "/",
+        });
+      }
+
+      return response;
     }
 
     // 1) Find pending payment
@@ -275,11 +304,30 @@ export async function POST(req: NextRequest) {
 
     console.log("[verify] tier update result:", JSON.stringify(updatedUsers), "error:", updateUserError?.message);
 
-    return NextResponse.json({
+    const token = req.cookies.get(SESSION_COOKIE)?.value;
+    const session = token ? await verifySession(token) : null;
+    const response = NextResponse.json({
       success: true,
       tier: payment.tier,
       updated: updatedUsers?.length ?? 0,
     });
+
+    if (session !== null) {
+      const newToken = await createSession({
+        ...session,
+        tier: payment.tier,
+      });
+
+      response.cookies.set(SESSION_COOKIE, newToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "lax",
+        maxAge: MAX_AGE,
+        path: "/",
+      });
+    }
+
+    return response;
   } catch (err) {
     console.error("POST /api/payment/verify error:", err);
     return NextResponse.json(
