@@ -319,17 +319,19 @@ export default function Block1Lesson2Page() {
             {apiTab === 1 && (
               <div className="space-y-4">
                 <div className="bg-blue-900/20 border border-blue-700/40 rounded-xl px-5 py-4 text-blue-200 text-sm">
-                  💡 Если у тебя подписка Claude.ai Pro — ключ вводить не нужно. Логинишься через браузер.
+                  💡 Если у тебя подписка Claude.ai MAX — ключ вводить не нужно. Логинишься через браузер.
                 </div>
                 <ol className="list-decimal list-inside text-zinc-400 space-y-2">
-                  <li>Убедись что активная подписка Claude.ai Pro</li>
-                  <li>При запуске визарда выбери провайдер Anthropic</li>
-                  <li>Выбери метод OAuth (Claude.ai)</li>
-                  <li>Визард откроет браузер → войди в аккаунт Claude → нажми Allow</li>
-                  <li>Визард получит токен автоматически</li>
+                  <li>Убедись что активная подписка <strong className="text-white">Claude.ai MAX</strong></li>
+                  <li>В отдельном терминале запусти сессию авторизации:</li>
                 </ol>
-                <CodeBlock code="openclaw auth add anthropic --oauth" />
-                <p className="text-zinc-500 text-sm -mt-2">Если нужно переавторизоваться</p>
+                <CodeBlock code="claude" />
+                <p className="text-zinc-500 text-sm -mt-2">Браузер откроется — войди в аккаунт Claude и нажми Allow. Скопируй setup-token из терминала.</p>
+                <ol className="list-decimal list-inside text-zinc-400 space-y-2 mt-2" start={3}>
+                  <li>Затем запусти визард в другом терминале:</li>
+                </ol>
+                <CodeBlock code="openclaw onboard --install-daemon" />
+                <p className="text-zinc-500 text-sm -mt-2">При выборе провайдера Anthropic → метод OAuth → вставь setup-token из шага 2</p>
                 <div className="bg-yellow-900/20 border border-yellow-700/40 rounded-xl px-5 py-4 text-yellow-200 text-sm">
                   ⚠️ OAuth токен привязан к подписке. Если подписка истекает — агент перестанет работать. Имей OpenRouter как резерв.
                 </div>
