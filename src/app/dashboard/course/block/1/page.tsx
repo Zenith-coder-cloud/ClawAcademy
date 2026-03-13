@@ -13,19 +13,19 @@ const lessons = [
     id: 2,
     title: "Первый агент за 15 минут — Telegram-бот с нуля",
     href: "/dashboard/course/block/1/lesson/2",
-    available: false,
+    available: true,
   },
   {
     id: 3,
     title: "Подключения: Google, Notion, Calendar",
     href: "/dashboard/course/block/1/lesson/3",
-    available: false,
+    available: true,
   },
   {
     id: 4,
     title: "Первая автоматизация — агент работает без тебя",
     href: "/dashboard/course/block/1/lesson/4",
-    available: false,
+    available: true,
   },
 ];
 
