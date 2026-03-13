@@ -287,7 +287,16 @@ export default function Block1Lesson2Page() {
               {["OpenRouter (рекомендуется)", "Anthropic OAuth", "Другие провайдеры"].map((label, idx) => (
                 <button
                   key={label}
-                  onClick={() => setApiTab(idx)}
+                  onClick={() => {
+                    setApiTab(idx);
+                    if (idx === 0) {
+                      setSelectedProvider('OpenRouter');
+                      if (wizardStep > 2) setWizardStep(2);
+                    } else if (idx === 1) {
+                      setSelectedProvider('Anthropic');
+                      if (wizardStep > 2) setWizardStep(2);
+                    }
+                  }}
                   className={
                     "px-4 py-2 rounded-lg text-sm font-medium transition-colors " +
                     (apiTab === idx
@@ -481,7 +490,12 @@ export default function Block1Lesson2Page() {
                       return (
                         <button
                           key={p}
-                          onClick={() => setSelectedProvider(key)}
+                          onClick={() => {
+                            setSelectedProvider(key);
+                            if (key === 'Anthropic') setApiTab(1);
+                            else if (key === 'OpenRouter') setApiTab(0);
+                            else setApiTab(2);
+                          }}
                           className={
                             "block w-full text-left px-3 py-1 rounded transition-colors hover:bg-zinc-900 " +
                             (isMatch ? "text-green-400" : "text-zinc-500")
@@ -598,6 +612,12 @@ export default function Block1Lesson2Page() {
                     <p className="mb-1">Run <code>claude setup-token</code> in your terminal.</p>
                     <p className="mb-2">Then paste the generated token below.</p>
                     <CodeBlock code="claude setup-token" />
+                    <button
+                      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                      className="mt-2 text-sm text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors"
+                    >
+                      ↑ Смотри инструкцию выше в разделе 1.5 → Anthropic OAuth
+                    </button>
                   </div>
                   <p className="text-white mb-3">◆ How do you want to provide this setup token?</p>
                   <div className="space-y-1 mb-4">
