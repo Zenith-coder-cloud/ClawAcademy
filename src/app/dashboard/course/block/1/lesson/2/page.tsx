@@ -169,6 +169,7 @@ export default function Block1Lesson2Page() {
   const [apiTab, setApiTab] = useState(0);
   const [wizardStep, setWizardStep] = useState(0);
   const [showApiKey, setShowApiKey] = useState(false);
+  const [selectedProvider, setSelectedProvider] = useState("OpenRouter");
 
   function toggleCard(idx: number) {
     setExpandedCards((prev) => {
@@ -384,13 +385,13 @@ export default function Block1Lesson2Page() {
               Визард проведёт тебя через настройку шаг за шагом. Попробуй интерактивный симулятор:
             </p>
 
-            {/* Interactive wizard simulator */}
+            {/* 🧙 Симулятор визарда */}
             <div className="bg-zinc-950 border border-zinc-700 rounded-2xl p-6">
               <h3 className="text-white font-semibold text-lg mb-4">🧙 Симулятор визарда openclaw onboard</h3>
 
               {/* Step indicators */}
               <div className="flex items-center justify-center gap-3 mb-6">
-                {[0, 1, 2, 3, 4].map((i) => (
+                {[0, 1, 2, 3, 4, 5].map((i) => (
                   <button
                     key={i}
                     onClick={() => setWizardStep(i)}
@@ -408,131 +409,154 @@ export default function Block1Lesson2Page() {
                 ))}
               </div>
 
-              {/* Step 0 — Select provider */}
+              {/* Step 0 — Безопасность */}
               {wizardStep === 0 && (
-                <div>
-                  <p className="text-zinc-500 font-mono text-sm mb-3">? Select AI provider</p>
-                  <div className="space-y-2">
-                    {[
-                      { label: "Anthropic (Claude)", note: "рекомендуется", selected: true },
-                      { label: "OpenAI (GPT-4o)", note: "", selected: false },
-                      { label: "OpenRouter (200+ models)", note: "", selected: false },
-                    ].map((opt) => (
-                      <button
-                        key={opt.label}
-                        onClick={() => setWizardStep(1)}
-                        className={
-                          "w-full text-left px-4 py-3 rounded-xl border transition-colors " +
-                          (opt.selected
-                            ? "border-[#FF4422] bg-[#FF4422]/10 text-white"
-                            : "border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-600")
-                        }
-                      >
-                        <span className="mr-2">{opt.selected ? "●" : "○"}</span>
-                        {opt.label}
-                        {opt.note && <span className="text-[#FF4422] text-sm ml-2">— {opt.note}</span>}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Step 1 — API key */}
-              {wizardStep === 1 && (
-                <div>
-                  <p className="text-zinc-500 font-mono text-sm mb-3">? Enter API key for Anthropic</p>
-                  <div className="flex gap-2 mb-3">
-                    <input
-                      type={showApiKey ? "text" : "password"}
-                      placeholder="sk-ant-api03-..."
-                      className="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-[#FF4422] text-sm font-mono"
-                      readOnly
-                    />
+                <div className="font-mono">
+                  <p className="text-zinc-400 font-semibold text-sm mb-2">Безопасность</p>
+                  <p className="text-zinc-500 text-sm mb-4">
+                    If you are not comfortable with security hardening and access control, don&apos;t run OpenClaw.
+                  </p>
+                  <p className="text-green-400 text-sm mb-3">◆ I understand this is personal-by-default. Continue?</p>
+                  <div className="space-y-1 mb-4">
                     <button
-                      onClick={() => setShowApiKey(!showApiKey)}
-                      className="px-3 py-2 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white text-sm transition-colors"
+                      onClick={() => setWizardStep(1)}
+                      className="block w-full text-left px-3 py-1.5 text-sm text-green-400 hover:bg-zinc-900 rounded transition-colors"
                     >
-                      {showApiKey ? "Скрыть" : "Показать"}
+                      ● Yes
                     </button>
+                    <p className="px-3 py-1.5 text-sm text-zinc-500">○ No</p>
                   </div>
-                  <p className="text-zinc-600 text-xs mb-4">Получи ключ на console.anthropic.com → API Keys</p>
                   <button
-                    onClick={() => setWizardStep(2)}
-                    className="px-4 py-2 rounded-lg bg-[#FF4422] text-white text-sm font-medium hover:bg-[#e63d1e] transition-colors"
+                    onClick={() => setWizardStep(1)}
+                    className="px-4 py-2 rounded-lg bg-[#FF4422] text-white text-sm font-medium font-sans hover:bg-[#e63d1e] transition-colors"
                   >
-                    Далее →
+                    Continue →
                   </button>
                 </div>
               )}
 
-              {/* Step 2 — Select channel */}
+              {/* Step 1 — Режим */}
+              {wizardStep === 1 && (
+                <div className="font-mono">
+                  <p className="text-green-400 text-sm mb-3">◆ Onboarding mode</p>
+                  <div className="space-y-1 mb-4">
+                    <p className="px-3 py-1.5 text-sm text-green-400">● QuickStart <span className="text-zinc-500">(Configure details later via openclaw configure.)</span></p>
+                    <p className="px-3 py-1.5 text-sm text-zinc-500">○ Manual</p>
+                  </div>
+                  <button
+                    onClick={() => setWizardStep(2)}
+                    className="px-4 py-2 rounded-lg bg-[#FF4422] text-white text-sm font-medium font-sans hover:bg-[#e63d1e] transition-colors"
+                  >
+                    Continue →
+                  </button>
+                </div>
+              )}
+
+              {/* Step 2 — Провайдер */}
               {wizardStep === 2 && (
-                <div>
-                  <p className="text-zinc-500 font-mono text-sm mb-3">? Select channel to connect</p>
-                  <div className="space-y-2 mb-4">
+                <div className="font-mono">
+                  <p className="text-red-400 text-sm mb-3">◆ Model/auth provider</p>
+                  <div className="space-y-0.5 mb-4 max-h-64 overflow-y-auto">
                     {[
-                      { label: "Telegram (Bot API)", note: "рекомендуется", selected: true },
-                      { label: "Discord", note: "", selected: false },
-                    ].map((opt) => (
-                      <div
-                        key={opt.label}
-                        className={
-                          "px-4 py-3 rounded-xl border " +
-                          (opt.selected
-                            ? "border-[#FF4422] bg-[#FF4422]/10 text-white"
-                            : "border-zinc-800 bg-zinc-900 text-zinc-400")
-                        }
-                      >
-                        <span className="mr-2">{opt.selected ? "●" : "○"}</span>
-                        {opt.label}
-                        {opt.note && <span className="text-[#FF4422] text-sm ml-2">— {opt.note}</span>}
-                      </div>
-                    ))}
+                      "OpenAI (Codex OAuth + API key)",
+                      "Anthropic",
+                      "Chutes",
+                      "vLLM",
+                      "Ollama",
+                      "MiniMax",
+                      "Moonshot AI (Kimi K2.5)",
+                      "Google",
+                      "xAI (Grok)",
+                      "Mistral AI",
+                      "OpenRouter",
+                      "Kilo Gateway",
+                      "Qwen",
+                      "Z.AI",
+                      "Together AI",
+                      "Hugging Face",
+                    ].map((p) => {
+                      const key = p.includes("(") ? p.split(" (")[0] : p;
+                      const isMatch = key === selectedProvider;
+                      return (
+                        <button
+                          key={p}
+                          onClick={() => setSelectedProvider(key)}
+                          className={
+                            "block w-full text-left px-3 py-1 text-sm rounded transition-colors hover:bg-zinc-900 " +
+                            (isMatch ? "text-green-400" : "text-zinc-500")
+                          }
+                        >
+                          {isMatch ? "●" : "○"} {p}
+                        </button>
+                      );
+                    })}
                   </div>
                   <button
                     onClick={() => setWizardStep(3)}
-                    className="px-4 py-2 rounded-lg bg-[#FF4422] text-white text-sm font-medium hover:bg-[#e63d1e] transition-colors"
+                    className="px-4 py-2 rounded-lg bg-[#FF4422] text-white text-sm font-medium font-sans hover:bg-[#e63d1e] transition-colors"
                   >
-                    Далее →
+                    Continue →
                   </button>
                 </div>
               )}
 
-              {/* Step 3 — Telegram bot token */}
+              {/* Step 3 — Способ ввода ключа */}
               {wizardStep === 3 && (
-                <div>
-                  <p className="text-zinc-500 font-mono text-sm mb-3">? Enter Telegram Bot Token</p>
-                  <input
-                    type="text"
-                    placeholder="1234567890:ABCDEFGabcdefg..."
-                    className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-[#FF4422] text-sm font-mono mb-4"
-                    readOnly
-                  />
+                <div className="font-mono">
+                  <p className="text-zinc-400 text-sm mb-2">Model/auth provider: <span className="text-white">{selectedProvider}</span></p>
+                  <p className="text-blue-400 text-sm mb-3">◆ How do you want to provide this API key?</p>
+                  <div className="space-y-1 mb-4">
+                    <p className="px-3 py-1.5 text-sm text-green-400">● Paste API key now <span className="text-zinc-500">(Stores the key directly in OpenClaw config)</span></p>
+                    <p className="px-3 py-1.5 text-sm text-zinc-500">○ Use external secret provider</p>
+                  </div>
                   <button
                     onClick={() => setWizardStep(4)}
-                    className="px-4 py-2 rounded-lg bg-[#FF4422] text-white text-sm font-medium hover:bg-[#e63d1e] transition-colors"
+                    className="px-4 py-2 rounded-lg bg-[#FF4422] text-white text-sm font-medium font-sans hover:bg-[#e63d1e] transition-colors"
                   >
-                    Далее →
+                    Continue →
                   </button>
                 </div>
               )}
 
-              {/* Step 4 — Done */}
+              {/* Step 4 — Ввод ключа */}
               {wizardStep === 4 && (
+                <div className="font-mono">
+                  <p className="text-blue-400 text-sm mb-3">◆ Enter API key for {selectedProvider}:</p>
+                  <input
+                    type="password"
+                    placeholder={
+                      selectedProvider === "OpenRouter" ? "sk-or-v1-..." :
+                      selectedProvider === "Anthropic" ? "sk-ant-api03-..." :
+                      selectedProvider.startsWith("OpenAI") ? "sk-proj-..." :
+                      "your-api-key-here"
+                    }
+                    className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-[#FF4422] text-sm font-mono mb-2"
+                    readOnly
+                  />
+                  <p className="text-zinc-600 text-xs mb-4">Получи ключ на сайте провайдера {selectedProvider}</p>
+                  <button
+                    onClick={() => setWizardStep(5)}
+                    className="px-4 py-2 rounded-lg bg-[#FF4422] text-white text-sm font-medium font-sans hover:bg-[#e63d1e] transition-colors"
+                  >
+                    Continue →
+                  </button>
+                </div>
+              )}
+
+              {/* Step 5 — Готово */}
+              {wizardStep === 5 && (
                 <div className="border border-green-500 rounded-xl p-5">
-                  <p className="text-green-400 font-semibold text-lg mb-3">✅ Настройка завершена!</p>
-                  <div className="font-mono text-sm space-y-1 text-zinc-300 mb-4">
-                    <p>  ✓ Config saved to ~/.openclaw/openclaw.json</p>
-                    <p>  ✓ Gateway starting...</p>
-                    <p>  ✓ Telegram connected</p>
-                    <p>  ✓ Daemon installed</p>
+                  <div className="font-mono text-sm space-y-1 text-green-400 mb-4">
+                    <p>✓ API key saved</p>
+                    <p>✓ Gateway configured (port: 18789)</p>
+                    <p>✓ Daemon installed</p>
+                    <p>✓ OpenClaw is ready!</p>
                   </div>
-                  <CodeBlock code="openclaw gateway status" />
                   <button
                     onClick={() => setWizardStep(0)}
-                    className="mt-4 px-4 py-2 rounded-lg border border-zinc-600 text-zinc-400 hover:text-white text-sm transition-colors"
+                    className="px-4 py-2 rounded-lg border border-zinc-600 text-zinc-400 hover:text-white text-sm transition-colors"
                   >
-                    Сбросить
+                    Сбросить симулятор
                   </button>
                 </div>
               )}
