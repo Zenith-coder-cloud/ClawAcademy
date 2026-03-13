@@ -10,7 +10,7 @@ import { useAccount, useDisconnect, useSignMessage } from "wagmi";
 const allModules = [
   { id: 0, title: "Вход — что такое ИИ-агент", cover: "/covers/block0.png" },
   { id: 1, title: "Установка и первый агент", cover: "/covers/block1.png" },
-  { id: 2, title: "Быстрый заработок: первые схемы", cover: "/covers/block2.png" },
+  { id: 2, title: "Агент на работе: первые реальные кейсы", cover: "/covers/block2.png" },
   { id: 3, title: "Мультиагент и автоматизация", cover: "/covers/block3.png" },
   { id: 4, title: "Продвинутые схемы: SaaS и аутстаффинг", cover: "/covers/block4.png" },
   { id: 5, title: "Бизнес-модель: упаковка, клиенты, прайсинг", cover: "/covers/block5.png" },
