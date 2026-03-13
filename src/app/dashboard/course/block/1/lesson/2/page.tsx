@@ -740,8 +740,33 @@ export default function Block1Lesson2Page() {
                 </div>
               )}
 
-              {/* Step 7 — Web search */}
+              {/* Step 7 — Telegram Bot Token */}
               {wizardStep === 7 && (
+                <div className="space-y-3">
+                  <p className="text-zinc-500 text-xs mb-1">Channel: Telegram (Bot API)</p>
+                  <p className="text-white mb-3">◆ Enter your Telegram Bot Token</p>
+                  <p className="text-zinc-500 text-sm mb-3">
+                    Это токен который ты получил от @BotFather на шаге 1.
+                  </p>
+                  <input
+                    type="password"
+                    placeholder="1234567890:ABCDEFGabcdefg1234567890"
+                    className="w-full bg-zinc-800 border border-zinc-600 rounded-lg px-4 py-2.5 text-zinc-300 font-mono text-sm focus:outline-none focus:border-[#FF4422] placeholder-zinc-600"
+                  />
+                  <p className="text-zinc-500 text-xs mt-1">
+                    Нет токена? Вернись к Шагу 1 — @BotFather → /newbot
+                  </p>
+                  <button
+                    onClick={() => setWizardStep(8)}
+                    className="mt-2 px-5 py-2.5 bg-[#FF4422] text-white rounded-lg font-medium hover:bg-[#ff5a3c] transition-colors"
+                  >
+                    Continue →
+                  </button>
+                </div>
+              )}
+
+              {/* Step 8 — Web search */}
+              {wizardStep === 8 && (
                 <div>
                   <p className="text-white mb-2">◆ Web search</p>
                   <p className="text-zinc-500 mb-3">Web search lets your agent look things up online. Choose a provider and paste your API key.</p>
@@ -754,7 +779,7 @@ export default function Block1Lesson2Page() {
                     <p className="px-3 py-1 text-green-400">● Skip for now</p>
                   </div>
                   <button
-                    onClick={() => setWizardStep(8)}
+                    onClick={() => setWizardStep(9)}
                     className="px-4 py-2 rounded-lg bg-[#FF4422] text-white text-sm font-medium font-sans hover:bg-[#e63d1e] transition-colors"
                   >
                     Continue →
@@ -763,7 +788,7 @@ export default function Block1Lesson2Page() {
               )}
 
               {/* Step 8 — Skills + Hooks */}
-              {wizardStep === 8 && (
+              {wizardStep === 9 && (
                 <div>
                   <p className="text-white mb-2">◆ Skills status</p>
                   <div className="text-zinc-500 mb-3 pl-2">
@@ -784,7 +809,7 @@ export default function Block1Lesson2Page() {
                     <p className="px-3 py-1 text-zinc-500">○ command-logger</p>
                   </div>
                   <button
-                    onClick={() => setWizardStep(9)}
+                    onClick={() => setWizardStep(10)}
                     className="px-4 py-2 rounded-lg bg-[#FF4422] text-white text-sm font-medium font-sans hover:bg-[#e63d1e] transition-colors"
                   >
                     Continue →
@@ -793,7 +818,7 @@ export default function Block1Lesson2Page() {
               )}
 
               {/* Step 9 — Gateway + Готово */}
-              {wizardStep === 9 && (
+              {wizardStep === 10 && (
                 <div>
                   <p className="text-white mb-2">◆ Gateway service runtime</p>
                   <p className="text-zinc-500 mb-3">QuickStart uses Node for the Gateway service (stable + supported).</p>
