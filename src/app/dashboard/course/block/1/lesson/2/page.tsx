@@ -295,6 +295,9 @@ export default function Block1Lesson2Page() {
                     } else if (idx === 1) {
                       setSelectedProvider('Anthropic');
                       if (wizardStep > 2) setWizardStep(2);
+                    } else if (idx === 2) {
+                      setSelectedProvider('other');
+                      if (wizardStep > 2) setWizardStep(2);
                     }
                   }}
                   className={
@@ -593,8 +596,15 @@ export default function Block1Lesson2Page() {
               )}
               {wizardStep === 3 && selectedProvider !== 'OpenRouter' && selectedProvider !== 'Anthropic' && (
                 <div>
-                  <p className="text-zinc-500 italic mb-3">Default model will be configured automatically</p>
-                  <p className="text-white mb-4">◆ Model/auth provider: {selectedProvider}</p>
+                  <p className="text-white mb-3">◆ Default model</p>
+                  <p className="text-zinc-500 text-sm mb-3">Визард покажет список доступных моделей выбранного провайдера.</p>
+                  <div className="space-y-0.5 mb-4">
+                    <p className="px-3 py-1 text-zinc-500">○ provider/model-1</p>
+                    <p className="px-3 py-1 text-zinc-500">○ provider/model-2</p>
+                    <p className="px-3 py-1 text-zinc-500">○ provider/model-3</p>
+                    <p className="px-3 py-1 text-zinc-500">○ Enter model manually</p>
+                  </div>
+                  <p className="text-zinc-600 text-xs mb-3 italic">← выбери нужную модель из списка</p>
                   <button
                     onClick={() => setWizardStep(4)}
                     className="px-4 py-2 rounded-lg bg-[#FF4422] text-white text-sm font-medium font-sans hover:bg-[#e63d1e] transition-colors"
@@ -709,10 +719,10 @@ export default function Block1Lesson2Page() {
                     </>
                   ) : (
                     <>
-                      <p className="text-white mb-3">◆ Enter API key for {selectedProvider}:</p>
+                      <p className="text-white mb-3">◆ Enter API key:</p>
                       <input
                         type="password"
-                        placeholder="your-api-key-here"
+                        placeholder="вставь ключ от выбранного провайдера"
                         className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-[#FF4422] mb-2"
                         readOnly
                       />
