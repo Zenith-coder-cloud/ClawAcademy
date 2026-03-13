@@ -503,6 +503,7 @@ openclaw cron remove --id <job-id>    # удалить`}
 
         {/* ── Cron image ── */}
         <img src="/course/block1/lesson4/b1-l4-cron.png" alt="Cron задачи" className="w-full rounded-xl object-cover" />
+        <img src="/course/block1/lesson4/b1-l4-telegram-result.png" alt="Результат в Telegram" className="w-full rounded-xl object-cover" />
 
         {/* ── Webhook ── */}
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
