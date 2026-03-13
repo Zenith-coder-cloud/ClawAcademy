@@ -132,7 +132,7 @@ export default function Block1Lesson4Page() {
   const [searchQuery, setSearchQuery] = useState("");
   const [checks, setChecks] = useState([false, false, false, false]);
 
-  const allChecked = checks.every(Boolean);
+  
 
   /* search filter */
   const filteredIssues = searchQuery.trim()
