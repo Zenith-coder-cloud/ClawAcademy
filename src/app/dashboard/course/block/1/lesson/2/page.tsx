@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 /* ─── Troubleshooting issues ─── */
 type AccordionItem = { title: string; content: string; hint?: string };
@@ -258,6 +259,13 @@ export default function Block1Lesson2Page() {
         </aside>
 
         <div className="flex-1 min-w-0 flex flex-col gap-8">
+        <Image
+          src="/course/block1/lesson2/b1-l2-wizard.png"
+          alt="Первый Telegram-агент"
+          width={1280}
+          height={720}
+          className="w-full rounded-2xl object-cover"
+        />
             <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
             <p className="text-zinc-400 leading-relaxed">
               OpenClaw поставляется с интерактивным визардом. Он сам запросит токен, настроит доступ и запустит демон. Тебе останется только написать боту первое сообщение.
@@ -409,7 +417,6 @@ export default function Block1Lesson2Page() {
               2. Запусти визард настройки
             </h2>
             <CodeBlock code="openclaw onboard --install-daemon" />
-            <img src="/course/block1/lesson2/b1-l2-wizard.png" alt="openclaw onboard wizard" className="w-full rounded-xl mt-4 object-cover" />
             <p className="text-zinc-400 mt-4 mb-4 leading-relaxed">
               Визард проведёт тебя через настройку шаг за шагом. Попробуй интерактивный симулятор:
             </p>
