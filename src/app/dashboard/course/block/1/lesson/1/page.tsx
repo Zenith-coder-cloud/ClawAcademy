@@ -264,9 +264,24 @@ function Accordion({ items }: { items: AccordionItem[] }) {
 export default function Block1Lesson1Page() {
   const router = useRouter();
   const [activeOs, setActiveOs] = useState<OsId>("mac");
+  const [searchQuery, setSearchQuery] = useState('');
   const [checks, setChecks] = useState([false, false, false, false, false]);
 
   const allChecked = checks.every(Boolean);
+
+  const osLabels: Record<OsId, string> = { mac: 'Mac', windows: 'Windows', linux: 'Linux', vps: 'VPS' };
+
+  const filteredIssues = searchQuery.trim()
+    ? (Object.entries(osIssues) as [OsId, AccordionItem[]][]).flatMap(([osId, items]) =>
+        items
+          .filter(item =>
+            [item.title, item.content, item.hint ?? ''].some(text =>
+              text.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+          )
+          .map(item => ({ ...item, title: item.title + '  [' + osLabels[osId] + ']' }))
+      )
+    : osIssues[activeOs];
 
 
   return (
@@ -599,9 +614,26 @@ export default function Block1Lesson1Page() {
 
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
           <h2 className="text-2xl font-semibold text-white mb-4">
-            Проблемы и решения — {osTabs.find(t => t.id === activeOs)?.label}
+            {searchQuery.trim()
+              ? `Найдено: ${filteredIssues.length}`
+              : `Проблемы и решения — ${osTabs.find(t => t.id === activeOs)?.label}`}
           </h2>
-          <Accordion items={osIssues[activeOs]} />
+          <div className='relative mb-4'>
+            <input
+              type='text'
+              placeholder='Найти проблему... (например: command not found, permission denied)'
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className='w-full bg-zinc-950 border border-zinc-700 rounded-xl px-4 py-3 pl-10 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-[#FF4422] transition-colors text-sm'
+            />
+            <svg className='absolute left-3 top-3.5 w-4 h-4 text-zinc-500' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+              <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' />
+            </svg>
+            {searchQuery && (
+              <button onClick={() => setSearchQuery('')} className='absolute right-3 top-3 text-zinc-500 hover:text-zinc-300'>✕</button>
+            )}
+          </div>
+          <Accordion items={filteredIssues} />
         </section>
 
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
