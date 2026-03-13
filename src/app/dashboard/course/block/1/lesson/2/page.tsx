@@ -280,6 +280,7 @@ export default function Block1Lesson2Page() {
             <div className="mt-4 bg-yellow-900/20 border border-yellow-700/40 rounded-xl px-5 py-4 text-yellow-200 text-sm">
               ⚠️ Bot Token выдаётся один раз. Сохрани его сейчас — он нужен в визарде.
             </div>
+            <img src="/course/block1/lesson2/b1-l2-botfather.png" alt="BotFather — создание бота" className="w-full rounded-xl mt-6 object-cover" />
           </section>
 
           {/* ── Шаг 1.5 — API ключ для AI модели ── */}
@@ -338,6 +339,7 @@ export default function Block1Lesson2Page() {
                 <div className="bg-zinc-800 border border-zinc-700 rounded-xl px-5 py-4 text-zinc-300 text-sm">
                   Haiku через OpenRouter — лучший выбор для начала. Потом можно переключиться на Sonnet или GPT-4o в одну строку конфига.
                 </div>
+                <img src="/course/block1/lesson2/b1-l2-openrouter.png" alt="OpenRouter — API ключ" className="w-full rounded-xl mt-4 object-cover" />
               </div>
             )}
 
@@ -361,6 +363,7 @@ export default function Block1Lesson2Page() {
                 <div className="bg-yellow-900/20 border border-yellow-700/40 rounded-xl px-5 py-4 text-yellow-200 text-sm">
                   ⚠️ OAuth токен привязан к подписке. Если подписка истекает — агент перестанет работать. Имей OpenRouter как резерв.
                 </div>
+                <img src="/course/block1/lesson2/b1-l2-anthropic.png" alt="Anthropic OAuth — два терминала" className="w-full rounded-xl mt-4 object-cover" />
               </div>
             )}
 
