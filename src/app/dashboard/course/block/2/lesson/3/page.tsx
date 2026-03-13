@@ -195,7 +195,7 @@ export default function Block2Lesson3Page() {
             </div>
           </section>
 
-          <BlockCompleteCard trackLabel="Email-агент" />
+          <BlockCompleteCard trackLabel="Фрилансер — Email, КП, Трекер" />
 
           <nav className="flex items-center justify-between text-sm text-zinc-400">
             <Link
