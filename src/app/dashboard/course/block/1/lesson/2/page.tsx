@@ -175,6 +175,7 @@ export default function Block1Lesson2Page() {
   const [checks, setChecks] = useState([false, false, false, false]);
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
+  const [apiTab, setApiTab] = useState(0);
 
   function toggleCard(idx: number) {
     setExpandedCards((prev) => {
@@ -273,6 +274,72 @@ export default function Block1Lesson2Page() {
             <div className="mt-4 bg-yellow-900/20 border border-yellow-700/40 rounded-xl px-5 py-4 text-yellow-200 text-sm">
               ⚠️ Bot Token выдаётся один раз. Сохрани его сейчас — он нужен в визарде.
             </div>
+          </section>
+
+          {/* ── Шаг 1.5 — API ключ для AI модели ── */}
+          <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+            <h2 className="text-2xl font-semibold text-white mb-4">
+              1.5. Получи API ключ для AI модели
+            </h2>
+
+            {/* Tabs */}
+            <div className="flex gap-2 mb-6">
+              {["OpenRouter (рекомендуется)", "Anthropic OAuth"].map((label, idx) => (
+                <button
+                  key={label}
+                  onClick={() => setApiTab(idx)}
+                  className={
+                    "px-4 py-2 rounded-lg text-sm font-medium transition-colors " +
+                    (apiTab === idx
+                      ? "bg-[#FF4422] text-white"
+                      : "bg-zinc-800 text-zinc-400 hover:text-white")
+                  }
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {/* Tab 0 — OpenRouter */}
+            {apiTab === 0 && (
+              <div className="space-y-4">
+                <div className="bg-green-900/20 border border-green-700/40 rounded-xl px-5 py-4 text-green-200 text-sm">
+                  ✅ Рекомендуем OpenRouter — единый ключ для 200+ моделей. Если одна модель недоступна — мгновенно переключаешься.
+                </div>
+                <ol className="list-decimal list-inside text-zinc-400 space-y-2">
+                  <li>Открой openrouter.ai → зарегистрируйся</li>
+                  <li>Перейди в API Keys → Create Key</li>
+                  <li>Скопируй ключ <code className="text-[#FF4422]">sk-or-v1-...</code></li>
+                  <li>Пополни баланс от $5 — Haiku стоит ~$0.001 за запрос</li>
+                </ol>
+                <CodeBlock code="anthropic/claude-haiku-4-5" language="text" />
+                <p className="text-zinc-500 text-sm -mt-2">Рекомендуемая модель для старта</p>
+                <div className="bg-zinc-800 border border-zinc-700 rounded-xl px-5 py-4 text-zinc-300 text-sm">
+                  Haiku через OpenRouter — лучший выбор для начала. Потом можно переключиться на Sonnet или GPT-4o в одну строку конфига.
+                </div>
+              </div>
+            )}
+
+            {/* Tab 1 — Anthropic OAuth */}
+            {apiTab === 1 && (
+              <div className="space-y-4">
+                <div className="bg-blue-900/20 border border-blue-700/40 rounded-xl px-5 py-4 text-blue-200 text-sm">
+                  💡 Если у тебя подписка Claude.ai Pro — ключ вводить не нужно. Логинишься через браузер.
+                </div>
+                <ol className="list-decimal list-inside text-zinc-400 space-y-2">
+                  <li>Убедись что активная подписка Claude.ai Pro</li>
+                  <li>При запуске визарда выбери провайдер Anthropic</li>
+                  <li>Выбери метод OAuth (Claude.ai)</li>
+                  <li>Визард откроет браузер → войди в аккаунт Claude → нажми Allow</li>
+                  <li>Визард получит токен автоматически</li>
+                </ol>
+                <CodeBlock code="openclaw auth add anthropic --oauth" />
+                <p className="text-zinc-500 text-sm -mt-2">Если нужно переавторизоваться</p>
+                <div className="bg-yellow-900/20 border border-yellow-700/40 rounded-xl px-5 py-4 text-yellow-200 text-sm">
+                  ⚠️ OAuth токен привязан к подписке. Если подписка истекает — агент перестанет работать. Имей OpenRouter как резерв.
+                </div>
+              </div>
+            )}
           </section>
 
           {/* ── Шаг 2 — Визард onboard (ГЛАВНАЯ) ── */}
