@@ -971,6 +971,7 @@ export default function Block1Lesson2Page() {
             <div className="mb-4 bg-blue-900/20 border border-blue-700/40 rounded-xl px-5 py-4 text-blue-200 text-sm">
               💡 Визард автоматически настраивает dmPolicy: allowlist с твоим Telegram ID. После этого ты — единственный, кто может писать боту.
             </div>
+            <img src="/course/block1/lesson2/b1-l2-telegram-chat.png" alt="Первое сообщение агенту в Telegram" className="w-full rounded-xl mb-4 object-cover" />
             <p className="text-zinc-400 mb-4 leading-relaxed">
               Найди своего бота в Telegram по username → нажми Start → напиши что-нибудь. Агент ответит сразу — ты уже в allowlist.
             </p>
