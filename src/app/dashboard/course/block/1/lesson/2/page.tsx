@@ -170,6 +170,7 @@ export default function Block1Lesson2Page() {
   const [wizardStep, setWizardStep] = useState(0);
   const [selectedProvider, setSelectedProvider] = useState("OpenRouter");
   const [selectedModel, setSelectedModel] = useState("openrouter/anthropic/claude-3.7-sonnet");
+  const [anthropicAuthMethod, setAnthropicAuthMethod] = useState<'token' | 'apikey'>('token');
 
   function toggleCard(idx: number) {
     setExpandedCards((prev) => {
@@ -494,8 +495,8 @@ export default function Block1Lesson2Page() {
                 </div>
               )}
 
-              {/* Step 3 — Модель */}
-              {wizardStep === 3 && (
+              {/* Step 3 — Модель / Auth method (ветвится по провайдеру) */}
+              {wizardStep === 3 && selectedProvider === 'OpenRouter' && (
                 <div>
                   <p className="text-zinc-400 mb-2">Provider: <span className="text-white">{selectedProvider}</span></p>
                   <p className="text-red-400 mb-3">◆ Default model</p>
@@ -533,9 +534,96 @@ export default function Block1Lesson2Page() {
                   </button>
                 </div>
               )}
+              {wizardStep === 3 && selectedProvider === 'Anthropic' && (
+                <div>
+                  <p className="text-green-400 mb-3">◆ Anthropic auth method</p>
+                  <div className="space-y-1 mb-4">
+                    <button
+                      onClick={() => setAnthropicAuthMethod('token')}
+                      className={
+                        "block w-full text-left px-3 py-1.5 rounded transition-colors hover:bg-zinc-900 " +
+                        (anthropicAuthMethod === 'token' ? "text-green-400" : "text-zinc-500")
+                      }
+                    >
+                      {anthropicAuthMethod === 'token' ? "●" : "○"} Anthropic token (paste setup-token) <span className="text-zinc-500 text-xs">(run &apos;claude setup-token&apos; elsewhere, then paste the token here)</span>
+                    </button>
+                    <button
+                      onClick={() => setAnthropicAuthMethod('apikey')}
+                      className={
+                        "block w-full text-left px-3 py-1.5 rounded transition-colors hover:bg-zinc-900 " +
+                        (anthropicAuthMethod === 'apikey' ? "text-green-400" : "text-zinc-500")
+                      }
+                    >
+                      {anthropicAuthMethod === 'apikey' ? "●" : "○"} Anthropic API key
+                    </button>
+                    <button
+                      onClick={() => setWizardStep(2)}
+                      className="block w-full text-left px-3 py-1.5 text-zinc-500 rounded transition-colors hover:bg-zinc-900"
+                    >
+                      ○ Back
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => setWizardStep(4)}
+                    className="px-4 py-2 rounded-lg bg-[#FF4422] text-white text-sm font-medium font-sans hover:bg-[#e63d1e] transition-colors"
+                  >
+                    Continue →
+                  </button>
+                </div>
+              )}
+              {wizardStep === 3 && selectedProvider !== 'OpenRouter' && selectedProvider !== 'Anthropic' && (
+                <div>
+                  <p className="text-zinc-500 italic mb-3">Default model will be configured automatically</p>
+                  <p className="text-green-400 mb-4">◆ Model/auth provider: {selectedProvider}</p>
+                  <button
+                    onClick={() => setWizardStep(4)}
+                    className="px-4 py-2 rounded-lg bg-[#FF4422] text-white text-sm font-medium font-sans hover:bg-[#e63d1e] transition-colors"
+                  >
+                    Continue →
+                  </button>
+                </div>
+              )}
 
-              {/* Step 4 — Метод ключа */}
-              {wizardStep === 4 && (
+              {/* Step 4 — Метод ключа (ветвится) */}
+              {wizardStep === 4 && selectedProvider === 'Anthropic' && anthropicAuthMethod === 'token' && (
+                <div>
+                  <p className="text-red-400 mb-3">◆ Anthropic setup-token ─────────────────</p>
+                  <div className="border border-zinc-600 rounded p-3 text-zinc-300 mb-4">
+                    <p className="mb-1">Run <code>claude setup-token</code> in your terminal.</p>
+                    <p className="mb-2">Then paste the generated token below.</p>
+                    <CodeBlock code="claude setup-token" />
+                  </div>
+                  <p className="text-green-400 mb-3">◆ How do you want to provide this setup token?</p>
+                  <div className="space-y-1 mb-4">
+                    <p className="px-3 py-1.5 text-green-400">● Paste setup token now <span className="text-zinc-500">(Stores the token directly in the auth profile)</span></p>
+                    <p className="px-3 py-1.5 text-zinc-500">○ Use external secret provider</p>
+                  </div>
+                  <button
+                    onClick={() => setWizardStep(5)}
+                    className="px-4 py-2 rounded-lg bg-[#FF4422] text-white text-sm font-medium font-sans hover:bg-[#e63d1e] transition-colors"
+                  >
+                    Continue →
+                  </button>
+                </div>
+              )}
+              {wizardStep === 4 && selectedProvider === 'Anthropic' && anthropicAuthMethod === 'apikey' && (
+                <div>
+                  <p className="text-red-400 mb-3">◆ Enter API key for Anthropic:</p>
+                  <input
+                    type="password"
+                    placeholder="sk-ant-api03-..."
+                    className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-[#FF4422] mb-4"
+                    readOnly
+                  />
+                  <button
+                    onClick={() => setWizardStep(5)}
+                    className="px-4 py-2 rounded-lg bg-[#FF4422] text-white text-sm font-medium font-sans hover:bg-[#e63d1e] transition-colors"
+                  >
+                    Continue →
+                  </button>
+                </div>
+              )}
+              {wizardStep === 4 && !(selectedProvider === 'Anthropic') && (
                 <div>
                   <p className="text-red-400 mb-3">◆ How do you want to provide this API key?</p>
                   <div className="space-y-1 mb-4">
@@ -551,30 +639,62 @@ export default function Block1Lesson2Page() {
                 </div>
               )}
 
-              {/* Step 5 — Ввод ключа */}
+              {/* Step 5 — Ввод ключа (ветвится) */}
               {wizardStep === 5 && (
                 <div>
-                  <p className="text-red-400 mb-3">◆ Enter API key for {selectedProvider}:</p>
-                  <input
-                    type="password"
-                    placeholder={
-                      selectedProvider === "OpenRouter" ? "sk-or-v1-..." :
-                      selectedProvider === "Anthropic" ? "sk-ant-api03-..." :
-                      selectedProvider.startsWith("OpenAI") ? "sk-proj-..." :
-                      selectedProvider === "Google" ? "AIza..." :
-                      "your-api-key-here"
-                    }
-                    className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-[#FF4422] mb-2"
-                    readOnly
-                  />
-                  <p className="text-zinc-600 text-xs mb-4">
-                    Получи ключ →{" "}
-                    {selectedProvider === "OpenRouter" ? "openrouter.ai/keys" :
-                     selectedProvider === "Anthropic" ? "console.anthropic.com" :
-                     selectedProvider.startsWith("OpenAI") ? "platform.openai.com/api-keys" :
-                     selectedProvider === "Google" ? "aistudio.google.com/apikey" :
-                     "сайт провайдера"}
-                  </p>
+                  {selectedProvider === 'Anthropic' && anthropicAuthMethod === 'token' ? (
+                    <>
+                      <p className="text-red-400 mb-3">◆ Paste your setup token:</p>
+                      <input
+                        type="password"
+                        placeholder="paste setup-token here..."
+                        className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-[#FF4422] mb-2"
+                        readOnly
+                      />
+                      <p className="text-zinc-600 text-xs mb-4">
+                        Запусти <code className="text-zinc-500">claude setup-token</code> в отдельном терминале
+                      </p>
+                    </>
+                  ) : selectedProvider === 'Anthropic' && anthropicAuthMethod === 'apikey' ? (
+                    <>
+                      <p className="text-red-400 mb-3">◆ Enter API key for Anthropic:</p>
+                      <input
+                        type="password"
+                        placeholder="sk-ant-api03-..."
+                        className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-[#FF4422] mb-2"
+                        readOnly
+                      />
+                      <p className="text-zinc-600 text-xs mb-4">
+                        Получи ключ → console.anthropic.com
+                      </p>
+                    </>
+                  ) : selectedProvider === 'OpenRouter' ? (
+                    <>
+                      <p className="text-red-400 mb-3">◆ Enter API key for OpenRouter:</p>
+                      <input
+                        type="password"
+                        placeholder="sk-or-v1-..."
+                        className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-[#FF4422] mb-2"
+                        readOnly
+                      />
+                      <p className="text-zinc-600 text-xs mb-4">
+                        Получи ключ → openrouter.ai/keys
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-red-400 mb-3">◆ Enter API key for {selectedProvider}:</p>
+                      <input
+                        type="password"
+                        placeholder="your-api-key-here"
+                        className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-[#FF4422] mb-2"
+                        readOnly
+                      />
+                      <p className="text-zinc-600 text-xs mb-4">
+                        Получи ключ → сайт провайдера
+                      </p>
+                    </>
+                  )}
                   <button
                     onClick={() => setWizardStep(6)}
                     className="px-4 py-2 rounded-lg bg-[#FF4422] text-white text-sm font-medium font-sans hover:bg-[#e63d1e] transition-colors"
