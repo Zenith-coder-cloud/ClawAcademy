@@ -1,137 +1,87 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
-/* ─── Steps config ─── */
-const steps = [
-  { id: 1, label: "BotFather" },
-  { id: 2, label: "Токен" },
-  { id: 3, label: "LLM ключ" },
-  { id: 4, label: "Запуск" },
-  { id: 5, label: "Паринг" },
-  { id: 6, label: "Первый диалог" },
-] as const;
-
-/* ─── Telegram issues ─── */
+/* ─── Troubleshooting issues ─── */
 type AccordionItem = { title: string; content: string; hint?: string };
 
 const telegramIssues: AccordionItem[] = [
   {
-    title: "Бот не отвечает после добавления токена",
-    content:
-      "Gateway не перезапущен после изменения конфига или токен введён с пробелами/переносами.",
-    hint: "openclaw gateway restart && openclaw doctor",
+    title: "Бот не отвечает после /start",
+    content: "Gateway не запущен или упал после последнего изменения конфига.",
+    hint: "openclaw gateway status — если Stopped → openclaw gateway restart",
   },
   {
     title: "Pairing code не приходит",
-    content: "Bot не добавлен в allowlist или dmPolicy стоит disabled.",
-    hint: "Проверь dmPolicy в openclaw.json → поставь 'pairing' или 'open'",
+    content:
+      "dmPolicy стоит disabled в конфиге — бот игнорирует личные сообщения.",
+    hint: "Проверь openclaw.json → channels.telegram.dmPolicy — должно быть 'pairing' или 'open'",
   },
   {
     title: "Invalid bot token (401)",
-    content: "Токен введён неверно или был отозван в BotFather.",
-    hint: "Перепроверь токен в @BotFather → /mybots → выбери бота → API Token. Скопируй полностью без пробелов.",
+    content:
+      "Токен введён с пробелом или переносом строки. Telegram возвращает 401 Unauthorized.",
+    hint: "@BotFather → /mybots → выбери бота → API Token → скопируй заново, без пробелов",
   },
   {
     title: "Bot was blocked by the user",
-    content:
-      "Ты заблокировал бота в Telegram ранее. Нужно разблокировать.",
-    hint: "Найди бота → нажми Unblock или Старт",
+    content: "Ты заблокировал бота ранее в Telegram.",
+    hint: "Найди бота в Telegram → нажми Unblock / Разблокировать",
   },
   {
-    title: "Telegram rate limit (429)",
+    title: "openclaw onboard не запускается",
     content:
-      "Слишком много запросов к Telegram API. Бот временно ограничен.",
-    hint: "Подожди 1-2 минуты. Telegram сам снимет ограничение. Не перезапускай gateway часто.",
+      "OpenClaw не установлен или установлена старая версия без визарда.",
+    hint: "npm install -g openclaw@latest — затем снова openclaw onboard",
   },
   {
-    title: "openclaw doctor показывает ошибку токена",
+    title: "Визард завис на выборе провайдера",
     content:
-      "Токен в конфиге указан неверно — возможно, кавычки или пробелы.",
-    hint: "cat ~/.openclaw/openclaw.json | python3 -m json.tool — проверить валидность JSON",
+      "Нет интернета или API endpoint недоступен — визард не может проверить провайдера.",
+    hint: "curl https://api.anthropic.com — если ошибка, проверь соединение / VPN",
   },
 ];
 
-/* ─── Demo dialogue cards ─── */
-const dialogueCards = [
+/* ─── Agent task cards ─── */
+const agentTasks = [
   {
-    question: "Привет! Кто ты?",
-    answer:
-      "Я — твой AI-агент, работающий через OpenClaw. Могу искать информацию, отвечать на вопросы, помогать с задачами — и всё это прямо в Telegram.",
+    emoji: "🔍",
+    prompt: "Найди последние новости про Bitcoin",
+    response:
+      "Агент выполняет web_search, возвращает 3 актуальные новости с источниками и датами.",
   },
   {
-    question: "Что ты умеешь?",
-    answer:
-      "Поиск в интернете, анализ текста, генерация контента, работа с файлами, выполнение команд на сервере, интеграция с API — и многое другое через плагины.",
+    emoji: "📅",
+    prompt: "Что у меня сегодня?",
+    response:
+      "Агент проверяет Google Calendar (если подключён) или отвечает, что нужно подключить Skills в Уроке 3.",
   },
   {
-    question: "Найди информацию о ближайших событиях в крипто",
-    answer:
-      "Агент выполнит поиск в интернете и вернёт список ближайших крипто-конференций, хакатонов и значимых событий с датами и ссылками.",
+    emoji: "⏰",
+    prompt: "Напомни мне позвонить клиенту через 2 часа",
+    response:
+      "Агент создаёт cron-напоминание — через 2 часа ты получишь сообщение в Telegram.",
+  },
+  {
+    emoji: "📝",
+    prompt: "Перескажи эту статью: [URL]",
+    response:
+      "Агент читает страницу по ссылке и возвращает краткое резюме в 3–5 предложениях.",
+  },
+  {
+    emoji: "🌤",
+    prompt: "Какая погода в Бангкоке?",
+    response:
+      "Агент использует weather skill и возвращает текущую температуру, влажность, прогноз.",
+  },
+  {
+    emoji: "💡",
+    prompt: "Придумай 5 идей для поста про AI",
+    response:
+      "Агент генерирует пронумерованный список из 5 идей с кратким описанием каждой.",
   },
 ];
-
-/* ─── LLM provider tabs ─── */
-const llmTabs = [
-  {
-    id: "anthropic",
-    label: "Anthropic",
-    text: "Получи ключ на console.anthropic.com → API Keys → Create Key",
-    config: `{
-  "models": {
-    "providers": [{
-      "name": "anthropic",
-      "apiKey": "sk-ant-api03-..."
-    }]
-  },
-  "agents": {
-    "defaults": {
-      "model": { "primary": "anthropic/claude-sonnet-4-5" }
-    }
-  }
-}`,
-  },
-  {
-    id: "openai",
-    label: "OpenAI",
-    text: "Получи ключ на platform.openai.com → API Keys → Create new",
-    config: `{
-  "models": {
-    "providers": [{
-      "name": "openai",
-      "apiKey": "sk-proj-..."
-    }]
-  },
-  "agents": {
-    "defaults": {
-      "model": { "primary": "openai/gpt-4o" }
-    }
-  }
-}`,
-  },
-  {
-    id: "qwen",
-    label: "Qwen",
-    text: "Получи ключ на dashscope.aliyuncs.com → API Keys",
-    config: `{
-  "models": {
-    "providers": [{
-      "name": "qwen",
-      "apiKey": "sk-..."
-    }]
-  },
-  "agents": {
-    "defaults": {
-      "model": { "primary": "qwen/coder-model" }
-    }
-  }
-}`,
-  },
-] as const;
-
-type LlmTabId = (typeof llmTabs)[number]["id"];
 
 /* ─── CodeBlock ─── */
 function CodeBlock({ code, language }: { code: string; language?: string }) {
@@ -166,7 +116,7 @@ function CodeBlock({ code, language }: { code: string; language?: string }) {
 
 /* ─── Accordion ─── */
 function Accordion({ items }: { items: AccordionItem[] }) {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
     <div className="space-y-3">
@@ -207,53 +157,20 @@ function Accordion({ items }: { items: AccordionItem[] }) {
    PAGE
    ═══════════════════════════════════════════════════ */
 export default function Block1Lesson2Page() {
-  const router = useRouter();
-
-  const [activeStep, setActiveStep] = useState(1);
-  const [completedSteps, setCompletedSteps] = useState<Set<number>>(
-    new Set()
-  );
-  const [botToken, setBotToken] = useState("");
-  const [activeLlmTab, setActiveLlmTab] = useState<LlmTabId>("anthropic");
+  const [wizardStep, setWizardStep] = useState(0);
+  const [checks, setChecks] = useState([false, false, false, false, false]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [checks, setChecks] = useState([
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-  ]);
-  const [expandedCard, setExpandedCard] = useState<number | null>(null);
+  const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
+  const [manualOpen, setManualOpen] = useState(false);
 
-  const sectionRefs = useRef<Record<number, HTMLElement | null>>({});
-
-  const allChecked = checks.every(Boolean);
-
-  function goToStep(id: number) {
-    setCompletedSteps((prev) => {
+  function toggleCard(idx: number) {
+    setExpandedCards((prev) => {
       const next = new Set(prev);
-      // mark all steps before the clicked one as completed
-      for (let i = 1; i < id; i++) next.add(i);
+      if (next.has(idx)) next.delete(idx);
+      else next.add(idx);
       return next;
     });
-    setActiveStep(id);
-    sectionRefs.current[id]?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
-
-  /* config builder JSON */
-  const configJson = JSON.stringify(
-    {
-      channels: {
-        telegram: {
-          enabled: true,
-          botToken: botToken || "YOUR_BOT_TOKEN",
-        },
-      },
-    },
-    null,
-    2
-  );
 
   /* search filter */
   const filteredIssues = searchQuery.trim()
@@ -276,29 +193,58 @@ export default function Block1Lesson2Page() {
             Урок 2 — Первый Telegram-агент
           </h1>
           <p className="text-zinc-400 text-lg">
-            Через 15 минут твой бот будет отвечать в Telegram
+            Визард настроит всё за 5 минут — вручную ничего редактировать не
+            нужно
           </p>
         </div>
       </section>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 flex gap-8">
+        {/* ── Sidebar ── */}
         <aside className="hidden md:block w-56 shrink-0">
           <div className="sticky top-6 bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-            <p className="text-xs text-zinc-500 font-semibold uppercase mb-3">Блок 1</p>
+            <p className="text-xs text-zinc-500 font-semibold uppercase mb-3">
+              Блок 1
+            </p>
             <nav className="flex flex-col gap-1">
               {[
-                { num: 1, title: 'Установка OpenClaw', href: '/dashboard/course/block/1/lesson/1' },
-                { num: 2, title: 'Первый Telegram-агент', href: '/dashboard/course/block/1/lesson/2' },
-                { num: 3, title: 'Подключения и Skills', href: '/dashboard/course/block/1/lesson/3' },
-                { num: 4, title: 'Первая автоматизация', href: '/dashboard/course/block/1/lesson/4' },
-              ].map(l => (
-                <Link key={l.num} href={l.href}
-                  className={'flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ' +
+                {
+                  num: 1,
+                  title: "Установка OpenClaw",
+                  href: "/dashboard/course/block/1/lesson/1",
+                },
+                {
+                  num: 2,
+                  title: "Первый Telegram-агент",
+                  href: "/dashboard/course/block/1/lesson/2",
+                },
+                {
+                  num: 3,
+                  title: "Подключения и Skills",
+                  href: "/dashboard/course/block/1/lesson/3",
+                },
+                {
+                  num: 4,
+                  title: "Первая автоматизация",
+                  href: "/dashboard/course/block/1/lesson/4",
+                },
+              ].map((l) => (
+                <Link
+                  key={l.num}
+                  href={l.href}
+                  className={
+                    "flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors " +
                     (2 === l.num
-                      ? 'bg-[#FF4422]/10 text-[#FF4422] font-semibold'
-                      : 'text-zinc-400 hover:text-white hover:bg-zinc-800')}>
-                  <span className={'w-5 h-5 rounded-full border flex items-center justify-center text-xs shrink-0 ' +
-                    (2 === l.num ? 'border-[#FF4422]' : 'border-zinc-600')}>
+                      ? "bg-[#FF4422]/10 text-[#FF4422] font-semibold"
+                      : "text-zinc-400 hover:text-white hover:bg-zinc-800")
+                  }
+                >
+                  <span
+                    className={
+                      "w-5 h-5 rounded-full border flex items-center justify-center text-xs shrink-0 " +
+                      (2 === l.num ? "border-[#FF4422]" : "border-zinc-600")
+                    }
+                  >
                     {l.num}
                   </span>
                   {l.title}
@@ -307,342 +253,365 @@ export default function Block1Lesson2Page() {
             </nav>
           </div>
         </aside>
+
         <div className="flex-1 min-w-0 flex flex-col gap-8">
-        {/* ── Вступление ── */}
-        <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
-          <h2 className="text-2xl font-semibold text-white mb-4">
-            Вступление
-          </h2>
-          <p className="text-zinc-400 leading-relaxed">
-            Агент уже установлен. Теперь нужно дать ему голос — подключить
-            Telegram. Ты создашь бота через BotFather, добавишь токен в конфиг и
-            увидишь первый ответ агента.
-          </p>
-        </section>
+          {/* ── Вступление ── */}
+          <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+            <h2 className="text-2xl font-semibold text-white mb-4">
+              Вступление
+            </h2>
+            <p className="text-zinc-400 leading-relaxed">
+              OpenClaw поставляется с визардом onboard — он сам спросит токен
+              Telegram, выберет LLM провайдера, настроит конфиг. Ты просто
+              отвечаешь на вопросы.
+            </p>
+          </section>
 
-        {/* ── Step progress bar ── */}
-        <div className="flex flex-wrap gap-2">
-          {steps.map((s) => {
-            const isCompleted = completedSteps.has(s.id);
-            const isActive = activeStep === s.id;
-            return (
-              <button
-                key={s.id}
-                onClick={() => goToStep(s.id)}
-                className={`px-4 py-2 rounded-lg text-sm font-semibold border transition-colors flex items-center gap-1.5 ${
-                  isActive
-                    ? "bg-[#FF4422] border-[#FF4422] text-white"
-                    : isCompleted
-                    ? "bg-green-900/30 border-green-700 text-green-400"
-                    : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:border-zinc-600"
-                }`}
-              >
-                {isCompleted && !isActive ? (
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                ) : (
-                  <span>{s.id}</span>
-                )}
-                {s.label}
-              </button>
-            );
-          })}
-        </div>
+          {/* ── Шаг 1 — BotFather ── */}
+          <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+            <h2 className="text-2xl font-semibold text-white mb-4">
+              Шаг 1 — Создай бота через BotFather
+            </h2>
+            <ol className="list-decimal list-inside text-zinc-400 space-y-2 mb-4">
+              <li>
+                Открой Telegram → найди @BotFather (синяя галочка)
+              </li>
+              <li>Отправь /newbot</li>
+              <li>Введи имя бота (например: My Assistant)</li>
+              <li>
+                Введи username — должен заканчиваться на bot
+                (my_assistant_bot)
+              </li>
+              <li>Скопируй Bot Token — он понадобится в визарде</li>
+            </ol>
+            <CodeBlock code="/newbot" />
+            <div className="mt-4 bg-yellow-900/20 border border-yellow-700/40 rounded-xl px-5 py-4 text-yellow-200 text-sm">
+              ⚠️ Сохрани токен — он нужен на следующем шаге
+            </div>
+          </section>
 
-        {/* ── Шаг 1 — BotFather ── */}
-        <section
-          ref={(el) => { sectionRefs.current[1] = el; }}
-          id="step-1"
-          className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800"
-        >
-          <h3 className="text-xl font-semibold text-white mb-4">
-            Создай бота в Telegram
-          </h3>
-          <p className="text-zinc-400 mb-4 leading-relaxed">
-            BotFather — официальный бот Telegram для создания ботов. Найди его
-            по username @BotFather (с синей галочкой верификации).
-          </p>
-          <ol className="list-decimal list-inside text-zinc-400 space-y-2 mb-4">
-            <li>Открой Telegram → найди @BotFather → нажми Start</li>
-            <li>Отправь команду /newbot</li>
-            <li>Введи имя бота (отображаемое, например: My Assistant)</li>
-            <li>
-              Введи username — должен заканчиваться на bot (например:
-              my_assistant_bot)
-            </li>
-            <li>BotFather пришлёт Bot Token — сохрани его!</li>
-          </ol>
-          <CodeBlock code="/newbot" />
-          <div className="mt-4 bg-yellow-900/20 border border-yellow-700/40 rounded-xl px-5 py-4 text-yellow-200 text-sm">
-            ⚠️ Сохрани токен сейчас — он выдаётся один раз. Если потеряешь —
-            пересоздай через /revoke в BotFather
-          </div>
-        </section>
+          {/* ── Шаг 2 — Визард onboard (ГЛАВНАЯ) ── */}
+          <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+            <h2 className="text-2xl font-semibold text-white mb-4">
+              Шаг 2 — Запусти визард
+            </h2>
+            <CodeBlock code="openclaw onboard" />
 
-        {/* ── Шаг 2 — Конфиг-билдер ── */}
-        <section
-          ref={(el) => { sectionRefs.current[2] = el; }}
-          id="step-2"
-          className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800"
-        >
-          <h3 className="text-xl font-semibold text-white mb-4">
-            Добавь токен в конфиг
-          </h3>
+            {/* ── Интерактивный симулятор визарда ── */}
+            <div className="mt-6 bg-zinc-950 border border-zinc-800 rounded-xl p-5">
+              <p className="text-xs text-zinc-500 font-medium mb-4">
+                Симулятор визарда · Шаг {wizardStep + 1} из 5
+              </p>
 
-          <label className="block text-zinc-400 text-sm mb-2">
-            Вставь Bot Token
-          </label>
-          <input
-            type="text"
-            value={botToken}
-            onChange={(e) => setBotToken(e.target.value)}
-            placeholder="1234567890:ABCDEFGabcdefg..."
-            className="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-4 py-3 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-[#FF4422] transition-colors text-sm mb-4"
-          />
-
-          <CodeBlock code={configJson} language="json" />
-
-          <p className="text-zinc-400 mt-4 mb-2">Открой конфиг в редакторе:</p>
-          <CodeBlock code="nano ~/.openclaw/openclaw.json" />
-        </section>
-
-        {/* ── Шаг 3 — LLM ключ ── */}
-        <section
-          ref={(el) => { sectionRefs.current[3] = el; }}
-          id="step-3"
-          className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800"
-        >
-          <h3 className="text-xl font-semibold text-white mb-4">
-            Подключи AI модель
-          </h3>
-
-          <div className="flex flex-wrap gap-2 mb-6">
-            {llmTabs.map((tab) => {
-              const isActive = activeLlmTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveLlmTab(tab.id)}
-                  className={`px-4 py-2 rounded-lg text-sm font-semibold border transition-colors ${
-                    isActive
-                      ? "bg-[#FF4422] border-[#FF4422] text-white"
-                      : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:border-zinc-600"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
-
-          {llmTabs.map((tab) =>
-            activeLlmTab === tab.id ? (
-              <div key={tab.id} className="space-y-4">
-                <p className="text-zinc-400">{tab.text}</p>
-                <CodeBlock code={tab.config} language="json" />
-              </div>
-            ) : null
-          )}
-        </section>
-
-        {/* ── Шаг 4 — Запуск ── */}
-        <section
-          ref={(el) => { sectionRefs.current[4] = el; }}
-          id="step-4"
-          className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800"
-        >
-          <h3 className="text-xl font-semibold text-white mb-4">
-            Запусти Gateway
-          </h3>
-          <CodeBlock
-            code={`openclaw doctor\nopenclaw gateway restart\nopenclaw gateway status`}
-          />
-          <p className="text-zinc-400 mt-4">
-            doctor проверит конфиг и покажет ошибки. Если Errors: 0 — можно
-            рестартовать.
-          </p>
-        </section>
-
-        {/* ── Шаг 5 — Паринг ── */}
-        <section
-          ref={(el) => { sectionRefs.current[5] = el; }}
-          id="step-5"
-          className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800"
-        >
-          <h3 className="text-xl font-semibold text-white mb-4">
-            Одобри первое сообщение
-          </h3>
-          <p className="text-zinc-400 mb-4 leading-relaxed">
-            Найди своего бота в Telegram и отправь /start. Бот попросит
-            одобрение — это защита от посторонних.
-          </p>
-          <CodeBlock
-            code={`openclaw pairing list telegram\nopenclaw pairing approve telegram <CODE>`}
-          />
-          <div className="mt-4 bg-yellow-900/20 border border-yellow-700/40 rounded-xl px-5 py-4 text-yellow-200 text-sm">
-            ⚠️ Pairing code истекает через 1 час
-          </div>
-        </section>
-
-        {/* ── Шаг 6 — Первый диалог ── */}
-        <section
-          ref={(el) => { sectionRefs.current[6] = el; }}
-          id="step-6"
-          className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800"
-        >
-          <h3 className="text-xl font-semibold text-white mb-4">
-            Первые команды агенту
-          </h3>
-          <p className="text-zinc-400 mb-4">
-            Попробуй эти команды прямо в Telegram:
-          </p>
-
-          <div className="space-y-3">
-            {dialogueCards.map((card, idx) => {
-              const isExpanded = expandedCard === idx;
-              return (
-                <button
-                  key={idx}
-                  onClick={() => setExpandedCard(isExpanded ? null : idx)}
-                  className="w-full text-left bg-zinc-950 border border-zinc-800 rounded-xl px-5 py-4 hover:border-zinc-600 transition-colors"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-white font-medium">
-                      &ldquo;{card.question}&rdquo;
-                    </span>
-                    <span className="text-zinc-500 text-sm">
-                      {isExpanded ? "Скрыть" : "Что ответит?"}
-                    </span>
+              {/* Шаг 0 — Выбор провайдера */}
+              {wizardStep === 0 && (
+                <div>
+                  <p className="text-white font-semibold mb-3">
+                    ? Select AI provider
+                  </p>
+                  <div className="space-y-2">
+                    {[
+                      {
+                        label: "Anthropic (Claude)",
+                        rec: true,
+                      },
+                      { label: "OpenAI (GPT)", rec: false },
+                      { label: "Qwen", rec: false },
+                    ].map((opt, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setWizardStep(1)}
+                        className="w-full text-left bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 hover:border-[#FF4422] transition-colors"
+                      >
+                        <span className="text-zinc-300">
+                          {idx === 0 ? "●" : "○"} {opt.label}
+                        </span>
+                        {opt.rec && (
+                          <span className="ml-2 text-xs text-[#FF4422]">
+                            рекомендуется
+                          </span>
+                        )}
+                      </button>
+                    ))}
                   </div>
-                  {isExpanded && (
-                    <p className="mt-3 text-zinc-400 leading-relaxed text-sm">
-                      {card.answer}
-                    </p>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </section>
+                </div>
+              )}
 
-        {/* ── Проблемы и решения ── */}
-        <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
-          <h2 className="text-2xl font-semibold text-white mb-4">
-            {searchQuery.trim()
-              ? `Найдено: ${filteredIssues.length}`
-              : "Проблемы и решения — Telegram"}
-          </h2>
-          <div className="relative mb-4">
-            <input
-              type="text"
-              placeholder="Найти проблему... (например: token, pairing, 401)"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-4 py-3 pl-10 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-[#FF4422] transition-colors text-sm"
-            />
-            <svg
-              className="absolute left-3 top-3.5 w-4 h-4 text-zinc-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-3 text-zinc-500 hover:text-zinc-300"
-              >
-                ✕
-              </button>
-            )}
-          </div>
-          <Accordion items={filteredIssues} />
-        </section>
+              {/* Шаг 1 — Ввод API ключа */}
+              {wizardStep === 1 && (
+                <div>
+                  <p className="text-white font-semibold mb-3">
+                    ? Enter Anthropic API key
+                  </p>
+                  <input
+                    type="password"
+                    placeholder="sk-ant-api03-..."
+                    readOnly
+                    className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-zinc-400 placeholder-zinc-500 text-sm mb-3"
+                  />
+                  <p className="text-zinc-500 text-xs mb-4">
+                    Получи ключ на console.anthropic.com → API Keys
+                  </p>
+                  <button
+                    onClick={() => setWizardStep(2)}
+                    className="px-5 py-2 bg-[#FF4422] hover:bg-[#e63d1e] text-white text-sm font-semibold rounded-lg transition-colors"
+                  >
+                    Далее →
+                  </button>
+                </div>
+              )}
 
-        {/* ── Чекпоинт ── */}
-        <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
-          <h2 className="text-2xl font-semibold text-white mb-4">
-            ✅ Чекпоинт
-          </h2>
-          <div className="space-y-3">
-            {[
-              "Бот создан в BotFather, токен получен",
-              "Токен добавлен в openclaw.json",
-              "LLM ключ добавлен в конфиг",
-              "openclaw doctor → Errors: 0",
-              "Паринг одобрен",
-              "Первый ответ агента получен в Telegram",
-            ].map((label, idx) => (
-              <label
-                key={label}
-                className="flex items-center gap-3 bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-3 cursor-pointer"
-              >
-                <input
-                  type="checkbox"
-                  checked={checks[idx]}
-                  onChange={() =>
-                    setChecks((prev) =>
-                      prev.map((v, i) => (i === idx ? !v : v))
-                    )
-                  }
-                  className="h-4 w-4 accent-green-500"
-                />
-                <span className="text-zinc-300">{label}</span>
-              </label>
-            ))}
-          </div>
-          {allChecked && (
+              {/* Шаг 2 — Выбор канала */}
+              {wizardStep === 2 && (
+                <div>
+                  <p className="text-white font-semibold mb-3">
+                    ? Select channel
+                  </p>
+                  <div className="space-y-2 mb-4">
+                    {[
+                      { label: "Telegram (Bot API)", active: true },
+                      { label: "Discord", active: false },
+                    ].map((opt, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setWizardStep(3)}
+                        className="w-full text-left bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 hover:border-[#FF4422] transition-colors"
+                      >
+                        <span className="text-zinc-300">
+                          {opt.active ? "●" : "○"} {opt.label}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Шаг 3 — Ввод токена */}
+              {wizardStep === 3 && (
+                <div>
+                  <p className="text-white font-semibold mb-3">
+                    ? Enter Telegram Bot Token
+                  </p>
+                  <input
+                    type="text"
+                    placeholder="1234567890:ABCDEFGabcdefg..."
+                    readOnly
+                    className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-zinc-400 placeholder-zinc-500 text-sm mb-4"
+                  />
+                  <button
+                    onClick={() => setWizardStep(4)}
+                    className="px-5 py-2 bg-[#FF4422] hover:bg-[#e63d1e] text-white text-sm font-semibold rounded-lg transition-colors"
+                  >
+                    Далее →
+                  </button>
+                </div>
+              )}
+
+              {/* Шаг 4 — Готово */}
+              {wizardStep === 4 && (
+                <div>
+                  <div className="bg-green-900/20 border border-green-700/40 rounded-xl px-5 py-4 text-green-200 text-sm mb-4">
+                    ✅ OpenClaw настроен!
+                    <br />
+                    Gateway запускается...
+                    <br />
+                    Твой бот @my_assistant_bot готов к работе
+                  </div>
+                  <CodeBlock code="openclaw gateway status" />
+                </div>
+              )}
+
+              {/* Wizard progress dots */}
+              <div className="flex items-center gap-2 mt-4 pt-3 border-t border-zinc-800">
+                {[0, 1, 2, 3, 4].map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => setWizardStep(s)}
+                    className={`w-2 h-2 rounded-full transition-colors ${
+                      s === wizardStep
+                        ? "bg-[#FF4422]"
+                        : s < wizardStep
+                        ? "bg-green-500"
+                        : "bg-zinc-700"
+                    }`}
+                  />
+                ))}
+                <span className="text-xs text-zinc-500 ml-2">
+                  {wizardStep + 1}/5
+                </span>
+              </div>
+            </div>
+
+            {/* ── Accordion: ручная настройка ── */}
             <div className="mt-6">
               <button
-                onClick={() =>
-                  router.push("/dashboard/course/block/1/lesson/3")
-                }
-                className="px-6 py-3 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-semibold rounded-lg transition-colors"
+                onClick={() => setManualOpen(!manualOpen)}
+                className="w-full flex items-center justify-between bg-zinc-950 border border-zinc-800 rounded-xl px-5 py-4 text-left"
               >
-                Урок завершён →
+                <span className="text-white font-semibold">
+                  Настройка вручную (для продвинутых)
+                </span>
+                <span className="text-zinc-500 text-sm">
+                  {manualOpen ? "Скрыть" : "Показать"}
+                </span>
               </button>
+              {manualOpen && (
+                <div className="mt-2">
+                  <CodeBlock
+                    language="json"
+                    code={`{
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "botToken": "YOUR_BOT_TOKEN",
+      "dmPolicy": "pairing"
+    }
+  },
+  "models": {
+    "providers": [{ "name": "anthropic", "apiKey": "sk-ant-..." }]
+  }
+}`}
+                  />
+                </div>
+              )}
             </div>
-          )}
-        </section>
+          </section>
 
-        {/* ── Navigation ── */}
-        <nav className="flex items-center justify-between text-sm text-zinc-400">
-          <Link
-            href="/dashboard/course/block/1/lesson/1"
-            className="hover:text-zinc-200 transition-colors"
-          >
-            ← Урок 1: Установка
-          </Link>
-          {allChecked ? (
-            <button
-              onClick={() =>
-                router.push("/dashboard/course/block/1/lesson/3")
-              }
-              className="text-[#FF4422] hover:text-[#ff5a3c] transition-colors"
+          {/* ── Шаг 3 — Первое сообщение ── */}
+          <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+            <h2 className="text-2xl font-semibold text-white mb-4">
+              Шаг 3 — Напиши агенту
+            </h2>
+            <p className="text-zinc-400 mb-4 leading-relaxed">
+              Найди своего бота в Telegram → /start → одобри pairing в
+              терминале:
+            </p>
+            <CodeBlock
+              code={`openclaw pairing list telegram\nopenclaw pairing approve telegram <CODE>`}
+            />
+          </section>
+
+          {/* ── Что агент умеет ── */}
+          <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+            <h2 className="text-2xl font-semibold text-white mb-6">
+              Что агент умеет прямо сейчас
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {agentTasks.map((task, idx) => {
+                const isExpanded = expandedCards.has(idx);
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => toggleCard(idx)}
+                    className="w-full text-left bg-zinc-950 border border-zinc-800 rounded-xl px-5 py-4 hover:border-zinc-600 transition-colors"
+                  >
+                    <div className="flex items-start gap-3">
+                      <span className="text-xl shrink-0">{task.emoji}</span>
+                      <div className="min-w-0">
+                        <span className="text-white font-medium">
+                          &ldquo;{task.prompt}&rdquo;
+                        </span>
+                        {isExpanded && (
+                          <p className="mt-2 text-zinc-400 leading-relaxed text-sm">
+                            {task.response}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* ── Проблемы и решения ── */}
+          <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+            <h2 className="text-2xl font-semibold text-white mb-4">
+              {searchQuery.trim()
+                ? `Найдено: ${filteredIssues.length}`
+                : "Проблемы и решения — Telegram"}
+            </h2>
+            <div className="relative mb-4">
+              <input
+                type="text"
+                placeholder="Найти проблему... (например: token, pairing, 401)"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-4 py-3 pl-10 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-[#FF4422] transition-colors text-sm"
+              />
+              <svg
+                className="absolute left-3 top-3.5 w-4 h-4 text-zinc-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-3 text-zinc-500 hover:text-zinc-300"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+            <Accordion items={filteredIssues} />
+          </section>
+
+          {/* ── Чекпоинт ── */}
+          <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+            <h2 className="text-2xl font-semibold text-white mb-4">
+              ✅ Чекпоинт
+            </h2>
+            <div className="space-y-3">
+              {[
+                "Бот создан через BotFather, токен получен",
+                "openclaw onboard завершён успешно",
+                "openclaw gateway status → Running",
+                "Pairing одобрен",
+                "Агент ответил на первое сообщение в Telegram",
+              ].map((label, idx) => (
+                <label
+                  key={label}
+                  className="flex items-center gap-3 bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-3 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    checked={checks[idx]}
+                    onChange={() =>
+                      setChecks((prev) =>
+                        prev.map((v, i) => (i === idx ? !v : v))
+                      )
+                    }
+                    className="h-4 w-4 accent-green-500"
+                  />
+                  <span className="text-zinc-300">{label}</span>
+                </label>
+              ))}
+            </div>
+          </section>
+
+          {/* ── Navigation ── */}
+          <nav className="flex items-center justify-between text-sm">
+            <Link
+              href="/dashboard/course/block/1/lesson/1"
+              className="text-zinc-400 hover:text-white"
             >
-              Следующий: Урок 3 →
-            </button>
-          ) : (
-            <span className="text-zinc-600">Следующий: Урок 3 →</span>
-          )}
-        </nav>
+              ← Урок 1: Установка
+            </Link>
+            <Link
+              href="/dashboard/course/block/1/lesson/3"
+              className="text-[#FF4422] hover:text-[#ff5a3c]"
+            >
+              Урок 3: Подключения →
+            </Link>
+          </nav>
         </div>
       </div>
     </main>
