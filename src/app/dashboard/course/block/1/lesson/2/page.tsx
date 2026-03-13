@@ -296,7 +296,7 @@ export default function Block1Lesson2Page() {
             {apiTab === 0 && (
               <div className="space-y-4">
                 <div className="bg-green-900/20 border border-green-700/40 rounded-xl px-5 py-4 text-green-200 text-sm">
-                  ✅ Рекомендуем OpenRouter — единый ключ для 200+ моделей. Если одна модель недоступна — мгновенно переключаешься.
+                  Рекомендуем начать с OpenRouter и использовать его в качестве fallback провайдера. Так вы не потеряете связь с агентом в критический момент.
                 </div>
                 <ol className="list-decimal list-inside text-zinc-400 space-y-2">
                   <li>Открой openrouter.ai → зарегистрируйся</li>
