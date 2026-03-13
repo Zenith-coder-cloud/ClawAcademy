@@ -9,15 +9,22 @@ import {
   type TierKey,
 } from "@/lib/paymentConfig";
 import { checkRateLimit, getClientIp } from "@/lib/server/rateLimit";
-import { verifySession, SESSION_COOKIE } from "@/lib/server/session";
+import {
+  verifySession,
+  createSession,
+  SESSION_COOKIE,
+  MAX_AGE,
+} from "@/lib/server/session";
 
 export const dynamic = "force-dynamic";
 
 const verifySchema = z.object({
-  tx_hash: z.string().regex(/^0x[a-fA-F0-9]{64}$/, 'Invalid transaction hash format'),
+  tx_hash: z.string().regex(/^(0x[a-fA-F0-9]{64}|test|0xtest.*)$/, 'Invalid transaction hash format'),
   wallet_address: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
   tier: z.enum(["genesis", "pro", "elite"]).optional(),
 });
+
+const IS_MOCK_MODE = process.env.PAYMENT_TEST_MODE === "true";
 
 function withinTolerance(actual: bigint, expected: bigint): boolean {
   const diff =
@@ -37,7 +44,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { tx_hash, wallet_address } = parsed.data;
+    const { tx_hash, wallet_address, tier: requestTier } = parsed.data;
+
+    // Block test transactions in production
+    if ((tx_hash === "test" || tx_hash.startsWith("0xtest")) && !IS_MOCK_MODE) {
+      return NextResponse.json(
+        { error: "Test transactions not allowed in production" },
+        { status: 400 }
+      );
+    }
 
     const ip = getClientIp(req);
     const rateLimitKey = `payment-verify:${wallet_address || ip}`;
@@ -47,6 +62,64 @@ export async function POST(req: NextRequest) {
     }
 
     const db = supabaseAdmin();
+
+    // Mock mode: skip on-chain verification for test transactions
+    if (IS_MOCK_MODE && (tx_hash === "test" || tx_hash.startsWith("0xtest"))) {
+      // Try to find pending payment first
+      const { data: mockPayment } = await db
+        .from("payments")
+        .select("*")
+        .eq("wallet_address", wallet_address.toLowerCase())
+        .eq("status", "pending")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+
+      // Use tier from pending payment OR from request body OR fallback to genesis
+      const mockTier = mockPayment?.tier || requestTier || "genesis";
+
+      if (mockPayment) {
+        await db
+          .from("payments")
+          .update({ status: "confirmed", tx_hash, confirmed_at: new Date().toISOString() })
+          .eq("id", mockPayment.id);
+      }
+
+      // Use same .or() pattern as admin endpoint which is confirmed working
+      const lower = wallet_address.toLowerCase();
+      const { data: updatedUsers, error: updateError } = await db
+        .from("users")
+        .update({ tier: mockTier, tier_updated_at: new Date().toISOString() })
+        .or(`wallet_address.eq.${lower},wallet_address.eq.${wallet_address}`)
+        .select("id, tier");
+
+      console.log("[mock-verify] update result:", JSON.stringify(updatedUsers), "error:", updateError?.message);
+
+      const token = req.cookies.get(SESSION_COOKIE)?.value;
+      const session = token ? await verifySession(token) : null;
+      const response = NextResponse.json({
+        success: true,
+        tier: mockTier,
+        updated: updatedUsers?.length ?? 0,
+      });
+
+      if (session !== null) {
+        const newToken = await createSession({
+          ...session,
+          tier: mockTier,
+        });
+
+        response.cookies.set(SESSION_COOKIE, newToken, {
+          httpOnly: true,
+          secure: true,
+          sameSite: "lax",
+          maxAge: MAX_AGE,
+          path: "/",
+        });
+      }
+
+      return response;
+    }
 
     // 1) Find pending payment
     const { data: payment, error: paymentError } = await db
@@ -214,97 +287,47 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Server error" }, { status: 500 });
     }
 
-    // 6) Update user tier
-    const tierUpdate = {
-      tier: payment.tier,
-      tier_updated_at: new Date().toISOString(),
-    };
-
-    const sessionToken = req.cookies.get(SESSION_COOKIE)?.value;
-    const session = sessionToken ? await verifySession(sessionToken) : null;
-
-    let updatedUsers: { id: string; tier: string }[] | null = null;
-    let updateUserError: { message?: string } | null = null;
-
-    // 6.1) Primary: session user (telegram_id preferred, else wallet_address)
-    if (session?.telegramId) {
-      const result = await db
-        .from("users")
-        .update(tierUpdate)
-        .eq("telegram_id", session.telegramId)
-        .select("id, tier");
-      updatedUsers = result.data ?? null;
-      updateUserError = result.error ?? null;
-    } else if (session?.walletAddress) {
-      const sessionLower = session.walletAddress.toLowerCase();
-      const result = await db
-        .from("users")
-        .update(tierUpdate)
-        .or(`wallet_address.eq.${sessionLower},wallet_address.eq.${session.walletAddress}`)
-        .select("id, tier");
-      updatedUsers = result.data ?? null;
-      updateUserError = result.error ?? null;
-    } else if (payment.user_id) {
-      const result = await db
-        .from("users")
-        .update(tierUpdate)
-        .eq("id", payment.user_id)
-        .select("id, tier");
-      updatedUsers = result.data ?? null;
-      updateUserError = result.error ?? null;
-    } else if (payment.telegram_id) {
-      const result = await db
-        .from("users")
-        .update(tierUpdate)
-        .eq("telegram_id", payment.telegram_id)
-        .select("id, tier");
-      updatedUsers = result.data ?? null;
-      updateUserError = result.error ?? null;
-    }
+    // 6) Update user tier — use .or() for case-insensitive wallet match
+    const lower = wallet_address.toLowerCase();
+    const { data: updatedUsers, error: updateUserError } = await db
+      .from("users")
+      .update({
+        tier: payment.tier,
+        tier_updated_at: new Date().toISOString(),
+      })
+      .or(`wallet_address.eq.${lower},wallet_address.eq.${wallet_address}`)
+      .select("id, tier");
 
     if (updateUserError) {
-      console.error("Failed to update user tier (primary):", updateUserError);
-      // Will attempt fallback below; if all fallbacks fail, rollback happens at end
+      console.error("Failed to update user tier:", updateUserError);
     }
 
-    console.log("[verify] primary tier update result:", JSON.stringify(updatedUsers), "error:", updateUserError?.message);
+    console.log("[verify] tier update result:", JSON.stringify(updatedUsers), "error:", updateUserError?.message);
 
-    // 6.2) Fallback: payer wallet address from payment/tx
-    if (!updatedUsers || updatedUsers.length === 0) {
-      const lower = wallet_address.toLowerCase();
-      const result = await db
-        .from("users")
-        .update(tierUpdate)
-        .or(`wallet_address.eq.${lower},wallet_address.eq.${wallet_address}`)
-        .select("id, tier");
-      updatedUsers = result.data ?? null;
-      updateUserError = result.error ?? null;
-
-      if (updateUserError) {
-        console.error("Failed to update user tier (wallet fallback):", updateUserError);
-      }
-      console.log("[verify] wallet fallback update result:", JSON.stringify(updatedUsers), "error:", updateUserError?.message);
-    }
-
-    if (!updatedUsers || updatedUsers.length === 0) {
-      // Rollback: revert payment to pending so it can be retried
-      await db
-        .from("payments")
-        .update({ status: "pending", tx_hash: null, confirmed_at: null })
-        .eq("id", payment.id);
-
-      console.error("[verify] tier update failed — payment rolled back to pending:", payment.id);
-      return NextResponse.json(
-        { success: false, error: "Payment received but user account not found. Please contact support." },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({
+    const token = req.cookies.get(SESSION_COOKIE)?.value;
+    const session = token ? await verifySession(token) : null;
+    const response = NextResponse.json({
       success: true,
       tier: payment.tier,
       updated: updatedUsers?.length ?? 0,
     });
+
+    if (session !== null) {
+      const newToken = await createSession({
+        ...session,
+        tier: payment.tier,
+      });
+
+      response.cookies.set(SESSION_COOKIE, newToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "lax",
+        maxAge: MAX_AGE,
+        path: "/",
+      });
+    }
+
+    return response;
   } catch (err) {
     console.error("POST /api/payment/verify error:", err);
     return NextResponse.json(
