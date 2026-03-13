@@ -39,6 +39,12 @@ const telegramIssues: AccordionItem[] = [
     content:
       "Ищи по username который ввёл в BotFather. Убедись что username заканчивается на bot.",
   },
+  {
+    title: "zsh: command not found: claude (Anthropic token)",
+    hint: "Установи Claude CLI: npm install -g @anthropic-ai/claude-code — затем запусти claude setup-token заново",
+    content:
+      "Claude CLI не установлен. Команда claude setup-token требует claude-code. Установи через npm и повтори.",
+  },
 ];
 
 /* ─── Agent task cards ─── */
