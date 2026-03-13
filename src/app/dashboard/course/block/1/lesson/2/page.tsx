@@ -281,7 +281,33 @@ export default function Block1Lesson2Page() {
         </div>
       </section>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 flex gap-8">
+        <aside className="hidden md:block w-56 shrink-0">
+          <div className="sticky top-6 bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+            <p className="text-xs text-zinc-500 font-semibold uppercase mb-3">Блок 1</p>
+            <nav className="flex flex-col gap-1">
+              {[
+                { num: 1, title: 'Установка OpenClaw', href: '/dashboard/course/block/1/lesson/1' },
+                { num: 2, title: 'Первый Telegram-агент', href: '/dashboard/course/block/1/lesson/2' },
+                { num: 3, title: 'Подключения и Skills', href: '/dashboard/course/block/1/lesson/3' },
+                { num: 4, title: 'Первая автоматизация', href: '/dashboard/course/block/1/lesson/4' },
+              ].map(l => (
+                <Link key={l.num} href={l.href}
+                  className={'flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ' +
+                    (2 === l.num
+                      ? 'bg-[#FF4422]/10 text-[#FF4422] font-semibold'
+                      : 'text-zinc-400 hover:text-white hover:bg-zinc-800')}>
+                  <span className={'w-5 h-5 rounded-full border flex items-center justify-center text-xs shrink-0 ' +
+                    (2 === l.num ? 'border-[#FF4422]' : 'border-zinc-600')}>
+                    {l.num}
+                  </span>
+                  {l.title}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        </aside>
+        <div className="flex-1 min-w-0 flex flex-col gap-8">
         {/* ── Вступление ── */}
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
           <h2 className="text-2xl font-semibold text-white mb-4">
@@ -617,6 +643,7 @@ export default function Block1Lesson2Page() {
             <span className="text-zinc-600">Следующий: Урок 3 →</span>
           )}
         </nav>
+        </div>
       </div>
     </main>
   );
