@@ -604,6 +604,26 @@ openclaw cron remove --id <job-id>    # удалить`}
           <Accordion items={filteredIssues} />
         </section>
 
+        {/* ── Лайфхак ── */}
+        <section className="bg-gradient-to-r from-zinc-900 to-zinc-800 rounded-2xl p-6 md:p-8 border border-zinc-700">
+          <div className="flex gap-4 items-start">
+            <span className="text-3xl shrink-0">🤫</span>
+            <div>
+              <h2 className="text-xl font-semibold text-white mb-3">Секрет: можно просто попросить агента</h2>
+              <p className="text-zinc-300 leading-relaxed mb-4">
+                Мы настоятельно рекомендуем разобраться как работает cron — это даст полный контроль над автоматизацией. Но если не хочется вникать в синтаксис, есть более простой путь:
+              </p>
+              <div className="bg-zinc-950 border border-zinc-700 rounded-xl p-4 mb-4">
+                <p className="text-zinc-500 text-xs mb-2 font-mono">Ты → агенту в Telegram</p>
+                <p className="text-zinc-200 text-sm">«Настрой мне cron задачу: каждый день в 9 утра присылай мне дайджест — погода, BTC цена и мои встречи из Google Calendar»</p>
+              </div>
+              <p className="text-zinc-400 text-sm leading-relaxed">
+                Агент сам создаст задачу с правильным синтаксисом, нужными параметрами и подтвердит что всё работает. По сути именно так строится настоящая автоматизация — ты говоришь <em className="text-zinc-300">что хочешь</em>, агент разбирается <em className="text-zinc-300">как это сделать</em>.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* ── Чекпоинт ── */}
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
           <h2 className="text-2xl font-semibold text-white mb-4">
