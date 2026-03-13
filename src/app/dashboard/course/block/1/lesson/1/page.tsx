@@ -237,50 +237,217 @@ export default function Block1Lesson1Page() {
 
           {activeOs === "windows" && (
             <div className="space-y-6">
-              <p className="text-zinc-400">
-                Рекомендуется WSL2 (Windows Subsystem for Linux)
-              </p>
               <div>
                 <h3 className="text-white font-semibold mb-2">
-                  Шаг 1: Установить WSL2
+                  Шаг 1: Включить WSL2
                 </h3>
                 <p className="text-zinc-400 mb-3">
-                  В PowerShell от администратора: wsl --install
-                  <br />
-                  Перезагрузить компьютер
+                  Windows Subsystem for Linux — это встроенный Linux прямо в
+                  Windows. Запусти PowerShell от администратора (Win+X →
+                  Windows PowerShell (Admin)):
+                </p>
+                <CodeBlock code="wsl --install" />
+                <p className="text-zinc-400 mt-3">
+                  Перезагрузи компьютер после установки.
                 </p>
               </div>
+
               <div>
                 <h3 className="text-white font-semibold mb-2">
-                  Шаг 2: Открыть Ubuntu (WSL2) и установить
+                  Шаг 2: Открыть Ubuntu
                 </h3>
+                <p className="text-zinc-400">
+                  После перезагрузки открой Ubuntu из меню Пуск. При первом
+                  запуске создай логин и пароль.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-white font-semibold mb-2">
+                  Шаг 3: Установить OpenClaw
+                </h3>
+                <p className="text-zinc-400 mb-3">
+                  В терминале Ubuntu выполни:
+                </p>
                 <CodeBlock code="curl -fsSL https://openclaw.ai/install.sh | bash" />
-                <p className="text-zinc-400 mt-3">Или напрямую через PowerShell:</p>
-                <CodeBlock code="iwr -useb https://openclaw.ai/install.ps1 | iex" language="powershell" />
+                <p className="text-zinc-400 mt-3">
+                  💡 Скрипт сам установит Node 24 и настроит всё нужное
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-white font-semibold mb-2">
+                  Шаг 4: Onboarding wizard
+                </h3>
+                <CodeBlock code="openclaw onboard --install-daemon" />
+                <div className="mt-3 text-zinc-400">
+                  <p className="mb-2">Wizard спросит:</p>
+                  <ul className="list-disc list-inside space-y-1">
+                    <li>API ключ (Anthropic / OpenAI)</li>
+                    <li>Какой канал подключить (выбери Telegram)</li>
+                    <li>Автозапуск daemon</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-white font-semibold mb-2">
+                  Шаг 5: Проверить установку
+                </h3>
+                <CodeBlock
+                  code={`openclaw gateway status\nopenclaw doctor`}
+                />
               </div>
             </div>
           )}
 
           {activeOs === "linux" && (
             <div className="space-y-6">
-              <CodeBlock
-                code={`curl -fsSL https://openclaw.ai/install.sh | bash\nopenclaw onboard --install-daemon`}
-              />
+              <div>
+                <h3 className="text-white font-semibold mb-2">
+                  Шаг 1: Открыть Terminal
+                </h3>
+                <p className="text-zinc-400">
+                  В большинстве дистрибутивов: Ctrl+Alt+T или найди Terminal
+                  в меню приложений.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-white font-semibold mb-2">
+                  Шаг 2: Установить Node.js 24 (если нет)
+                </h3>
+                <p className="text-zinc-400 mb-3">
+                  OpenClaw требует Node.js ≥ 22. Проверь версию:
+                </p>
+                <CodeBlock code="node --version" />
+                <p className="text-zinc-400 mt-3 mb-3">
+                  Если версия ниже 22 или node не найден — установи через nvm:
+                </p>
+                <CodeBlock
+                  code={`curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash\nsource ~/.bashrc\nnvm install 24\nnvm use 24`}
+                />
+              </div>
+
+              <div>
+                <h3 className="text-white font-semibold mb-2">
+                  Шаг 3: Установить OpenClaw
+                </h3>
+                <CodeBlock code="curl -fsSL https://openclaw.ai/install.sh | bash" />
+              </div>
+
+              <div>
+                <h3 className="text-white font-semibold mb-2">
+                  Шаг 4: Onboarding wizard
+                </h3>
+                <CodeBlock code="openclaw onboard --install-daemon" />
+                <div className="mt-3 text-zinc-400">
+                  <p className="mb-2">Wizard спросит:</p>
+                  <ul className="list-disc list-inside space-y-1">
+                    <li>API ключ (Anthropic / OpenAI)</li>
+                    <li>Какой канал подключить (выбери Telegram)</li>
+                    <li>Автозапуск daemon</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-white font-semibold mb-2">
+                  Шаг 5: Проверить установку
+                </h3>
+                <CodeBlock
+                  code={`openclaw gateway status\nopenclaw doctor`}
+                />
+              </div>
             </div>
           )}
 
           {activeOs === "vps" && (
             <div className="space-y-6">
-              <p className="text-zinc-400">Чистая Ubuntu LTS:</p>
-              <CodeBlock
-                code={`curl -fsSL https://openclaw.ai/install.sh | bash\nopenclaw onboard --install-daemon`}
-              />
-              <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-4 text-zinc-400">
-                <p className="text-white font-semibold mb-2">⚠️ Важно</p>
-                <p>
-                  Daemon установится как systemd user service (автозапуск).
-                  Для доступа к dashboard с удалённой машины: SSH tunnel или
-                  Tailscale
+              <div>
+                <h3 className="text-white font-semibold mb-2">
+                  Шаг 1: Арендовать VPS
+                </h3>
+                <p className="text-zinc-400 mb-2">
+                  Нужен сервер с Ubuntu 22.04 LTS. Рекомендуем:
+                </p>
+                <ul className="list-disc list-inside text-zinc-400 space-y-1 mb-2">
+                  <li>Hetzner (hetzner.com) — от €4/мес, быстро, надёжно</li>
+                  <li>DigitalOcean (digitalocean.com) — от $6/мес, удобный интерфейс</li>
+                  <li>Contabo (contabo.com) — от €5/мес, много RAM</li>
+                </ul>
+                <p className="text-zinc-400">
+                  Минимальные требования: 1 CPU, 1GB RAM, Ubuntu 22.04
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-white font-semibold mb-2">
+                  Шаг 2: Подключиться по SSH
+                </h3>
+                <p className="text-zinc-400 mb-3">
+                  После создания сервера тебе придёт IP адрес. Подключись:
+                </p>
+                <CodeBlock code="ssh root@YOUR_SERVER_IP" />
+                <p className="text-zinc-400 mt-3">
+                  Замени YOUR_SERVER_IP на реальный IP из панели хостинга.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-white font-semibold mb-2">
+                  Шаг 3: Обновить систему
+                </h3>
+                <CodeBlock code="apt update && apt upgrade -y" />
+              </div>
+
+              <div>
+                <h3 className="text-white font-semibold mb-2">
+                  Шаг 4: Установить OpenClaw
+                </h3>
+                <CodeBlock code="curl -fsSL https://openclaw.ai/install.sh | bash" />
+              </div>
+
+              <div>
+                <h3 className="text-white font-semibold mb-2">
+                  Шаг 5: Onboarding wizard
+                </h3>
+                <CodeBlock code="openclaw onboard --install-daemon" />
+                <div className="mt-3 text-zinc-400">
+                  <p className="mb-2">Wizard спросит:</p>
+                  <ul className="list-disc list-inside space-y-1">
+                    <li>API ключ (Anthropic / OpenAI)</li>
+                    <li>Какой канал подключить (выбери Telegram)</li>
+                    <li>Автозапуск daemon (установится как systemd user service)</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-white font-semibold mb-2">
+                  Шаг 6: Проверить и держать запущенным
+                </h3>
+                <CodeBlock
+                  code={`openclaw gateway status\nopenclaw doctor`}
+                />
+                <p className="text-zinc-400 mt-3">
+                  💡 На VPS daemon запускается автоматически при перезагрузке
+                  сервера — тебе ничего не нужно делать вручную.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-white font-semibold mb-2">
+                  Шаг 7: Доступ к dashboard с удалённой машины
+                </h3>
+                <p className="text-zinc-400 mb-3">
+                  Dashboard работает на порту 18789. Чтобы открыть с ноутбука —
+                  используй SSH tunnel:
+                </p>
+                <CodeBlock code="ssh -L 18789:localhost:18789 root@YOUR_SERVER_IP" />
+                <p className="text-zinc-400 mt-3">
+                  После этого открывай http://localhost:18789 в браузере на
+                  своём компьютере.
                 </p>
               </div>
             </div>
