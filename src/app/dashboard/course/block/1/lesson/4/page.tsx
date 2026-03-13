@@ -249,6 +249,19 @@ export default function Block1Lesson4Page() {
             Cron — расписание для агента
           </h2>
 
+          <div className="bg-zinc-950 border border-zinc-700 rounded-xl p-5 mb-6">
+            <p className="text-zinc-300 font-semibold mb-3">📌 Параметры команды — что они значат:</p>
+            <div className="space-y-2 text-sm">
+              <div className="flex gap-3"><code className="text-[#FF4422] shrink-0 w-36">--name</code><span className="text-zinc-400">Название задачи (любое, для себя)</span></div>
+              <div className="flex gap-3"><code className="text-[#FF4422] shrink-0 w-36">--every 86400000</code><span className="text-zinc-400">Интервал в мс: 86400000 = 24 часа, 3600000 = 1 час, 1800000 = 30 минут</span></div>
+              <div className="flex gap-3"><code className="text-[#FF4422] shrink-0 w-36">--cron &quot;0 9 * * *&quot;</code><span className="text-zinc-400">Cron-расписание: каждый день в 9:00. Используй crontab.guru для проверки</span></div>
+              <div className="flex gap-3"><code className="text-[#FF4422] shrink-0 w-36">--session isolated</code><span className="text-zinc-400">Агент запускается отдельно, не мешает основному чату</span></div>
+              <div className="flex gap-3"><code className="text-[#FF4422] shrink-0 w-36">--message</code><span className="text-zinc-400">Что агент сделает — пиши как обычное сообщение</span></div>
+              <div className="flex gap-3"><code className="text-[#FF4422] shrink-0 w-36">--announce</code><span className="text-zinc-400">Отправить результат обратно тебе в Telegram</span></div>
+              <div className="flex gap-3"><code className="text-[#FF4422] shrink-0 w-36">--to</code><span className="text-zinc-400">Твой Telegram ID (числовой, узнай у @userinfobot)</span></div>
+            </div>
+          </div>
+
           {/* Tabs */}
           <div className="flex flex-wrap gap-2 mb-6">
             {cronTabs.map((tab) => {
@@ -275,8 +288,13 @@ export default function Block1Lesson4Page() {
               <p className="text-zinc-400">
                 Повтор через интервал — каждые N минут/часов/дней
               </p>
+              <div className="bg-blue-900/20 border border-blue-700/40 rounded-xl px-4 py-3 text-blue-200 text-sm mb-3">
+                ⚡ Замени <code className="text-white">YOUR_TELEGRAM_ID</code> на свой числовой ID.<br/>
+                Узнать ID: напиши <code className="text-white">/start</code> боту <a href="https://t.me/userinfobot" target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:underline">@userinfobot</a> в Telegram → скопируй число.
+              </div>
               <CodeBlock
                 code={`# Каждый день в 9:00 — утренний дайджест
+# (86400000 мс = 24 часа)
 openclaw cron add \\
   --name "Morning digest" \\
   --every 86400000 \\
@@ -287,6 +305,7 @@ openclaw cron add \\
   --to YOUR_TELEGRAM_ID
 
 # Каждые 30 минут — мониторинг цены
+# (1800000 мс = 30 минут)
 openclaw cron add \\
   --name "BTC monitor" \\
   --every 1800000 \\
@@ -358,6 +377,9 @@ openclaw cron add \\
   --channel telegram \\
   --to YOUR_TELEGRAM_ID`}
               />
+              <div className="mt-3 bg-zinc-800/60 border border-zinc-700 rounded-xl px-4 py-3 text-zinc-400 text-sm">
+                🔧 Не знаешь cron синтаксис? Используй <a href="https://crontab.guru" target="_blank" rel="noopener noreferrer" className="text-[#FF4422] hover:underline">crontab.guru</a> — визуальный редактор расписаний
+              </div>
             </div>
           )}
 
