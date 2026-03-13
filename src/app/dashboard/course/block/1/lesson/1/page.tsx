@@ -9,7 +9,7 @@ const osTabs = [
   {
     id: "mac",
     label: "Mac",
-    icon: (active: boolean): ReactNode => (
+    icon: (): ReactNode => (
       <svg viewBox="0 0 814 1000" className="w-4 h-4" fill="currentColor">
         <path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 790.7 0 663 0 541.8c0-207.5 135.4-317.3 269-317.3 70.1 0 128.4 46.4 172.5 46.4 43.4 0 112.7-49.4 191.3-49.4zm-174-181.7c31.1-36.9 53.1-88.1 53.1-139.3 0-7.1-.6-14.3-1.9-20.1-50.6 1.9-110.8 33.7-147.1 75.8-28.5 32.4-55.1 83.6-55.1 135.5 0 7.8 1.3 15.6 1.9 18.1 3.2.6 8.4 1.3 13.6 1.3 45.4 0 102.5-30.4 135.5-71.3z" />
       </svg>
@@ -18,7 +18,7 @@ const osTabs = [
   {
     id: "windows",
     label: "Windows",
-    icon: (active: boolean): ReactNode => (
+    icon: (): ReactNode => (
       <svg viewBox="0 0 88 88" className="w-4 h-4" fill="currentColor">
         <path d="M0 12.402l35.687-4.86.016 34.423-35.67.203zm35.67 33.529l.028 34.453L.028 75.48.026 45.7zm4.326-39.025L87.314 0v41.527l-47.318.376zm47.329 39.349l-.011 41.34-47.318-6.678-.066-34.739z" />
       </svg>
@@ -27,7 +27,7 @@ const osTabs = [
   {
     id: "linux",
     label: "Linux",
-    icon: (active: boolean): ReactNode => (
+    icon: (): ReactNode => (
       <svg viewBox="0 0 448 512" className="w-4 h-4" fill="currentColor">
         <path d="M220.8 123.3c1 .5 1.8 1.7 3 1.7 1.1 0 2.8-.4 2.9-1.5.2-1.4-1.9-2.3-3.2-2.9-1.7-.7-3.9-1-5.5-.1-.4.2-.8.7-.6 1.1.3 1.3 2.3 1.1 3.4 1.7zm-21.9 1.7c1.2 0 2-1.2 3-1.7 1.1-.6 3.1-.4 3.5-1.6.2-.4-.2-.9-.6-1.1-1.6-.9-3.8-.6-5.5.1-1.3.6-3.4 1.5-3.2 2.9.1 1 1.8 1.5 2.8 1.4zM420 403.8c-3.6-4-5.3-11.6-7.2-19.7-1.8-8.1-3.9-16.8-10.5-22.4-1.3-1.1-2.6-2.1-4-2.9-1.3-.8-2.7-1.5-4.1-2 9.2-27.3 5.6-54.5-3.7-79.1-11.4-30.1-31.3-56.4-46.5-74.4-17.1-21.5-33.7-41.9-33.4-72C311.1 85.4 315.7.1 234.8 0 132.4-.2 158 103.4 156.9 135.2c-1.7 23.4-6.4 43.8-22.5 64.6-12.7 16.5-30.5 36.4-41.8 61-13.4 29.8-24.9 59.6-24.1 92.2.8 7.1-2.8 12.1-8.2 16.3-5.5 4.3-11.7 7.5-18.3 9.8-7.7 2.7-16.9 4.6-23 8.9-8.8 6.2-15.4 15.5-14.6 26.5.8 10.2 8.1 17.9 15.9 22.8 14.3 9.1 33.9 10.1 49.9 16.3 16.5 6.4 27.5 19.2 27.2 37.4-.2 9.4-.8 19.1 5.6 27 7.2 9 19.4 13.3 30.3 11.3 9.8-1.9 16.6-8.4 24.6-12.8 8.2-4.4 16.7-9.2 26.3-9.6 23.3-1.2 49.6 8 72.2 8 27.7.1 37.2-12.6 38.8-33.9.4-5.7-.1-11.7-2.3-17.3-3-7.7-8.3-15-12.5-22.1-4.3-7.2-7.1-16.4-4.3-24.6 2.5-7.4 10.4-13.5 15.8-18.6 5.3-5.1 12.1-11.7 12.7-19 .6-7.5-4-15.2-9-19.2-3.5-2.7-7.3-4.6-11.3-6.3-3.9-1.8-7.6-4-11.3-6.5 12.8-15.1 14.7-34.1 14.7-34.1s14.2 31.4 6.3 50.2c4.5 2.2 9.3 4 14.5 4.3 1.8.1 3.6.2 5.5.1 7-.5 14-3.6 18.6-8.9 11.7-13.3 10.9-33.5 6-49.2zm-281.4 59.7c-.9 3.1-2.8 6-5.1 8.5-2.3 2.5-5.1 4.6-8.3 6.2-3.2 1.5-6.8 2.4-10.4 2.1-3.4-.3-6.4-1.6-9.3-3.1-5.8-3.1-11.3-7.6-15.9-12.7-4.6-5.1-8.4-10.7-10.9-16.7-1.3-3-2.2-6.1-2.5-9.2-.3-3.1 0-6.4 1.6-9.1 1.5-2.6 4.2-4.3 7-4.9 2.8-.6 5.8-.1 8.6 1.2 5.4 2.5 9.5 7.2 12.6 12.4 3.1 5.2 5.2 11 7.6 16.5 2.4 5.5 5.5 11 10.5 14.3 1.9 1.2 4.1 2.1 5.8 1.4 1-.4 1.6-1.4 1.4-2.3-.2-.9-.9-1.6-1.6-2.2-2.8-2.4-5.4-5.1-7.1-8.4-.9-1.7-1.5-3.5-1.5-5.4s.8-3.8 2.3-5c1.5-1.2 3.6-1.6 5.5-1.2 1.9.4 3.6 1.5 5 2.9 2.8 2.8 4.4 6.6 5.3 10.5.8 3.7.8 7.6-.1 11.3z" />
       </svg>
@@ -36,7 +36,7 @@ const osTabs = [
   {
     id: "vps",
     label: "VPS",
-    icon: (active: boolean): ReactNode => (
+    icon: (): ReactNode => (
       <svg viewBox="0 0 640 512" className="w-4 h-4" fill="currentColor">
         <path d="M176 256c44.11 0 80-35.89 80-80s-35.89-80-80-80-80 35.89-80 80 35.89 80 80 80zm352-128H304c-8.84 0-16 7.16-16 16v144H64V120c0-13.25-10.75-24-24-24H24C10.75 96 0 106.75 0 120v272c0 13.25 10.75 24 24 24h16c13.25 0 24-10.75 24-24v-48h512v48c0 13.25 10.75 24 24 24h16c13.25 0 24-10.75 24-24V240c0-61.86-50.14-112-112-112z" />
       </svg>
@@ -45,6 +45,142 @@ const osTabs = [
 ] as const;
 
 type OsId = (typeof osTabs)[number]["id"];
+
+const osIssues: Record<OsId, AccordionItem[]> = {
+  mac: [
+    {
+      title: 'openclaw: command not found после установки',
+      content: 'Скрипт установил бинарник в ~/.local/bin, но эта директория не в PATH текущей сессии.',
+      hint: 'echo \'export PATH="$HOME/.local/bin:$PATH"\' >> ~/.zshrc && source ~/.zshrc',
+    },
+    {
+      title: 'PATH не работает: zsh не читает ~/.bashrc',
+      content: 'На macOS Catalina+ дефолтный шелл — zsh. Скрипты часто добавляют PATH в ~/.bashrc, который zsh не читает.',
+      hint: 'echo \'export PATH="$HOME/.local/bin:$PATH"\' >> ~/.zshrc && source ~/.zshrc',
+    },
+    {
+      title: 'Permission denied при npm install -g',
+      content: 'npm пытается писать в /usr/local/lib/node_modules, принадлежащий root. Используй nvm — он устанавливает Node в домашнюю папку.',
+      hint: 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && source ~/.zshrc && nvm install --lts',
+    },
+    {
+      title: 'sharp / libvips ошибка на Apple Silicon (M1/M2/M3)',
+      content: 'sharp требует нативные бинарники для arm64. Возникает если Node установлен под Rosetta (x64 режим).',
+      hint: 'SHARP_IGNORE_GLOBAL_LIBVIPS=1 npm rebuild sharp\n# Убедись что Node нативный: node -e "console.log(process.arch)" → arm64',
+    },
+    {
+      title: 'Xcode Command Line Tools не установлены',
+      content: 'npm использует node-gyp для нативных модулей — ему нужен C++ компилятор из Xcode CLT.',
+      hint: 'xcode-select --install',
+    },
+    {
+      title: 'Node запущен под Rosetta вместо arm64',
+      content: 'Terminal.app запущен в режиме Rosetta — Node работает как x64, что вызывает конфликты нативных модулей.',
+      hint: 'Finder → Applications → Utilities → Terminal.app → Cmd+I → убрать «Open using Rosetta»',
+    },
+  ],
+  windows: [
+    {
+      title: 'WSL2 не установлен или Windows слишком старый',
+      content: 'WSL2 требует Windows 10 Build 18362+ или Windows 11. На старых сборках wsl --install не работает.',
+      hint: 'winver → проверить Build. Если < 18362 → Settings → Windows Update → обновить.',
+    },
+    {
+      title: 'curl не работает в PowerShell',
+      content: 'В PowerShell curl — это алиас для Invoke-WebRequest с другим синтаксисом. Стандартные install-скрипты ломаются.',
+      hint: '# Используй curl.exe вместо curl:\ncurl.exe -fsSL https://openclaw.ai/install.sh -o install.sh\n# Или запускай команды внутри WSL: wsl → затем обычный curl',
+    },
+    {
+      title: 'node: not found после установки nvm в WSL',
+      content: 'nvm инициализируется только если ~/.bashrc загружен. В новой сессии WSL он может не активироваться.',
+      hint: 'echo \'export NVM_DIR="$HOME/.nvm"\n[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"\' >> ~/.bashrc && source ~/.bashrc',
+    },
+    {
+      title: 'Порты WSL не видны в Windows браузере',
+      content: 'WSL2 — отдельная VM. localhost:18789 в Windows и WSL — разные адреса на старых версиях Windows.',
+      hint: '# Windows 11 22H2+: добавь в %USERPROFILE%/.wslconfig:\n[wsl2]\nnetworkingMode=mirrored\n# Или узнай IP: wsl hostname -I → открывай http://<IP>:18789',
+    },
+    {
+      title: 'Permission denied в /mnt/c/ (Windows файлы)',
+      content: 'NTFS файлы в /mnt/c/ монтируются с фиксированными правами — npm не может создавать симлинки.',
+      hint: '# Всегда работай в нативной WSL файловой системе:\ncd ~ && mkdir projects && cd projects\n# НЕ запускай npm install в /mnt/c/',
+    },
+    {
+      title: 'PATH не синхронизирован между Windows и WSL',
+      content: 'Программы установленные в WSL не видны из Windows CMD/PowerShell и наоборот.',
+      hint: '# Запуск WSL команд из Windows:\nwsl openclaw gateway status\n# Или добавь в /etc/wsl.conf:\n[interop]\nappendWindowsPath = true',
+    },
+  ],
+  linux: [
+    {
+      title: 'Системный Node.js слишком старый (v14/v16 из apt)',
+      content: 'apt устанавливает устаревший Node из стандартных репозиториев. OpenClaw требует Node ≥ 22.',
+      hint: 'curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -\nsudo apt-get install -y nodejs',
+    },
+    {
+      title: 'nvm не активируется после установки',
+      content: 'Скрипт nvm добавляет инициализацию в ~/.bashrc, но текущая сессия её не перечитывает.',
+      hint: 'source ~/.bashrc\n# Проверить: grep NVM_DIR ~/.bashrc',
+    },
+    {
+      title: 'Permission denied: /usr/local/lib/node_modules',
+      content: 'Системный Node установлен с правами root — npm не может писать в глобальную директорию.',
+      hint: 'mkdir ~/.npm-global\nnpm config set prefix \'~/.npm-global\'\necho \'export PATH="$HOME/.npm-global/bin:$PATH"\' >> ~/.bashrc && source ~/.bashrc',
+    },
+    {
+      title: 'systemd user service не работает',
+      content: 'systemctl --user сервисы падают при выходе из SSH сессии без loginctl enable-linger.',
+      hint: 'loginctl enable-linger $USER\nsystemctl --user daemon-reload\nsystemctl --user enable openclaw && systemctl --user start openclaw',
+    },
+    {
+      title: 'Firewall (ufw) блокирует порт 18789',
+      content: 'UFW по умолчанию закрывает все порты кроме SSH — openclaw gateway недоступен снаружи.',
+      hint: 'sudo ufw allow 18789/tcp\nsudo ufw reload\nss -tlnp | grep 18789',
+    },
+    {
+      title: 'curl SSL certificate errors',
+      content: 'Устаревшие ca-certificates или неправильное время системы вызывают SSL ошибки при загрузке скриптов.',
+      hint: 'sudo apt-get install -y ca-certificates && sudo update-ca-certificates\n# Проверить время: timedatectl\nsudo timedatectl set-ntp true',
+    },
+  ],
+  vps: [
+    {
+      title: 'root vs non-root: npm global install ломает права',
+      content: 'npm install -g под root устанавливает с правами root — потом ломает запуск от обычного пользователя.',
+      hint: 'adduser deploy && usermod -aG sudo deploy && su - deploy\n# Установить Node через nvm под новым пользователем\n# Если нужен root: npm install -g --unsafe-perm openclaw',
+    },
+    {
+      title: 'UFW блокирует порт 18789',
+      content: 'На Ubuntu VPS UFW включён по умолчанию и блокирует все порты кроме SSH.',
+      hint: 'sudo ufw allow 18789/tcp comment \'openclaw gateway\'\nsudo ufw reload && sudo ufw status',
+    },
+    {
+      title: 'SSH tunnel не работает (GatewayPorts)',
+      content: 'sshd по умолчанию запрещает GatewayPorts — tunnel создаётся но порт недоступен снаружи.',
+      hint: '# В /etc/ssh/sshd_config добавить:\nGatewayPorts yes\nAllowTcpForwarding yes\nsudo systemctl restart sshd',
+    },
+    {
+      title: 'systemd --user останавливается при выходе из SSH',
+      content: 'User systemd сервисы живут только пока активна SSH сессия — без loginctl linger они падают при выходе.',
+      hint: 'sudo loginctl enable-linger $USER\n# Проверить: loginctl show-user $USER | grep Linger → Linger=yes',
+    },
+    {
+      title: 'Недостаточно RAM: Node падает при install (OOM)',
+      content: 'На VPS с 512MB–1GB RAM Linux OOM Killer убивает npm install. Нужен swap.',
+      hint: 'sudo fallocate -l 2G /swapfile\nsudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile\necho \'/swapfile none swap sw 0 0\' | sudo tee -a /etc/fstab',
+    },
+    {
+      title: 'VPS провайдер блокирует npm registry (ETIMEDOUT)',
+      content: 'Некоторые VPS (Oracle Free Tier, дешёвые хостинги) блокируют исходящие соединения на 443.',
+      hint: 'curl -v https://registry.npmjs.org\n# Если блокирует — используй зеркало:\nnpm install -g openclaw --registry https://registry.npmmirror.com',
+    },
+    {
+      title: 'Telegram API недоступен (IP блокировка)',
+      content: 'На VPS в некоторых странах api.telegram.org заблокирован — webhook не доходит, bot API зависает.',
+      hint: 'curl -v https://api.telegram.org/bot<TOKEN>/getMe\n# Если не работает — смени VPS на EU/US (Hetzner, DigitalOcean, Vultr)\n# Или используй polling вместо webhook в конфиге openclaw',
+    },
+  ],
+};
 
 type CodeBlockProps = {
   code: string;
@@ -132,27 +268,6 @@ export default function Block1Lesson1Page() {
 
   const allChecked = checks.every(Boolean);
 
-  const accordionItems: AccordionItem[] = [
-    {
-      title: "openclaw: command not found",
-      content:
-        "Скорее всего, shell не подхватил путь до бинарника. Перезапусти Terminal или добавь PATH вручную.",
-      hint:
-        "Проверь, что ~/.zprofile или ~/.bash_profile содержит PATH, затем выполни: source ~/.zprofile",
-    },
-    {
-      title: "EADDRINUSE",
-      content:
-        "Порт уже занят. Останови gateway и запусти заново.",
-      hint: "Команда: openclaw gateway stop",
-    },
-    {
-      title: "sharp build errors (Mac)",
-      content:
-        "Иногда sharp конфликтует с глобальными библиотеками libvips. Переопредели флаг и повтори установку.",
-      hint: "SHARP_IGNORE_GLOBAL_LIBVIPS=1",
-    },
-  ];
 
   return (
     <main className="min-h-screen bg-[#0D0D0D] text-zinc-200">
@@ -206,7 +321,7 @@ export default function Block1Lesson1Page() {
                   }`}
                 >
                   <span className="flex items-center gap-1.5">
-                    {tab.icon(isActive)}
+                    {tab.icon()}
                     {tab.label}
                   </span>
                 </button>
@@ -484,9 +599,9 @@ export default function Block1Lesson1Page() {
 
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
           <h2 className="text-2xl font-semibold text-white mb-4">
-            Проблемы и решения
+            Проблемы и решения — {osTabs.find(t => t.id === activeOs)?.label}
           </h2>
-          <Accordion items={accordionItems} />
+          <Accordion items={osIssues[activeOs]} />
         </section>
 
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
