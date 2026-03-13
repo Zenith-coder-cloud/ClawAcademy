@@ -168,7 +168,6 @@ export default function Block1Lesson2Page() {
   const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
   const [apiTab, setApiTab] = useState(0);
   const [wizardStep, setWizardStep] = useState(0);
-  const [showApiKey, setShowApiKey] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState("OpenRouter");
 
   function toggleCard(idx: number) {
