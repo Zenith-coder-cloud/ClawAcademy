@@ -301,6 +301,27 @@ export default function Block1Lesson2Page() {
             <div className="mt-4 bg-blue-900/20 border border-blue-700/40 rounded-xl px-5 py-4 text-blue-200 text-sm">
               💡 Визард автоматически настраивает dmPolicy: allowlist с твоим Telegram ID. После этого ты — единственный, кто может писать боту.
             </div>
+            {/* Manual config accordion */}
+            <details className="mt-4 bg-zinc-800 border border-zinc-700 rounded-xl overflow-hidden">
+              <summary className="flex items-center justify-between px-5 py-4 cursor-pointer text-white font-medium select-none hover:bg-zinc-700/50 transition-colors">
+                Настройка вручную (для продвинутых)
+                <span className="text-zinc-400 text-sm">Скрыть</span>
+              </summary>
+              <div className="px-5 pb-5">
+                <CodeBlock code={`{
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "botToken": "YOUR_BOT_TOKEN",
+      "dmPolicy": "pairing"
+    }
+  },
+  "models": {
+    "providers": [{ "name": "anthropic", "apiKey": "sk-ant-..." }]
+  }
+}`} />
+              </div>
+            </details>
           </section>
 
           {/* ── Шаг 3 — Проверка ── */}
