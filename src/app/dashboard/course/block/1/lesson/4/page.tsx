@@ -29,7 +29,7 @@ const automationIssues: AccordionItem[] = [
     title: "Timezone: задача срабатывает не в то время",
     content:
       "Cron использует системный timezone сервера/компьютера. На VPS часто UTC.",
-    hint: "timedatectl set-timezone Asia/Bangkok (или свой timezone). Перезапусти gateway: openclaw gateway restart",
+    hint: "timedatectl set-timezone Europe/Moscow (или свой timezone). Перезапусти gateway: openclaw gateway restart",
   },
   {
     title: "Агент молчит в --session isolated",
@@ -260,7 +260,7 @@ openclaw cron add \\
   --schedule 'every day at 09:00' \\
   --payload agentTurn \\
   --message 'Доброе утро! Сделай краткий дайджест: погода, крипто цены, мои встречи сегодня' \\
-  --to 5850907492 \\
+  --to YOUR_TELEGRAM_ID \\
   --session isolated
 
 # Каждые 30 минут — мониторинг
