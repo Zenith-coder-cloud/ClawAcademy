@@ -44,6 +44,77 @@ const automationIssues: AccordionItem[] = [
       "Webhook endpoint защищён. Нужен Authorization header или secret в URL.",
     hint: "Добавь в конфиг: webhook.secret = YOUR_SECRET. Передавай в заголовке: Authorization: Bearer YOUR_SECRET",
   },
+,
+  {
+    title: "cron run говорит not-due и не запускается",
+    content: "При ручном запуске openclaw cron run <jobId> без флага --force задача пропускается если ещё не наступило время по расписанию.",
+    hint: "openclaw cron run <jobId> --force — принудительный запуск без проверки расписания",
+  },
+  {
+    title: "Задача автоматически отключилась после ошибки",
+    content: "При permanent error (неверный токен, недоступный API) задача переводится в enabled: false и больше не запускается автоматически.",
+    hint: "Исправь причину ошибки, затем: openclaw cron edit <jobId> --enabled true — потом запусти вручную --force для теста",
+  },
+  {
+    title: "Планировщик отключён — scheduler disabled",
+    content: "В логах появляется scheduler disabled; jobs will not run automatically. Cron отключён через конфиг или переменную окружения.",
+    hint: "openclaw config set cron.enabled true — затем перезапусти gateway. Проверь переменную OPENCLAW_CRON_DISABLED.",
+  },
+  {
+    title: "Задача срабатывает на 2-5 минут позже",
+    content: "Cron для целых часов имеет автоматический stagger до 5 минут для снижения нагрузки — это нормальное поведение.",
+    hint: "Добавь --exact при создании: openclaw cron add --cron '0 9 * * *' --exact ... чтобы принудить точное время.",
+  },
+  {
+    title: "После обновления OpenClaw задачи перестали работать",
+    content: "Старые задачи с устаревшим форматом полей не мигрируют автоматически — планировщик их не видит.",
+    hint: "openclaw doctor --fix — нормализует legacy поля. Запускай ПЕРЕД gateway restart после каждого обновления.",
+  },
+  {
+    title: "Heartbeat молчит хотя HEARTBEAT.md заполнен",
+    content: "target по умолчанию = none — heartbeat запускается внутренне но не отправляет никаких сообщений никуда.",
+    hint: "Добавь в конфиг: heartbeat: { every: 30m, target: last } или target: telegram:YOUR_ID. Перезапусти gateway.",
+  },
+  {
+    title: "HEARTBEAT_OK приходит вместе с текстом агента",
+    content: "Токен HEARTBEAT_OK работает только как самостоятельный ответ — в середине текста он не распознаётся и отправляется пользователю.",
+    hint: "Добавь в HEARTBEAT.md: If nothing to report, reply ONLY with HEARTBEAT_OK — без другого текста.",
+  },
+  {
+    title: "Дата в --at сработала на несколько часов позже",
+    content: "Timestamp без timezone suffix всегда интерпретируется как UTC. Для GMT+3 это сдвиг на 3 часа от местного времени.",
+    hint: "Добавляй timezone явно: --at '2026-03-14T09:00:00+03:00' или используй --tz 'Europe/Moscow' для cron выражений.",
+  },
+  {
+    title: "Смена системного timezone не повлияла на расписание",
+    content: "После timedatectl set-timezone gateway продолжает использовать старый timezone так как он кэшируется при старте.",
+    hint: "openclaw gateway restart — обязательно после смены timezone на VPS/сервере.",
+  },
+  {
+    title: "openclaw cron list зависает и не отвечает",
+    content: "Команда cron list может зависать из-за внутреннего запроса к gateway если тот занят. Сами задачи при этом работают нормально.",
+    hint: "Посмотри файл напрямую: cat ~/.openclaw/cron/jobs.json — там все задачи. Или подожди минуту и попробуй снова.",
+  },
+  {
+    title: "Агент в cron задаче не знает кто ты",
+    content: "В isolated сессии агент не имеет контекста предыдущих разговоров. Промпты с 'мои встречи' работают некорректно.",
+    hint: "Добавляй контекст в --message: 'Я Иван, Gmail: ivan@mail.ru. Проверь мои встречи на сегодня.' Или используй --session main.",
+  },
+  {
+    title: "Задача зависает на 20 минут без уведомления",
+    content: "По умолчанию cron задача может выполняться до 20 минут. Если агент завис или API недоступен — ты ждёшь без уведомления.",
+    hint: "Добавь лимит при создании: openclaw cron add ... --timeout 120 (2 минуты). Агент прервётся и ты получишь timeout ошибку.",
+  },
+  {
+    title: "Ручное редактирование jobs.json не сохранилось",
+    content: "Gateway держит jobs.json в памяти и периодически перезаписывает файл. Ручные правки при запущенном gateway будут стёрты.",
+    hint: "Для ручных правок: openclaw gateway stop → редактируй файл → openclaw gateway start. Или: openclaw cron edit <jobId>",
+  },
+  {
+    title: "openclaw doctor --fix нужно запускать перед restart",
+    content: "После обновления запуск gateway restart без doctor --fix может привести к некорректной работе задач.",
+    hint: "Правильный порядок: openclaw doctor --fix → убедиться что Errors: 0 → openclaw gateway restart",
+  },
 ];
 
 /* ─── Cron tabs config ─── */
