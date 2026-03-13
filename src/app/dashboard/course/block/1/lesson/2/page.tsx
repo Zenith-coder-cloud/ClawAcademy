@@ -899,7 +899,7 @@ export default function Block1Lesson2Page() {
             {/* Skip simulator link */}
             <div className="mt-3 text-center">
               <a href="#step-3-check" className="text-zinc-500 hover:text-zinc-300 text-sm transition-colors">
-                Пропустить симулятор — запустить настоящий визард ↓
+                Пропустить симулятор → перейти к команде openclaw onboard ↓
               </a>
             </div>
             <div className="mt-4 bg-blue-900/20 border border-blue-700/40 rounded-xl px-5 py-4 text-blue-200 text-sm">
@@ -911,19 +911,36 @@ export default function Block1Lesson2Page() {
                 Настройка вручную (для продвинутых)
                 <span className="text-zinc-400 text-sm">Скрыть</span>
               </summary>
-              <div className="px-5 pb-5">
+              <div className="px-5 pb-5 space-y-4">
+                <div className="bg-zinc-900/60 border border-zinc-600 rounded-lg px-4 py-3 text-sm">
+                  <p className="text-zinc-400 mb-1">📄 Файл конфига:</p>
+                  <code className="text-[#FF4422] font-mono">~/.openclaw/openclaw.json</code>
+                  <p className="text-zinc-500 text-xs mt-1">Открыть: <code className="text-zinc-400">openclaw configure</code> — или отредактировать вручную в любом редакторе</p>
+                </div>
                 <CodeBlock code={`{
   "channels": {
     "telegram": {
       "enabled": true,
       "botToken": "YOUR_BOT_TOKEN",
-      "dmPolicy": "pairing"
+      "dmPolicy": "allowlist",
+      "allowFrom": ["YOUR_TELEGRAM_ID"]
     }
   },
   "models": {
-    "providers": [{ "name": "anthropic", "apiKey": "sk-ant-..." }]
-  }
+    "defaultModel": "anthropic/claude-haiku-4-5",
+    "providers": [
+      { "name": "anthropic", "apiKey": "sk-ant-api03-..." },
+      { "name": "openrouter", "apiKey": "sk-or-v1-..." }
+    ]
+  },
+  "workspace": "~/.openclaw/workspace"
 }`} />
+                <div className="space-y-2 text-sm text-zinc-500">
+                  <p><code className="text-zinc-300">dmPolicy: allowlist</code> — только ты можешь писать боту</p>
+                  <p><code className="text-zinc-300">allowFrom</code> — твой Telegram ID (узнать: @userinfobot)</p>
+                  <p><code className="text-zinc-300">defaultModel</code> — модель по умолчанию</p>
+                  <p><code className="text-zinc-300">providers</code> — можно добавить несколько провайдеров</p>
+                </div>
               </div>
             </details>
           </section>
