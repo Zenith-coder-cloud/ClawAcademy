@@ -248,6 +248,13 @@ export default function Block1Lesson4Page() {
           <h2 className="text-2xl font-semibold text-white mb-6">
             Cron — расписание для агента
           </h2>
+          <div className="bg-green-900/20 border border-green-700/40 rounded-xl px-5 py-4 text-green-200 text-sm mb-6 flex gap-3 items-start">
+            <span className="text-2xl shrink-0">💻</span>
+            <div>
+              <p className="font-semibold mb-1">Где вводить эти команды?</p>
+              <p className="text-green-300">В <strong>Терминале</strong> (Mac/Linux) или <strong>PowerShell</strong> (Windows) — том же самом, где ты устанавливал OpenClaw в Уроке 1. Убедись что Gateway запущен: <code className="bg-green-900/40 px-1 rounded">openclaw gateway status</code></p>
+            </div>
+          </div>
 
           <div className="bg-zinc-950 border border-zinc-700 rounded-xl p-5 mb-6">
             <p className="text-zinc-300 font-semibold mb-3">📌 Параметры команды — что они значат:</p>
