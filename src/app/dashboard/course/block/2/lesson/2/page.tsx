@@ -31,8 +31,20 @@ const nextByTrack: Record<TrackId, { href: string; label: string }> = {
     label: "Урок 4: Контент-агент →",
   },
   business: {
-    href: "/dashboard/course/block/2/lesson/5",
-    label: "Урок 5: Агент-парсер →",
+    href: "/dashboard/course/block/2/lesson/10",
+    label: "Урок 10: Чат-бот поддержки →",
+  },
+  student: {
+    href: "/dashboard/course/block/2/lesson/12",
+    label: "Урок 12: Агент-конспектировщик →",
+  },
+  investor: {
+    href: "/dashboard/course/block/2/lesson/14",
+    label: "Урок 14: Агент мониторинга рынка →",
+  },
+  seller: {
+    href: "/dashboard/course/block/2/lesson/16",
+    label: "Урок 16: Агент описаний товаров →",
   },
 };
 

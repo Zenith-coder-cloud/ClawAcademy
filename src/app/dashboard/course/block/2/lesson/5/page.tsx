@@ -249,7 +249,7 @@ export default function Block2Lesson5Page() {
             </div>
           </section>
 
-          <BlockCompleteCard trackLabel="Агент-парсер" />
+          <BlockCompleteCard trackLabel="Бизнес — Поддержка, Парсер, Лиды" />
 
           <nav className="flex items-center justify-between text-sm text-zinc-400">
             <Link

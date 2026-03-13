@@ -250,7 +250,7 @@ export default function Block2Lesson4Page() {
             </div>
           </section>
 
-          <BlockCompleteCard trackLabel="Контент-агент" />
+          <BlockCompleteCard trackLabel="Контент — TG/IG, YouTube, Тренды" />
 
           <nav className="flex items-center justify-between text-sm text-zinc-400">
             <Link

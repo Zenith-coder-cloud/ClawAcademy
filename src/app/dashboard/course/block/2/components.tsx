@@ -2,7 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-export type TrackId = "freelancer" | "content" | "business";
+export type TrackId =
+  | "freelancer"
+  | "content"
+  | "business"
+  | "student"
+  | "investor"
+  | "seller";
 
 type TrackMeta = {
   id: TrackId;
@@ -16,19 +22,43 @@ export const TRACKS: Record<TrackId, TrackMeta> = {
     id: "freelancer",
     label: "🧑‍💼 Фрилансер",
     color: "#3B82F6",
-    result: "Твой путь: Автоответчик → Ресёрчер → Email-агент",
+    result:
+      "Твой путь: Автоответчик → Ресёрчер → Email-агент → КП-агент → Трекер задач",
   },
   content: {
     id: "content",
     label: "📢 Контент",
     color: "#8B5CF6",
-    result: "Твой путь: Автоответчик → Ресёрчер → Контент-агент",
+    result:
+      "Твой путь: Автоответчик → Ресёрчер → Контент-агент → YouTube-агент → Агент трендов",
   },
   business: {
     id: "business",
     label: "🏢 Бизнес",
     color: "#10B981",
-    result: "Твой путь: Автоответчик → Ресёрчер → Агент-парсер",
+    result:
+      "Твой путь: Автоответчик → Ресёрчер → Чат-бот поддержки → Парсер рынка → Лидогенерация",
+  },
+  student: {
+    id: "student",
+    label: "🎓 Студент",
+    color: "#F59E0B",
+    result:
+      "Твой путь: Автоответчик → Ресёрчер → Конспектировщик → Агент подготовки к экзамену",
+  },
+  investor: {
+    id: "investor",
+    label: "💰 Инвестор",
+    color: "#10B981",
+    result:
+      "Твой путь: Автоответчик → Ресёрчер → Мониторинг рынка → Анализ проектов",
+  },
+  seller: {
+    id: "seller",
+    label: "🛍️ Продавец",
+    color: "#EC4899",
+    result:
+      "Твой путь: Автоответчик → Ресёрчер → Описания товаров → Мониторинг отзывов",
   },
 };
 
@@ -252,6 +282,18 @@ export function QuizBlock({
             id: "business" as TrackId,
             label: "🏢 Бизнес / команда — у меня есть процессы, команда, продукт",
           },
+          {
+            id: "student" as TrackId,
+            label: "🎓 Студент / учащийся — учусь, пишу работы, готовлюсь к экзаменам",
+          },
+          {
+            id: "investor" as TrackId,
+            label: "💰 Инвестор — слежу за рынками, анализирую проекты",
+          },
+          {
+            id: "seller" as TrackId,
+            label: "🛍️ Продавец / e-commerce — продаю товары онлайн или офлайн",
+          },
         ],
       },
       {
@@ -383,9 +425,27 @@ export function TrackChoiceCards() {
           },
           {
             id: "business" as TrackId,
-            title: "Урок 5: Агент-парсер",
-            desc: "Мониторинг конкурентов и рынка — автоматически",
-            href: "/dashboard/course/block/2/lesson/5",
+            title: "Урок 10: Чат-бот поддержки",
+            desc: "Отвечай клиентам 24/7 — без менеджера",
+            href: "/dashboard/course/block/2/lesson/10",
+          },
+          {
+            id: "student" as TrackId,
+            title: "Урок 12: Агент-конспектировщик",
+            desc: "Структурируй учебные материалы за 5 минут",
+            href: "/dashboard/course/block/2/lesson/12",
+          },
+          {
+            id: "investor" as TrackId,
+            title: "Урок 14: Агент мониторинга рынка",
+            desc: "Ежедневный дайджест по рынкам",
+            href: "/dashboard/course/block/2/lesson/14",
+          },
+          {
+            id: "seller" as TrackId,
+            title: "Урок 16: Агент описаний товаров",
+            desc: "Продающие описания за 5 минут",
+            href: "/dashboard/course/block/2/lesson/16",
           },
         ]
       ).map((card) => (
