@@ -46,6 +46,142 @@ const osTabs = [
 
 type OsId = (typeof osTabs)[number]["id"];
 
+const osIssues: Record<OsId, AccordionItem[]> = {
+  mac: [
+    {
+      title: 'openclaw: command not found после установки',
+      content: 'Скрипт установил бинарник в ~/.local/bin, но эта директория не в PATH текущей сессии.',
+      hint: 'echo \'export PATH="$HOME/.local/bin:$PATH"\' >> ~/.zshrc && source ~/.zshrc',
+    },
+    {
+      title: 'PATH не работает: zsh не читает ~/.bashrc',
+      content: 'На macOS Catalina+ дефолтный шелл — zsh. Скрипты часто добавляют PATH в ~/.bashrc, который zsh не читает.',
+      hint: 'echo \'export PATH="$HOME/.local/bin:$PATH"\' >> ~/.zshrc && source ~/.zshrc',
+    },
+    {
+      title: 'Permission denied при npm install -g',
+      content: 'npm пытается писать в /usr/local/lib/node_modules, принадлежащий root. Используй nvm — он устанавливает Node в домашнюю папку.',
+      hint: 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && source ~/.zshrc && nvm install --lts',
+    },
+    {
+      title: 'sharp / libvips ошибка на Apple Silicon (M1/M2/M3)',
+      content: 'sharp требует нативные бинарники для arm64. Возникает если Node установлен под Rosetta (x64 режим).',
+      hint: 'SHARP_IGNORE_GLOBAL_LIBVIPS=1 npm rebuild sharp\n# Убедись что Node нативный: node -e "console.log(process.arch)" → arm64',
+    },
+    {
+      title: 'Xcode Command Line Tools не установлены',
+      content: 'npm использует node-gyp для нативных модулей — ему нужен C++ компилятор из Xcode CLT.',
+      hint: 'xcode-select --install',
+    },
+    {
+      title: 'Node запущен под Rosetta вместо arm64',
+      content: 'Terminal.app запущен в режиме Rosetta — Node работает как x64, что вызывает конфликты нативных модулей.',
+      hint: 'Finder → Applications → Utilities → Terminal.app → Cmd+I → убрать «Open using Rosetta»',
+    },
+  ],
+  windows: [
+    {
+      title: 'WSL2 не установлен или Windows слишком старый',
+      content: 'WSL2 требует Windows 10 Build 18362+ или Windows 11. На старых сборках wsl --install не работает.',
+      hint: 'winver → проверить Build. Если < 18362 → Settings → Windows Update → обновить.',
+    },
+    {
+      title: 'curl не работает в PowerShell',
+      content: 'В PowerShell curl — это алиас для Invoke-WebRequest с другим синтаксисом. Стандартные install-скрипты ломаются.',
+      hint: '# Используй curl.exe вместо curl:\ncurl.exe -fsSL https://openclaw.ai/install.sh -o install.sh\n# Или запускай команды внутри WSL: wsl → затем обычный curl',
+    },
+    {
+      title: 'node: not found после установки nvm в WSL',
+      content: 'nvm инициализируется только если ~/.bashrc загружен. В новой сессии WSL он может не активироваться.',
+      hint: 'echo \'export NVM_DIR="$HOME/.nvm"\n[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"\' >> ~/.bashrc && source ~/.bashrc',
+    },
+    {
+      title: 'Порты WSL не видны в Windows браузере',
+      content: 'WSL2 — отдельная VM. localhost:18789 в Windows и WSL — разные адреса на старых версиях Windows.',
+      hint: '# Windows 11 22H2+: добавь в %USERPROFILE%/.wslconfig:\n[wsl2]\nnetworkingMode=mirrored\n# Или узнай IP: wsl hostname -I → открывай http://<IP>:18789',
+    },
+    {
+      title: 'Permission denied в /mnt/c/ (Windows файлы)',
+      content: 'NTFS файлы в /mnt/c/ монтируются с фиксированными правами — npm не может создавать симлинки.',
+      hint: '# Всегда работай в нативной WSL файловой системе:\ncd ~ && mkdir projects && cd projects\n# НЕ запускай npm install в /mnt/c/',
+    },
+    {
+      title: 'PATH не синхронизирован между Windows и WSL',
+      content: 'Программы установленные в WSL не видны из Windows CMD/PowerShell и наоборот.',
+      hint: '# Запуск WSL команд из Windows:\nwsl openclaw gateway status\n# Или добавь в /etc/wsl.conf:\n[interop]\nappendWindowsPath = true',
+    },
+  ],
+  linux: [
+    {
+      title: 'Системный Node.js слишком старый (v14/v16 из apt)',
+      content: 'apt устанавливает устаревший Node из стандартных репозиториев. OpenClaw требует Node ≥ 22.',
+      hint: 'curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -\nsudo apt-get install -y nodejs',
+    },
+    {
+      title: 'nvm не активируется после установки',
+      content: 'Скрипт nvm добавляет инициализацию в ~/.bashrc, но текущая сессия её не перечитывает.',
+      hint: 'source ~/.bashrc\n# Проверить: grep NVM_DIR ~/.bashrc',
+    },
+    {
+      title: 'Permission denied: /usr/local/lib/node_modules',
+      content: 'Системный Node установлен с правами root — npm не может писать в глобальную директорию.',
+      hint: 'mkdir ~/.npm-global\nnpm config set prefix \'~/.npm-global\'\necho \'export PATH="$HOME/.npm-global/bin:$PATH"\' >> ~/.bashrc && source ~/.bashrc',
+    },
+    {
+      title: 'systemd user service не работает',
+      content: 'systemctl --user сервисы падают при выходе из SSH сессии без loginctl enable-linger.',
+      hint: 'loginctl enable-linger $USER\nsystemctl --user daemon-reload\nsystemctl --user enable openclaw && systemctl --user start openclaw',
+    },
+    {
+      title: 'Firewall (ufw) блокирует порт 18789',
+      content: 'UFW по умолчанию закрывает все порты кроме SSH — openclaw gateway недоступен снаружи.',
+      hint: 'sudo ufw allow 18789/tcp\nsudo ufw reload\nss -tlnp | grep 18789',
+    },
+    {
+      title: 'curl SSL certificate errors',
+      content: 'Устаревшие ca-certificates или неправильное время системы вызывают SSL ошибки при загрузке скриптов.',
+      hint: 'sudo apt-get install -y ca-certificates && sudo update-ca-certificates\n# Проверить время: timedatectl\nsudo timedatectl set-ntp true',
+    },
+  ],
+  vps: [
+    {
+      title: 'root vs non-root: npm global install ломает права',
+      content: 'npm install -g под root устанавливает с правами root — потом ломает запуск от обычного пользователя.',
+      hint: 'adduser deploy && usermod -aG sudo deploy && su - deploy\n# Установить Node через nvm под новым пользователем\n# Если нужен root: npm install -g --unsafe-perm openclaw',
+    },
+    {
+      title: 'UFW блокирует порт 18789',
+      content: 'На Ubuntu VPS UFW включён по умолчанию и блокирует все порты кроме SSH.',
+      hint: 'sudo ufw allow 18789/tcp comment \'openclaw gateway\'\nsudo ufw reload && sudo ufw status',
+    },
+    {
+      title: 'SSH tunnel не работает (GatewayPorts)',
+      content: 'sshd по умолчанию запрещает GatewayPorts — tunnel создаётся но порт недоступен снаружи.',
+      hint: '# В /etc/ssh/sshd_config добавить:\nGatewayPorts yes\nAllowTcpForwarding yes\nsudo systemctl restart sshd',
+    },
+    {
+      title: 'systemd --user останавливается при выходе из SSH',
+      content: 'User systemd сервисы живут только пока активна SSH сессия — без loginctl linger они падают при выходе.',
+      hint: 'sudo loginctl enable-linger $USER\n# Проверить: loginctl show-user $USER | grep Linger → Linger=yes',
+    },
+    {
+      title: 'Недостаточно RAM: Node падает при install (OOM)',
+      content: 'На VPS с 512MB–1GB RAM Linux OOM Killer убивает npm install. Нужен swap.',
+      hint: 'sudo fallocate -l 2G /swapfile\nsudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile\necho \'/swapfile none swap sw 0 0\' | sudo tee -a /etc/fstab',
+    },
+    {
+      title: 'VPS провайдер блокирует npm registry (ETIMEDOUT)',
+      content: 'Некоторые VPS (Oracle Free Tier, дешёвые хостинги) блокируют исходящие соединения на 443.',
+      hint: 'curl -v https://registry.npmjs.org\n# Если блокирует — используй зеркало:\nnpm install -g openclaw --registry https://registry.npmmirror.com',
+    },
+    {
+      title: 'Telegram API недоступен (IP блокировка)',
+      content: 'На VPS в некоторых странах api.telegram.org заблокирован — webhook не доходит, bot API зависает.',
+      hint: 'curl -v https://api.telegram.org/bot<TOKEN>/getMe\n# Если не работает — смени VPS на EU/US (Hetzner, DigitalOcean, Vultr)\n# Или используй polling вместо webhook в конфиге openclaw',
+    },
+  ],
+};
+
 type CodeBlockProps = {
   code: string;
   language?: string;
@@ -132,27 +268,6 @@ export default function Block1Lesson1Page() {
 
   const allChecked = checks.every(Boolean);
 
-  const accordionItems: AccordionItem[] = [
-    {
-      title: "openclaw: command not found",
-      content:
-        "Скорее всего, shell не подхватил путь до бинарника. Перезапусти Terminal или добавь PATH вручную.",
-      hint:
-        "Проверь, что ~/.zprofile или ~/.bash_profile содержит PATH, затем выполни: source ~/.zprofile",
-    },
-    {
-      title: "EADDRINUSE",
-      content:
-        "Порт уже занят. Останови gateway и запусти заново.",
-      hint: "Команда: openclaw gateway stop",
-    },
-    {
-      title: "sharp build errors (Mac)",
-      content:
-        "Иногда sharp конфликтует с глобальными библиотеками libvips. Переопредели флаг и повтори установку.",
-      hint: "SHARP_IGNORE_GLOBAL_LIBVIPS=1",
-    },
-  ];
 
   return (
     <main className="min-h-screen bg-[#0D0D0D] text-zinc-200">
@@ -484,9 +599,9 @@ export default function Block1Lesson1Page() {
 
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
           <h2 className="text-2xl font-semibold text-white mb-4">
-            Проблемы и решения
+            Проблемы и решения — {osTabs.find(t => t.id === activeOs)?.label}
           </h2>
-          <Accordion items={accordionItems} />
+          <Accordion items={osIssues[activeOs]} />
         </section>
 
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
