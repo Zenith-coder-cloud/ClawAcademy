@@ -619,15 +619,10 @@ export default function Block1Lesson2Page() {
                 <div>
                   <p className="text-white mb-3">◆ Anthropic setup-token</p>
                   <div className="border border-zinc-600 rounded p-3 text-zinc-300 mb-4">
-                    <p className="mb-1">Run <code>claude setup-token</code> in your terminal.</p>
-                    <p className="mb-2">Then paste the generated token below.</p>
+                    <p className="mb-1">Запусти <code className="text-[#FF4422]">claude setup-token</code> в отдельном терминале.</p>
+                    <p className="text-zinc-500 text-sm mb-2">Скопируй токен из вывода — он выглядит так:</p>
                     <CodeBlock code="claude setup-token" />
-                    <button
-                      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                      className="mt-2 text-sm text-blue-400 hover:text-blue-300 underline underline-offset-2 transition-colors"
-                    >
-                      ↑ Смотри инструкцию выше в разделе 1.5 → Anthropic OAuth
-                    </button>
+
                   </div>
                   {/* Terminal output preview */}
                   <div className="mt-3 mb-4 bg-zinc-900 border border-zinc-700 rounded-lg p-3 font-mono text-xs">
