@@ -897,9 +897,7 @@ export default function Block1Lesson2Page() {
             </div>
 
 
-            <div className="mt-4 bg-blue-900/20 border border-blue-700/40 rounded-xl px-5 py-4 text-blue-200 text-sm">
-              💡 Визард автоматически настраивает dmPolicy: allowlist с твоим Telegram ID. После этого ты — единственный, кто может писать боту.
-            </div>
+
             {/* Manual config accordion */}
             <details className="mt-4 bg-zinc-800 border border-zinc-700 rounded-xl overflow-hidden">
               <summary className="flex items-center justify-between px-5 py-4 cursor-pointer text-white font-medium select-none hover:bg-zinc-700/50 transition-colors">
@@ -961,6 +959,9 @@ export default function Block1Lesson2Page() {
             <h2 className="text-2xl font-semibold text-white mb-4">
               4. Напиши агенту в Telegram
             </h2>
+            <div className="mb-4 bg-blue-900/20 border border-blue-700/40 rounded-xl px-5 py-4 text-blue-200 text-sm">
+              💡 Визард автоматически настраивает dmPolicy: allowlist с твоим Telegram ID. После этого ты — единственный, кто может писать боту.
+            </div>
             <p className="text-zinc-400 mb-4 leading-relaxed">
               Найди своего бота в Telegram по username → нажми Start → напиши что-нибудь. Агент ответит сразу — ты уже в allowlist.
             </p>
