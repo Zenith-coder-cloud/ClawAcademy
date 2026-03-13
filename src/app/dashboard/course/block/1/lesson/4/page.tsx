@@ -402,6 +402,7 @@ openclaw cron runs --id <job-id>      # история запусков
 openclaw cron remove --id <job-id>    # удалить`}
             />
           </div>
+          <img src="/course/block1/lesson4/b1-l4-cron.png" alt="Cron задачи" className="w-full rounded-xl object-cover mt-6" />
         </section>
 
         {/* ── Heartbeat ── */}
@@ -529,9 +530,6 @@ openclaw cron remove --id <job-id>    # удалить`}
             </div>
           </div>
         </section>
-
-        {/* ── Cron image ── */}
-        <img src="/course/block1/lesson4/b1-l4-cron.png" alt="Cron задачи" className="w-full rounded-xl object-cover" />
 
         {/* ── Webhook ── */}
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
