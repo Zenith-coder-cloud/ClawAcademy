@@ -896,12 +896,7 @@ export default function Block1Lesson2Page() {
               )}
             </div>
 
-            {/* Skip simulator link */}
-            <div className="mt-3 text-center">
-              <a href="#step-3-check" className="text-zinc-500 hover:text-zinc-300 text-sm transition-colors">
-                Пропустить симулятор → перейти к команде openclaw onboard ↓
-              </a>
-            </div>
+
             <div className="mt-4 bg-blue-900/20 border border-blue-700/40 rounded-xl px-5 py-4 text-blue-200 text-sm">
               💡 Визард автоматически настраивает dmPolicy: allowlist с твоим Telegram ID. После этого ты — единственный, кто может писать боту.
             </div>
