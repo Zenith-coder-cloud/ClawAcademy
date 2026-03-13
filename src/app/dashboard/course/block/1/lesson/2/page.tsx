@@ -409,6 +409,7 @@ export default function Block1Lesson2Page() {
               2. Запусти визард настройки
             </h2>
             <CodeBlock code="openclaw onboard --install-daemon" />
+            <img src="/course/block1/lesson2/b1-l2-wizard.png" alt="openclaw onboard wizard" className="w-full rounded-xl mt-4 object-cover" />
             <p className="text-zinc-400 mt-4 mb-4 leading-relaxed">
               Визард проведёт тебя через настройку шаг за шагом. Попробуй интерактивный симулятор:
             </p>
