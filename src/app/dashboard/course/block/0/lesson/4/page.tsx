@@ -14,7 +14,8 @@ function Check() {
 function SectionImage({ src, caption }: { src: string; caption?: string }) {
   return (
     <figure className="my-6">
-      <Image src={src} alt={caption || ""} width={1200} height={675} className="rounded-xl w-full" />    </figure>
+      <Image src={src} alt={caption || ""} width={1200} height={675} className="rounded-xl w-full" />
+    </figure>
   );
 }
 
@@ -177,7 +178,7 @@ export default function Block0Lesson4Page() {
                 "Агент собирает референсы пока ты работаешь",
                 "Ты создаёшь. Агент занимается операционкой.",
               ]}
-              outcome="+8–12 часов в неделю на саму работу. 2–3 дополнительных проекта в месяц."
+              outcome={"+8–12 часов в неделю на саму работу. 2–3 доп. проекта/мес"}
             />
             <TrackCard
               emoji="🎓"
