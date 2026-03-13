@@ -419,11 +419,11 @@ export default function Block1Lesson2Page() {
               {/* Step 0 — Безопасность */}
               {wizardStep === 0 && (
                 <div>
-                  <p className="text-red-400 mb-2">◆ Security notice</p>
+                  <p className="text-white mb-2">◆ Security notice</p>
                   <p className="text-zinc-500 italic mb-3">
                     If you are not comfortable with security hardening, don&apos;t run OpenClaw in shared environments.
                   </p>
-                  <p className="text-green-400 mb-3">◆ I understand. Continue?</p>
+                  <p className="text-white mb-3">◆ I understand. Continue?</p>
                   <div className="space-y-1 mb-4">
                     <button
                       onClick={() => setWizardStep(1)}
@@ -445,7 +445,7 @@ export default function Block1Lesson2Page() {
               {/* Step 1 — Режим */}
               {wizardStep === 1 && (
                 <div>
-                  <p className="text-green-400 mb-3">◆ Onboarding mode</p>
+                  <p className="text-white mb-3">◆ Onboarding mode</p>
                   <div className="space-y-1 mb-4">
                     <p className="px-3 py-1.5 text-green-400">● QuickStart <span className="text-zinc-500">(Configure details later via openclaw configure.)</span></p>
                     <p className="px-3 py-1.5 text-zinc-500">○ Manual</p>
@@ -462,7 +462,7 @@ export default function Block1Lesson2Page() {
               {/* Step 2 — Провайдер */}
               {wizardStep === 2 && (
                 <div>
-                  <p className="text-red-400 mb-3">◆ Model/auth provider</p>
+                  <p className="text-white mb-3">◆ Model/auth provider</p>
                   <div className="space-y-0.5 mb-4 max-h-64 overflow-y-auto">
                     {[
                       "OpenAI (Codex OAuth + API key)",
@@ -505,7 +505,7 @@ export default function Block1Lesson2Page() {
               {wizardStep === 3 && selectedProvider === 'OpenRouter' && (
                 <div>
                   <p className="text-zinc-400 mb-2">Provider: <span className="text-white">{selectedProvider}</span></p>
-                  <p className="text-red-400 mb-3">◆ Default model</p>
+                  <p className="text-white mb-3">◆ Default model</p>
                   <div className="space-y-0.5 mb-4 max-h-64 overflow-y-auto">
                     {[
                       { id: "openrouter/auto", label: "Keep current (openrouter/auto)" },
@@ -542,7 +542,7 @@ export default function Block1Lesson2Page() {
               )}
               {wizardStep === 3 && selectedProvider === 'Anthropic' && (
                 <div>
-                  <p className="text-green-400 mb-3">◆ Anthropic auth method</p>
+                  <p className="text-white mb-3">◆ Anthropic auth method</p>
                   <div className="space-y-1 mb-4">
                     <button
                       onClick={() => setAnthropicAuthMethod('token')}
@@ -580,7 +580,7 @@ export default function Block1Lesson2Page() {
               {wizardStep === 3 && selectedProvider !== 'OpenRouter' && selectedProvider !== 'Anthropic' && (
                 <div>
                   <p className="text-zinc-500 italic mb-3">Default model will be configured automatically</p>
-                  <p className="text-green-400 mb-4">◆ Model/auth provider: {selectedProvider}</p>
+                  <p className="text-white mb-4">◆ Model/auth provider: {selectedProvider}</p>
                   <button
                     onClick={() => setWizardStep(4)}
                     className="px-4 py-2 rounded-lg bg-[#FF4422] text-white text-sm font-medium font-sans hover:bg-[#e63d1e] transition-colors"
@@ -593,13 +593,13 @@ export default function Block1Lesson2Page() {
               {/* Step 4 — Метод ключа (ветвится) */}
               {wizardStep === 4 && selectedProvider === 'Anthropic' && anthropicAuthMethod === 'token' && (
                 <div>
-                  <p className="text-red-400 mb-3">◆ Anthropic setup-token ─────────────────</p>
+                  <p className="text-white mb-3">◆ Anthropic setup-token</p>
                   <div className="border border-zinc-600 rounded p-3 text-zinc-300 mb-4">
                     <p className="mb-1">Run <code>claude setup-token</code> in your terminal.</p>
                     <p className="mb-2">Then paste the generated token below.</p>
                     <CodeBlock code="claude setup-token" />
                   </div>
-                  <p className="text-green-400 mb-3">◆ How do you want to provide this setup token?</p>
+                  <p className="text-white mb-3">◆ How do you want to provide this setup token?</p>
                   <div className="space-y-1 mb-4">
                     <p className="px-3 py-1.5 text-green-400">● Paste setup token now <span className="text-zinc-500">(Stores the token directly in the auth profile)</span></p>
                     <p className="px-3 py-1.5 text-zinc-500">○ Use external secret provider</p>
@@ -614,7 +614,7 @@ export default function Block1Lesson2Page() {
               )}
               {wizardStep === 4 && selectedProvider === 'Anthropic' && anthropicAuthMethod === 'apikey' && (
                 <div>
-                  <p className="text-red-400 mb-3">◆ Enter API key for Anthropic:</p>
+                  <p className="text-white mb-3">◆ Enter API key for Anthropic:</p>
                   <input
                     type="password"
                     placeholder="sk-ant-api03-..."
@@ -631,7 +631,7 @@ export default function Block1Lesson2Page() {
               )}
               {wizardStep === 4 && !(selectedProvider === 'Anthropic') && (
                 <div>
-                  <p className="text-red-400 mb-3">◆ How do you want to provide this API key?</p>
+                  <p className="text-white mb-3">◆ How do you want to provide this API key?</p>
                   <div className="space-y-1 mb-4">
                     <p className="px-3 py-1.5 text-green-400">● Paste API key now <span className="text-zinc-500">(Stores the key directly in OpenClaw config)</span></p>
                     <p className="px-3 py-1.5 text-zinc-500">○ Use external secret provider</p>
@@ -650,7 +650,7 @@ export default function Block1Lesson2Page() {
                 <div>
                   {selectedProvider === 'Anthropic' && anthropicAuthMethod === 'token' ? (
                     <>
-                      <p className="text-red-400 mb-3">◆ Paste your setup token:</p>
+                      <p className="text-white mb-3">◆ Paste your setup token:</p>
                       <input
                         type="password"
                         placeholder="paste setup-token here..."
@@ -663,7 +663,7 @@ export default function Block1Lesson2Page() {
                     </>
                   ) : selectedProvider === 'Anthropic' && anthropicAuthMethod === 'apikey' ? (
                     <>
-                      <p className="text-red-400 mb-3">◆ Enter API key for Anthropic:</p>
+                      <p className="text-white mb-3">◆ Enter API key for Anthropic:</p>
                       <input
                         type="password"
                         placeholder="sk-ant-api03-..."
@@ -676,7 +676,7 @@ export default function Block1Lesson2Page() {
                     </>
                   ) : selectedProvider === 'OpenRouter' ? (
                     <>
-                      <p className="text-red-400 mb-3">◆ Enter API key for OpenRouter:</p>
+                      <p className="text-white mb-3">◆ Enter API key for OpenRouter:</p>
                       <input
                         type="password"
                         placeholder="sk-or-v1-..."
@@ -689,7 +689,7 @@ export default function Block1Lesson2Page() {
                     </>
                   ) : (
                     <>
-                      <p className="text-red-400 mb-3">◆ Enter API key for {selectedProvider}:</p>
+                      <p className="text-white mb-3">◆ Enter API key for {selectedProvider}:</p>
                       <input
                         type="password"
                         placeholder="your-api-key-here"
@@ -713,7 +713,7 @@ export default function Block1Lesson2Page() {
               {/* Step 6 — Канал */}
               {wizardStep === 6 && (
                 <div>
-                  <p className="text-red-400 mb-3">◆ Select channel (QuickStart)</p>
+                  <p className="text-white mb-3">◆ Select channel (QuickStart)</p>
                   <div className="space-y-0.5 mb-4">
                     {[
                       "Telegram (Bot API) (recommended)",
@@ -743,9 +743,9 @@ export default function Block1Lesson2Page() {
               {/* Step 7 — Web search */}
               {wizardStep === 7 && (
                 <div>
-                  <p className="text-green-400 mb-2">◆ Web search ─────────────────</p>
+                  <p className="text-white mb-2">◆ Web search</p>
                   <p className="text-zinc-500 mb-3">Web search lets your agent look things up online. Choose a provider and paste your API key.</p>
-                  <p className="text-green-400 mb-3">◆ Search provider</p>
+                  <p className="text-white mb-3">◆ Search provider</p>
                   <div className="space-y-0.5 mb-4">
                     <p className="px-3 py-1 text-zinc-500">○ Brave Search (Structured results · country/language filters)</p>
                     <p className="px-3 py-1 text-zinc-500">○ Gemini (Google Search)</p>
@@ -765,18 +765,18 @@ export default function Block1Lesson2Page() {
               {/* Step 8 — Skills + Hooks */}
               {wizardStep === 8 && (
                 <div>
-                  <p className="text-green-400 mb-2">◆ Skills status ─────────────────</p>
+                  <p className="text-white mb-2">◆ Skills status</p>
                   <div className="text-zinc-500 mb-3 pl-2">
                     <p>Eligible: 37</p>
                     <p>Missing requirements: 14</p>
                     <p>Unsupported on this OS: 0</p>
                   </div>
-                  <p className="text-green-400 mb-3">◆ Configure skills now? (recommended)</p>
+                  <p className="text-white mb-3">◆ Configure skills now? (recommended)</p>
                   <div className="space-y-0.5 mb-5">
                     <p className="px-3 py-1 text-zinc-500">○ Yes</p>
                     <p className="px-3 py-1 text-green-400">● No</p>
                   </div>
-                  <p className="text-green-400 mb-3">◆ Enable hooks?</p>
+                  <p className="text-white mb-3">◆ Enable hooks?</p>
                   <div className="space-y-0.5 mb-4">
                     <p className="px-3 py-1 text-green-400">● Skip for now</p>
                     <p className="px-3 py-1 text-zinc-500">○ boot-md</p>
@@ -795,9 +795,9 @@ export default function Block1Lesson2Page() {
               {/* Step 9 — Gateway + Готово */}
               {wizardStep === 9 && (
                 <div>
-                  <p className="text-green-400 mb-2">◆ Gateway service runtime ─────────────────</p>
+                  <p className="text-white mb-2">◆ Gateway service runtime</p>
                   <p className="text-zinc-500 mb-3">QuickStart uses Node for the Gateway service (stable + supported).</p>
-                  <p className="text-green-400 mb-3">◆ Gateway service</p>
+                  <p className="text-white mb-3">◆ Gateway service</p>
                   <div className="space-y-0.5 mb-4">
                     <p className="px-3 py-1 text-green-400">● Restart</p>
                     <p className="px-3 py-1 text-zinc-500">○ Reinstall</p>
