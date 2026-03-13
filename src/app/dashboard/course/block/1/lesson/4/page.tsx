@@ -604,7 +604,6 @@ openclaw cron remove --id <job-id>    # удалить`}
           <Accordion items={filteredIssues} />
         </section>
 
-        <img src="/course/block1/lesson4/b1-l4-telegram-result.png" alt="Результат в Telegram" className="w-full rounded-xl object-cover" />
         {/* ── Чекпоинт ── */}
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
           <h2 className="text-2xl font-semibold text-white mb-4">
