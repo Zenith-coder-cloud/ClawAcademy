@@ -8,38 +8,36 @@ type AccordionItem = { title: string; content: string; hint?: string };
 
 const telegramIssues: AccordionItem[] = [
   {
-    title: "Бот не отвечает после /start",
-    content: "Gateway не запущен или упал после последнего изменения конфига.",
-    hint: "openclaw gateway status — если Stopped → openclaw gateway restart",
+    title: "Бот не отвечает на сообщения",
+    content: "Gateway не запущен.",
+    hint: "openclaw gateway status — если не Running → openclaw gateway start",
   },
   {
-    title: "Pairing code не приходит",
+    title: "openclaw onboard завис или вылетел",
+    content: "Перезапусти визард — прогресс сохраняется.",
+    hint: "openclaw onboard",
+  },
+  {
+    title: "Бот отвечает «Not authorized»",
     content:
-      "dmPolicy стоит disabled в конфиге — бот игнорирует личные сообщения.",
-    hint: "Проверь openclaw.json → channels.telegram.dmPolicy — должно быть 'pairing' или 'open'",
+      "Визард не добавил твой ID в allowlist.",
+    hint: "openclaw configure → проверь channels.telegram.allowFrom",
   },
   {
-    title: "Invalid bot token (401)",
+    title: "Invalid bot token",
     content:
-      "Токен введён с пробелом или переносом строки. Telegram возвращает 401 Unauthorized.",
-    hint: "@BotFather → /mybots → выбери бота → API Token → скопируй заново, без пробелов",
+      "Токен скопирован с пробелом или неполностью.",
+    hint: "@BotFather → /mybots → выбери бота → API Token → скопируй заново",
   },
   {
-    title: "Bot was blocked by the user",
-    content: "Ты заблокировал бота ранее в Telegram.",
-    hint: "Найди бота в Telegram → нажми Unblock / Разблокировать",
+    title: "Gateway запускается но сразу падает",
+    content: "Ошибка в конфиге.",
+    hint: "openclaw doctor покажет ошибку. Исправь и перезапусти.",
   },
   {
-    title: "openclaw onboard не запускается",
+    title: "Не могу найти своего бота в Telegram",
     content:
-      "OpenClaw не установлен или установлена старая версия без визарда.",
-    hint: "npm install -g openclaw@latest — затем снова openclaw onboard",
-  },
-  {
-    title: "Визард завис на выборе провайдера",
-    content:
-      "Нет интернета или API endpoint недоступен — визард не может проверить провайдера.",
-    hint: "curl https://api.anthropic.com — если ошибка, проверь соединение / VPN",
+      "Ищи по username который ввёл в BotFather. Убедись что username заканчивается на bot.",
   },
 ];
 
@@ -47,21 +45,9 @@ const telegramIssues: AccordionItem[] = [
 const agentTasks = [
   {
     emoji: "🔍",
-    prompt: "Найди последние новости про Bitcoin",
+    prompt: "Найди новости про Bitcoin",
     response:
-      "Агент выполняет web_search, возвращает 3 актуальные новости с источниками и датами.",
-  },
-  {
-    emoji: "📅",
-    prompt: "Что у меня сегодня?",
-    response:
-      "Агент проверяет Google Calendar (если подключён) или отвечает, что нужно подключить Skills в Уроке 3.",
-  },
-  {
-    emoji: "⏰",
-    prompt: "Напомни мне позвонить клиенту через 2 часа",
-    response:
-      "Агент создаёт cron-напоминание — через 2 часа ты получишь сообщение в Telegram.",
+      "Агент выполняет web_search, возвращает актуальные новости с источниками и датами.",
   },
   {
     emoji: "📝",
@@ -70,8 +56,13 @@ const agentTasks = [
       "Агент читает страницу по ссылке и возвращает краткое резюме в 3–5 предложениях.",
   },
   {
+    emoji: "⏰",
+    prompt: "Напомни через 2 часа позвонить",
+    response: "Агент создаст напоминание — через 2 часа ты получишь сообщение в Telegram.",
+  },
+  {
     emoji: "🌤",
-    prompt: "Какая погода в Москве?",
+    prompt: "Какая погода в Токио?",
     response:
       "Агент использует weather skill и возвращает текущую температуру, влажность, прогноз.",
   },
@@ -81,6 +72,30 @@ const agentTasks = [
     response:
       "Агент генерирует пронумерованный список из 5 идей с кратким описанием каждой.",
   },
+  {
+    emoji: "📁",
+    prompt: "Создай файл todo.md со списком задач",
+    response: "Агент создаст файл todo.md в workspace с твоим списком задач.",
+  },
+];
+
+/* ─── Wizard steps ─── */
+const wizardSteps = [
+  { emoji: "🤖", title: "Выбор AI провайдера", desc: "Anthropic, OpenAI, Qwen или другой" },
+  { emoji: "🔑", title: "API ключ провайдера", desc: "Вставишь ключ от выбранного провайдера" },
+  { emoji: "💬", title: "Подключение Telegram", desc: "Выберешь Telegram и вставишь Bot Token" },
+  { emoji: "📱", title: "Твой Telegram ID", desc: "Визард спросит твой номер телефона и сам добавит тебя в allowlist" },
+  { emoji: "✅", title: "Запуск daemon", desc: "Gateway запустится автоматически как системный сервис" },
+];
+
+/* ─── Telegram commands ─── */
+const telegramCommands = [
+  { cmd: "/think high", desc: "глубокое мышление" },
+  { cmd: "/think off", desc: "выключить" },
+  { cmd: "/reasoning on", desc: "показать рассуждения" },
+  { cmd: "/verbose on", desc: "подробный вывод" },
+  { cmd: "/status", desc: "статус агента" },
+  { cmd: "/help", desc: "список команд" },
 ];
 
 /* ─── CodeBlock ─── */
@@ -114,7 +129,7 @@ function CodeBlock({ code, language }: { code: string; language?: string }) {
   );
 }
 
-/* ─── Accordion ─── */
+/* ─── Searchable Accordion ─── */
 function Accordion({ items }: { items: AccordionItem[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
@@ -140,7 +155,7 @@ function Accordion({ items }: { items: AccordionItem[] }) {
               <div className="px-5 pb-5 text-zinc-400 leading-relaxed">
                 <p className="mb-2">{item.content}</p>
                 {item.hint && (
-                  <div className="text-zinc-300 bg-zinc-900/60 border border-zinc-800 rounded-lg px-4 py-3">
+                  <div className="text-zinc-300 bg-zinc-900/60 border border-zinc-800 rounded-lg px-4 py-3 font-mono text-sm">
                     {item.hint}
                   </div>
                 )}
@@ -157,7 +172,7 @@ function Accordion({ items }: { items: AccordionItem[] }) {
    PAGE
    ═══════════════════════════════════════════════════ */
 export default function Block1Lesson2Page() {
-  const [checks, setChecks] = useState([false, false, false, false, false]);
+  const [checks, setChecks] = useState([false, false, false, false]);
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
 
@@ -170,7 +185,6 @@ export default function Block1Lesson2Page() {
     });
   }
 
-  /* search filter */
   const filteredIssues = searchQuery.trim()
     ? telegramIssues.filter((item) =>
         [item.title, item.content, item.hint ?? ""].some((t) =>
@@ -191,8 +205,7 @@ export default function Block1Lesson2Page() {
             Урок 2 — Первый Telegram-агент
           </h1>
           <p className="text-zinc-400 text-lg">
-            Визард настроит всё за 5 минут — вручную ничего редактировать не
-            нужно
+            4 шага — и агент отвечает в Telegram
           </p>
         </div>
       </section>
@@ -206,26 +219,10 @@ export default function Block1Lesson2Page() {
             </p>
             <nav className="flex flex-col gap-1">
               {[
-                {
-                  num: 1,
-                  title: "Установка OpenClaw",
-                  href: "/dashboard/course/block/1/lesson/1",
-                },
-                {
-                  num: 2,
-                  title: "Первый Telegram-агент",
-                  href: "/dashboard/course/block/1/lesson/2",
-                },
-                {
-                  num: 3,
-                  title: "Подключения и Skills",
-                  href: "/dashboard/course/block/1/lesson/3",
-                },
-                {
-                  num: 4,
-                  title: "Первая автоматизация",
-                  href: "/dashboard/course/block/1/lesson/4",
-                },
+                { num: 1, title: "Установка OpenClaw", href: "/dashboard/course/block/1/lesson/1" },
+                { num: 2, title: "Первый Telegram-агент", href: "/dashboard/course/block/1/lesson/2" },
+                { num: 3, title: "Подключения и Skills", href: "/dashboard/course/block/1/lesson/3" },
+                { num: 4, title: "Первая автоматизация", href: "/dashboard/course/block/1/lesson/4" },
               ].map((l) => (
                 <Link
                   key={l.num}
@@ -255,63 +252,94 @@ export default function Block1Lesson2Page() {
         <div className="flex-1 min-w-0 flex flex-col gap-8">
           {/* ── Вступление ── */}
           <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
-            <h2 className="text-2xl font-semibold text-white mb-4">
-              Вступление
-            </h2>
             <p className="text-zinc-400 leading-relaxed">
-              OpenClaw поставляется с визардом onboard — он сам спросит токен
-              Telegram, выберет LLM провайдера, настроит конфиг. Ты просто
-              отвечаешь на вопросы.
+              OpenClaw поставляется с интерактивным визардом. Он сам запросит токен, настроит доступ и запустит демон. Тебе останется только написать боту первое сообщение.
             </p>
           </section>
 
           {/* ── Шаг 1 — BotFather ── */}
           <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
             <h2 className="text-2xl font-semibold text-white mb-4">
-              Шаг 1 — Создай бота через BotFather
+              1. Создай бота в Telegram
             </h2>
             <ol className="list-decimal list-inside text-zinc-400 space-y-2 mb-4">
-              <li>
-                Открой Telegram → найди @BotFather (синяя галочка)
-              </li>
+              <li>Открой Telegram → найди @BotFather (синяя галочка верификации)</li>
               <li>Отправь /newbot</li>
-              <li>Введи имя бота (например: My Assistant)</li>
-              <li>
-                Введи username — должен заканчиваться на bot
-                (my_assistant_bot)
-              </li>
-              <li>Скопируй Bot Token — он понадобится в визарде</li>
+              <li>Введи имя бота — любое (например: My Assistant)</li>
+              <li>Введи username — должен заканчиваться на bot (my_assistant_bot)</li>
+              <li>Скопируй Bot Token — он понадобится на следующем шаге</li>
             </ol>
             <CodeBlock code="/newbot" />
             <div className="mt-4 bg-yellow-900/20 border border-yellow-700/40 rounded-xl px-5 py-4 text-yellow-200 text-sm">
-              ⚠️ Сохрани токен — он нужен на следующем шаге
+              ⚠️ Bot Token выдаётся один раз. Сохрани его сейчас — он нужен в визарде.
             </div>
           </section>
 
           {/* ── Шаг 2 — Визард onboard (ГЛАВНАЯ) ── */}
-          
-
-          {/* ── Шаг 3 — Первое сообщение ── */}
           <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
             <h2 className="text-2xl font-semibold text-white mb-4">
-              Шаг 3 — Напиши агенту
+              2. Запусти визард настройки
+            </h2>
+            <CodeBlock code="openclaw onboard --install-daemon" />
+            <p className="text-zinc-400 mt-4 mb-4 leading-relaxed">
+              Визард проведёт тебя через настройку шаг за шагом:
+            </p>
+            <div className="space-y-3">
+              {wizardSteps.map((step) => (
+                <div
+                  key={step.title}
+                  className="bg-zinc-950 border border-zinc-800 rounded-xl px-5 py-4 flex items-start gap-3"
+                >
+                  <span className="text-xl shrink-0">{step.emoji}</span>
+                  <div>
+                    <p className="text-white font-medium">{step.title}</p>
+                    <p className="text-zinc-400 text-sm">{step.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 bg-blue-900/20 border border-blue-700/40 rounded-xl px-5 py-4 text-blue-200 text-sm">
+              💡 Визард автоматически настраивает dmPolicy: allowlist с твоим Telegram ID. После этого ты — единственный, кто может писать боту.
+            </div>
+          </section>
+
+          {/* ── Шаг 3 — Проверка ── */}
+          <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+            <h2 className="text-2xl font-semibold text-white mb-4">
+              3. Проверь что Gateway работает
+            </h2>
+            <CodeBlock code="openclaw gateway status" />
+            <p className="text-zinc-400 mt-4 mb-4 leading-relaxed">
+              Должен показать статус Running. Если нет:
+            </p>
+            <CodeBlock code="openclaw gateway start" />
+            <p className="text-zinc-400 mt-4 mb-2 leading-relaxed">
+              Также можно открыть веб-интерфейс для управления агентом:
+            </p>
+            <CodeBlock code="openclaw dashboard" />
+          </section>
+
+          {/* ── Шаг 4 — Первое сообщение ── */}
+          <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+            <h2 className="text-2xl font-semibold text-white mb-4">
+              4. Напиши агенту в Telegram
             </h2>
             <p className="text-zinc-400 mb-4 leading-relaxed">
-              После того как визард завершится — открой Telegram, найди своего бота и напиши ему первое сообщение.
+              Найди своего бота в Telegram по username → нажми Start → напиши что-нибудь. Агент ответит сразу — ты уже в allowlist.
             </p>
             <div className="bg-zinc-800 rounded-xl p-4 flex items-start gap-3 border border-zinc-700">
               <span className="text-2xl">💬</span>
               <div>
-                <p className="text-white font-medium mb-1">Попробуй написать агенту:</p>
-                <p className="text-zinc-400 text-sm">&ldquo;Привет! Что ты умеешь?&rdquo;</p>
+                <p className="text-white font-medium mb-1">Попробуй написать:</p>
+                <p className="text-zinc-400 text-sm">&laquo;Привет! Что ты умеешь?&raquo;</p>
               </div>
             </div>
           </section>
 
-          {/* ── Что агент умеет ── */}
+          {/* ── Что попробовать первым делом ── */}
           <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
             <h2 className="text-2xl font-semibold text-white mb-6">
-              Что агент умеет прямо сейчас
+              Что попробовать первым делом
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {agentTasks.map((task, idx) => {
@@ -326,7 +354,7 @@ export default function Block1Lesson2Page() {
                       <span className="text-xl shrink-0">{task.emoji}</span>
                       <div className="min-w-0">
                         <span className="text-white font-medium">
-                          &ldquo;{task.prompt}&rdquo;
+                          {task.prompt}
                         </span>
                         {isExpanded && (
                           <p className="mt-2 text-zinc-400 leading-relaxed text-sm">
@@ -341,17 +369,35 @@ export default function Block1Lesson2Page() {
             </div>
           </section>
 
+          {/* ── Команды в Telegram ── */}
+          <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+            <h2 className="text-2xl font-semibold text-white mb-4">
+              Полезные команды в Telegram
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {telegramCommands.map((c) => (
+                <div
+                  key={c.cmd}
+                  className="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3"
+                >
+                  <code className="text-[#FF4422] text-sm font-mono">{c.cmd}</code>
+                  <p className="text-zinc-400 text-sm mt-1">{c.desc}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
           {/* ── Проблемы и решения ── */}
           <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
             <h2 className="text-2xl font-semibold text-white mb-4">
               {searchQuery.trim()
                 ? `Найдено: ${filteredIssues.length}`
-                : "Проблемы и решения — Telegram"}
+                : "Проблемы и решения"}
             </h2>
             <div className="relative mb-4">
               <input
                 type="text"
-                placeholder="Найти проблему... (например: token, pairing, 401)"
+                placeholder="Найти проблему... (например: token, authorized, gateway)"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-4 py-3 pl-10 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-[#FF4422] transition-colors text-sm"
@@ -388,11 +434,10 @@ export default function Block1Lesson2Page() {
             </h2>
             <div className="space-y-3">
               {[
-                "Бот создан через BotFather, токен получен",
-                "openclaw onboard завершён успешно",
+                "Bot Token получен от BotFather",
+                "openclaw onboard --install-daemon завершён",
                 "openclaw gateway status → Running",
-                "Pairing одобрен",
-                "Агент ответил на первое сообщение в Telegram",
+                "Агент ответил на первое сообщение",
               ].map((label, idx) => (
                 <label
                   key={label}
