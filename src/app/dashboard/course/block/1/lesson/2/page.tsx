@@ -622,6 +622,9 @@ export default function Block1Lesson2Page() {
                     <p className="mb-1">Запусти <code className="text-[#FF4422]">claude setup-token</code> в отдельном терминале.</p>
                     <p className="text-zinc-500 text-sm mb-2">Скопируй токен из вывода — он выглядит так:</p>
                     <CodeBlock code="claude setup-token" />
+                    <div className="mt-3 bg-blue-900/20 border border-blue-700/40 rounded-lg px-4 py-3 text-sm text-blue-200">
+                      🌐 После запуска откроется браузер. Войди в аккаунт Anthropic и нажми кнопку <strong>Authorize</strong>.
+                    </div>
 
                   </div>
                   {/* Terminal output preview */}
