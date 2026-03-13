@@ -459,16 +459,13 @@ export default function Block1Lesson1Page() {
           <CodeBlock
             code={`openclaw gateway status    # проверить\nopenclaw dashboard         # открыть UI → http://127.0.0.1:18789/`}
           />
-          <div className="mt-6">
-            <Image
-              src="https://mintcdn.com/clawdhub/U8jr7qEbUc9OU9YR/assets/install-script.svg"
-              alt="OpenClaw dashboard URL"
-              width={1200}
-              height={675}
-              className="rounded-xl w-full border border-zinc-800"
-              unoptimized
-            />
-          </div>
+          <Image
+            src="/course/block1/lesson1/b1-l1-dashboard.png"
+            alt="OpenClaw Gateway Dashboard"
+            width={1280}
+            height={720}
+            className="w-full rounded-2xl object-cover mt-6"
+          />
         </section>
 
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
