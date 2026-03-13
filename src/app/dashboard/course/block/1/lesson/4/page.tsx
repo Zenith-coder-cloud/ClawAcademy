@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 /* ─── Troubleshooting issues ─── */
 type AccordionItem = { title: string; content: string; hint?: string };
@@ -130,9 +131,9 @@ function Accordion({ items }: { items: AccordionItem[] }) {
 export default function Block1Lesson4Page() {
   const [activeCronTab, setActiveCronTab] = useState<CronTabId>("every");
   const [searchQuery, setSearchQuery] = useState("");
-  const [checks, setChecks] = useState([false, false, false, false]);
+  const [checks, setChecks] = useState([false, false, false, false, false, false]);
 
-  
+  const allChecked = checks.every(Boolean);
 
   /* search filter */
   const filteredIssues = searchQuery.trim()
@@ -187,9 +188,12 @@ export default function Block1Lesson4Page() {
           </div>
         </aside>
         <div className="flex-1 min-w-0 flex flex-col gap-8">
+
+        {/* ── Hero image ── */}
+        <Image src="/course/block1/lesson4/b1-l4-automation.png" alt="Автоматизация агента" width={1280} height={720} className="w-full rounded-2xl object-cover" />
+
+        {/* ── Intro ── */}
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
-          <h2 className="text-2xl font-semibold text-white mb-4">
-          </h2>
           <p className="text-zinc-400 leading-relaxed">
             Ты настроил агента вручную. Теперь сделаем его автономным — пусть
             сам отправляет утренний дайджест, следит за ценами, напоминает о
@@ -218,6 +222,25 @@ export default function Block1Lesson4Page() {
               </p>
             </div>
           </div>
+        </section>
+
+        {/* ── Концепция автоматизации ── */}
+        <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+          <h2 className="text-2xl font-semibold text-white mb-4">Как это выглядит на практике</h2>
+          <p className="text-zinc-400 mb-4 leading-relaxed">
+            Ты создаёшь задачу один раз — агент выполняет её каждый день. Например, каждое утро в 9:00 ты получаешь в Telegram:
+          </p>
+          <div className="bg-zinc-950 border border-zinc-700 rounded-xl p-5 mb-4">
+            <p className="text-zinc-500 text-xs mb-3 font-mono">Автоматическое сообщение в Telegram — 09:00</p>
+            <div className="bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-zinc-200 text-sm space-y-1">
+              <p>☀️ <strong>Доброе утро!</strong></p>
+              <p>🌤 Погода: +18°C, облачно, без осадков</p>
+              <p>₿ BTC: $64,320 <span className="text-red-400">▼ -1.2%</span></p>
+              <p>Ξ ETH: $3,180 <span className="text-green-400">▲ +0.8%</span></p>
+              <p>📅 Сегодня: 10:00 Встреча с командой · 14:30 Звонок с клиентом</p>
+            </div>
+          </div>
+          <p className="text-zinc-500 text-sm">Это агент — не уведомление приложения. Он сам ищет данные, форматирует и присылает.</p>
         </section>
 
         {/* ── Cron задачи ── */}
@@ -255,17 +278,23 @@ export default function Block1Lesson4Page() {
               <CodeBlock
                 code={`# Каждый день в 9:00 — утренний дайджест
 openclaw cron add \\
-  --schedule 'every day at 09:00' \\
-  --payload agentTurn \\
-  --message 'Доброе утро! Сделай краткий дайджест: погода, крипто цены, мои встречи сегодня' \\
-  --to YOUR_TELEGRAM_ID \\
-  --session isolated
+  --name "Morning digest" \\
+  --every 86400000 \\
+  --session isolated \\
+  --message "Доброе утро! Кратко: 1) Погода 2) BTC/ETH цены 3) Мои встречи из Google Calendar" \\
+  --announce \\
+  --channel telegram \\
+  --to YOUR_TELEGRAM_ID
 
-# Каждые 30 минут — мониторинг
+# Каждые 30 минут — мониторинг цены
 openclaw cron add \\
-  --schedule 'every 30 minutes' \\
-  --payload agentTurn \\
-  --message 'Проверь цену BTC. Если упала больше 5% за час — сообщи мне'`}
+  --name "BTC monitor" \\
+  --every 1800000 \\
+  --session isolated \\
+  --message "Проверь цену BTC. Если упала больше 5% за час — сообщи мне" \\
+  --announce \\
+  --channel telegram \\
+  --to YOUR_TELEGRAM_ID`}
               />
             </div>
           )}
@@ -277,17 +306,25 @@ openclaw cron add \\
                 Одноразовый запуск в конкретное время
               </p>
               <CodeBlock
-                code={`# Напомнить через час
+                code={`# Напомнить через 1 час (одноразово)
 openclaw cron add \\
-  --schedule 'at +1h' \\
-  --payload agentTurn \\
-  --message 'Напомни позвонить клиенту по поводу договора'
+  --name "Reminder" \\
+  --at "+1h" \\
+  --session isolated \\
+  --message "Напомни позвонить клиенту по поводу договора" \\
+  --announce \\
+  --channel telegram \\
+  --to YOUR_TELEGRAM_ID
 
 # В конкретное время
 openclaw cron add \\
-  --schedule 'at 2026-03-15T18:00:00' \\
-  --payload agentTurn \\
-  --message 'Встреча через 30 минут! Подготовь краткое резюме по проекту'`}
+  --name "Meeting reminder" \\
+  --at "2026-03-15T18:00:00" \\
+  --session isolated \\
+  --message "Встреча через 30 минут! Подготовь краткое резюме по проекту" \\
+  --announce \\
+  --channel telegram \\
+  --to YOUR_TELEGRAM_ID`}
               />
             </div>
           )}
@@ -301,15 +338,25 @@ openclaw cron add \\
               <CodeBlock
                 code={`# Каждый понедельник в 8:00 — еженедельный отчёт
 openclaw cron add \\
-  --schedule '0 8 * * 1' \\
-  --payload agentTurn \\
-  --message 'Еженедельный отчёт: подведи итоги недели по моим задачам'
+  --name "Weekly report" \\
+  --cron "0 8 * * 1" \\
+  --tz "Europe/Moscow" \\
+  --session isolated \\
+  --message "Еженедельный отчёт: подведи итоги недели по моим задачам" \\
+  --announce \\
+  --channel telegram \\
+  --to YOUR_TELEGRAM_ID
 
 # Каждый будний день в 17:30
 openclaw cron add \\
-  --schedule '30 17 * * 1-5' \\
-  --payload agentTurn \\
-  --message 'Рабочий день заканчивается. Что осталось несделанным?'`}
+  --name "EOD check" \\
+  --cron "30 17 * * 1-5" \\
+  --tz "Europe/Moscow" \\
+  --session isolated \\
+  --message "Рабочий день заканчивается. Что осталось несделанным?" \\
+  --announce \\
+  --channel telegram \\
+  --to YOUR_TELEGRAM_ID`}
               />
             </div>
           )}
@@ -320,10 +367,10 @@ openclaw cron add \\
               Управление
             </h3>
             <CodeBlock
-              code={`openclaw cron list          # список всех задач
-openclaw cron run <id>      # запустить вручную
-openclaw cron status <id>   # статус последних запусков
-openclaw cron remove <id>   # удалить`}
+              code={`openclaw cron list                    # список всех задач
+openclaw cron run --id <job-id>       # запустить вручную
+openclaw cron runs --id <job-id>      # история запусков
+openclaw cron remove --id <job-id>    # удалить`}
             />
           </div>
         </section>
@@ -333,6 +380,9 @@ openclaw cron remove <id>   # удалить`}
           <h2 className="text-2xl font-semibold text-white mb-4">
             Heartbeat — агент сам проверяет задачи
           </h2>
+          <div className="bg-zinc-800/60 border border-zinc-700 rounded-xl px-5 py-3 text-zinc-400 text-sm mb-4">
+            📄 Файл: <code className="text-zinc-300">~/.openclaw/workspace/HEARTBEAT.md</code> — редактируй в любом редакторе. Агент читает его при каждом heartbeat.
+          </div>
           <p className="text-zinc-400 leading-relaxed mb-4">
             Heartbeat — это специальный режим. Каждые 30 минут OpenClaw
             спрашивает агента: «Есть что-то важное?» Агент читает HEARTBEAT.md и
@@ -346,6 +396,16 @@ openclaw cron remove <id>   # удалить`}
 - Если в папке /tmp/reports/ появился новый файл — отправь его содержимое
 - Если сегодня понедельник — напомни про еженедельный созвон в 10:00`}
           />
+
+          <div className="mt-4 bg-zinc-950 border border-zinc-700 rounded-xl p-5">
+            <p className="text-zinc-500 text-xs mb-3 font-mono">Пример — агент проверил и нашёл алерт:</p>
+            <div className="bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-zinc-200 text-sm space-y-1">
+              <p>🚨 <strong>BTC Alert!</strong></p>
+              <p>BTC упал на 3.8% за последний час</p>
+              <p>Текущая цена: $58,240</p>
+              <p>Рекомендую проверить позиции.</p>
+            </div>
+          </div>
 
           <div className="mt-4">
             <h3 className="text-lg font-semibold text-white mb-3">
@@ -367,6 +427,8 @@ openclaw cron remove <id>   # удалить`}
           <div className="mt-4 bg-yellow-900/20 border border-yellow-700/40 rounded-xl px-5 py-4 text-yellow-200 text-sm">
             💡 Если нечего делать — агент отвечает HEARTBEAT_OK и не шумит.
           </div>
+
+          <img src="/course/block1/lesson4/b1-l4-heartbeat.png" alt="Heartbeat" className="w-full rounded-xl object-cover mt-4" />
         </section>
 
         {/* ── Готовые примеры ── */}
@@ -385,11 +447,14 @@ openclaw cron remove <id>   # удалить`}
               </p>
               <CodeBlock
                 code={`openclaw cron add \\
-  --schedule 'every day at 09:00' \\
-  --payload agentTurn \\
-  --message 'Доброе утро! Кратко: 1) Погода сегодня 2) Цена BTC/ETH 3) Мои встречи из Google Calendar' \\
-  --to YOUR_TELEGRAM_ID \\
-  --session isolated`}
+  --name "Morning digest" \\
+  --cron "0 9 * * *" \\
+  --tz "Europe/Moscow" \\
+  --session isolated \\
+  --message "Доброе утро! Кратко: 1) Погода сегодня 2) Цена BTC/ETH 3) Мои встречи из Google Calendar" \\
+  --announce \\
+  --channel telegram \\
+  --to YOUR_TELEGRAM_ID`}
               />
             </div>
 
@@ -403,11 +468,13 @@ openclaw cron remove <id>   # удалить`}
               </p>
               <CodeBlock
                 code={`openclaw cron add \\
-  --schedule 'every 1 hour' \\
-  --payload agentTurn \\
-  --message 'Проверь цену BTC через web_search. Если цена ниже 80000$ — срочно сообщи мне' \\
-  --to YOUR_TELEGRAM_ID \\
-  --session isolated`}
+  --name "BTC price alert" \\
+  --cron "0 * * * *" \\
+  --session isolated \\
+  --message "Проверь цену BTC через web_search. Если цена ниже 80000$ — срочно сообщи мне" \\
+  --announce \\
+  --channel telegram \\
+  --to YOUR_TELEGRAM_ID`}
               />
             </div>
 
@@ -421,15 +488,21 @@ openclaw cron remove <id>   # удалить`}
               </p>
               <CodeBlock
                 code={`openclaw cron add \\
-  --schedule '0 17 * * 5' \\
-  --payload agentTurn \\
-  --message 'Пятница! Подведи итоги недели: что сделано, что перенесено, приоритеты на следующую неделю' \\
-  --to YOUR_TELEGRAM_ID \\
-  --session isolated`}
+  --name "Weekly report" \\
+  --cron "0 17 * * 5" \\
+  --tz "Europe/Moscow" \\
+  --session isolated \\
+  --message "Пятница! Подведи итоги недели: что сделано, что перенесено, приоритеты на следующую неделю" \\
+  --announce \\
+  --channel telegram \\
+  --to YOUR_TELEGRAM_ID`}
               />
             </div>
           </div>
         </section>
+
+        {/* ── Cron image ── */}
+        <img src="/course/block1/lesson4/b1-l4-cron.png" alt="Cron задачи" className="w-full rounded-xl object-cover" />
 
         {/* ── Webhook ── */}
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
@@ -437,18 +510,31 @@ openclaw cron remove <id>   # удалить`}
             Webhook — реагируй на внешние события
           </h2>
           <p className="text-zinc-400 leading-relaxed mb-4">
-            OpenClaw может принимать HTTP запросы извне. Подключи GitHub — агент
-            будет уведомлять о каждом push в репозиторий.
+            OpenClaw принимает HTTP запросы и передаёт их агенту. Подключи GitHub, Stripe, Zapier — агент реагирует на любые события из интернета.
           </p>
-          <CodeBlock
-            code={`# Твой webhook URL:
-https://your-domain.com/hooks/agent
-
-# Пример: GitHub → OpenClaw
-# В GitHub Settings → Webhooks → Add webhook
-# Payload URL: https://your-domain.com/hooks/agent
-# Content type: application/json`}
-          />
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-2">Твой webhook URL</h3>
+              <CodeBlock code={`# Посмотреть свой webhook URL\nopenclaw status\n# Webhook: http://localhost:18789/hooks/agent`} />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-2">Примеры подключений</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-4">
+                  <p className="text-white font-semibold mb-1">🐙 GitHub</p>
+                  <p className="text-zinc-400 text-sm">Push → агент ревьюит код и пишет в Telegram</p>
+                </div>
+                <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-4">
+                  <p className="text-white font-semibold mb-1">💳 Stripe</p>
+                  <p className="text-zinc-400 text-sm">Новый платёж → агент уведомляет и логирует</p>
+                </div>
+                <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-4">
+                  <p className="text-white font-semibold mb-1">⚡ Zapier</p>
+                  <p className="text-zinc-400 text-sm">Любое событие из 5000+ приложений → агент</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* ── Проблемы и решения ── */}
@@ -498,10 +584,12 @@ https://your-domain.com/hooks/agent
           </h2>
           <div className="space-y-3">
             {[
-              "Создал первый cron (openclaw cron list показывает задачу)",
-              "Cron сработал вручную (openclaw cron run <id>)",
-              "Настроил HEARTBEAT.md с одной проверкой",
-              "Получил автоматическое сообщение в Telegram",
+              'Создал первый cron (openclaw cron list показывает задачу)',
+              'Cron сработал вручную (openclaw cron run --id <id>)',
+              'Получил автоматическое сообщение в Telegram от cron',
+              'Написал HEARTBEAT.md с одной проверкой',
+              'Heartbeat отреагировал хотя бы раз (не HEARTBEAT_OK)',
+              'openclaw doctor — нет ошибок',
             ].map((label, idx) => (
               <label
                 key={label}
@@ -521,6 +609,13 @@ https://your-domain.com/hooks/agent
               </label>
             ))}
           </div>
+          {allChecked && (
+            <div className="mt-6 text-center">
+              <button className="px-6 py-3 bg-[#FF4422] text-white font-semibold rounded-lg hover:bg-[#e63d1e] transition-colors">
+                Блок 1 завершён!
+              </button>
+            </div>
+          )}
         </section>
 
         {/* ── Navigation ── */}
