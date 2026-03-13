@@ -48,6 +48,7 @@ const skillsIssues: AccordionItem[] = [
 
 /* ─── Skills tabs config ─── */
 const skillTabs = [
+  { id: "websearch", label: "🔍 Web Search" },
   { id: "google", label: "🌐 Google" },
   { id: "notion", label: "📝 Notion" },
   { id: "reminders", label: "📅 Reminders" },
@@ -132,9 +133,9 @@ function Accordion({ items }: { items: AccordionItem[] }) {
 export default function Block1Lesson3Page() {
   const router = useRouter();
 
-  const [activeTab, setActiveTab] = useState<SkillTabId>("google");
+  const [activeTab, setActiveTab] = useState<SkillTabId>("websearch");
   const [searchQuery, setSearchQuery] = useState("");
-  const [checks, setChecks] = useState([false, false, false, false]);
+  const [checks, setChecks] = useState([false, false, false, false, false]);
 
   const allChecked = checks.every(Boolean);
 
@@ -191,9 +192,8 @@ export default function Block1Lesson3Page() {
           </div>
         </aside>
         <div className="flex-1 min-w-0 flex flex-col gap-8">
+        {/* ── Intro ── */}
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
-          <h2 className="text-2xl font-semibold text-white mb-4">
-          </h2>
           <p className="text-zinc-400 leading-relaxed">
             Skills — это расширения агента. Каждый skill добавляет новую
             способность: управлять почтой, создавать события в календаре,
@@ -232,6 +232,26 @@ export default function Block1Lesson3Page() {
           </div>
         </section>
 
+        {/* ── Как это работает (диалог с агентом) ── */}
+        <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+          <h2 className="text-2xl font-semibold text-white mb-4">Как это работает</h2>
+          <p className="text-zinc-400 mb-4 leading-relaxed">
+            Skill — это файл <code className="text-[#FF4422]">SKILL.md</code> с инструкциями для агента. Когда ты просишь что-то сделать — агент читает нужный skill и понимает как использовать инструмент.
+          </p>
+          <div className="bg-zinc-950 border border-zinc-700 rounded-xl p-5 mb-4">
+            <p className="text-zinc-500 text-xs mb-3 font-mono">Пример диалога в Telegram:</p>
+            <div className="space-y-3">
+              <div className="flex justify-end"><div className="bg-blue-900/40 border border-blue-700/40 rounded-xl px-4 py-2 text-blue-200 text-sm max-w-xs">Что у меня сегодня в календаре?</div></div>
+              <div className="flex justify-start"><div className="bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 text-zinc-200 text-sm max-w-sm">📅 Сегодня, 14 марта:<br/>10:00 — Встреча с командой (1 час)<br/>14:30 — Звонок с клиентом (30 мин)<br/>18:00 — Тренировка</div></div>
+              <div className="flex justify-end"><div className="bg-blue-900/40 border border-blue-700/40 rounded-xl px-4 py-2 text-blue-200 text-sm max-w-xs">Перенеси звонок с клиентом на 15:00</div></div>
+              <div className="flex justify-start"><div className="bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 text-zinc-200 text-sm max-w-sm">✓ Готово — звонок перенесён на 14 марта, 15:00</div></div>
+            </div>
+          </div>
+          <div className="bg-zinc-800/60 border border-zinc-700 rounded-xl px-5 py-3 text-zinc-400 text-sm">
+            Skills хранятся в <code className="text-zinc-300">~/.openclaw/skills/</code> (глобальные) и <code className="text-zinc-300">workspace/skills/</code> (для конкретного агента)
+          </div>
+        </section>
+
         {/* ── Skills Switcher ── */}
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
           <h2 className="text-2xl font-semibold text-white mb-6">
@@ -257,6 +277,40 @@ export default function Block1Lesson3Page() {
               );
             })}
           </div>
+
+          {/* ── Web Search Tab ── */}
+          {activeTab === 'websearch' && (
+            <div className="space-y-6">
+              <div className="bg-green-900/20 border border-green-700/40 rounded-xl px-5 py-4 text-green-200 text-sm">
+                🔍 Web Search — самый используемый skill. Агент ищет в интернете в реальном времени.
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-3">Шаг 1: Получить ключ Brave Search API</h3>
+                <ol className="list-decimal list-inside text-zinc-400 space-y-1 mb-3">
+                  <li>Открой <a href="https://brave.com/search/api/" target="_blank" rel="noopener noreferrer" className="text-[#FF4422] hover:underline">brave.com/search/api</a> → Free plan (2000 запросов/мес)</li>
+                  <li>Создай аккаунт → API Keys → Create</li>
+                  <li>Скопируй ключ BSA_...</li>
+                </ol>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-3">Шаг 2: Добавить в конфиг</h3>
+                <CodeBlock code={'openclaw configure\n# или напрямую в ~/.openclaw/openclaw.json:\n# "webSearch": { "provider": "brave", "apiKey": "BSA_..." }'} />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-3">Примеры команд агенту</h3>
+                <div className="space-y-2">
+                  {['Найди последние новости про OpenAI', 'Что происходит с биткоином сегодня?', 'Найди рецепт пасты карбонара', 'Какие рестораны открыты сейчас?'].map(cmd => (
+                    <div key={cmd} className="bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 text-zinc-300 text-sm font-mono">
+                      💬 {cmd}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="bg-zinc-800 border border-zinc-700 rounded-xl px-5 py-4 text-zinc-300 text-sm">
+                Альтернативы: Gemini Search (нужен Google API ключ), Grok Search (xAI API). Настраиваются через <code className="text-[#FF4422]">openclaw configure</code>.
+              </div>
+            </div>
+          )}
 
           {/* ── Google Tab ── */}
           {activeTab === "google" && (
@@ -311,6 +365,15 @@ export default function Block1Lesson3Page() {
                   code={`# Что сегодня в расписании?\ngog calendar events primary --from today --to today\n\n# Создать встречу\ngog calendar create primary --summary 'Встреча' --from 2026-03-15T10:00:00 --to 2026-03-15T11:00:00\n\n# Найти письмо\ngog gmail search 'newer_than:3d from:boss@company.com' --max 5`}
                 />
               </div>
+
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-3">Скажи агенту в Telegram</h3>
+                <div className="space-y-2">
+                  {['Что у меня сегодня в расписании?', 'Создай встречу завтра в 10 утра — Звонок с командой на 1 час', 'Найди письмо от Ивана за последние 3 дня', 'Покажи файлы в Google Drive папке Projects'].map(cmd => (
+                    <div key={cmd} className="bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 text-zinc-300 text-sm font-mono">💬 {cmd}</div>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
 
@@ -318,41 +381,33 @@ export default function Block1Lesson3Page() {
           {activeTab === "notion" && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-white mb-3">
-                  Шаг 1: Получить API ключ
-                </h3>
-                <p className="text-zinc-400">
-                  Открой notion.so/my-integrations → New integration → скопируй
-                  Internal Integration Token
-                </p>
+                <h3 className="text-lg font-semibold text-white mb-3">Шаг 1: Получить API ключ</h3>
+                <ol className="list-decimal list-inside text-zinc-400 space-y-1 mb-3">
+                  <li>Открой <a href="https://notion.so/my-integrations" target="_blank" rel="noopener noreferrer" className="text-[#FF4422] hover:underline">notion.so/my-integrations</a></li>
+                  <li>New integration → дай имя → Submit</li>
+                  <li>Скопируй Internal Integration Token (ntn_...)</li>
+                </ol>
               </div>
-
               <div>
-                <h3 className="text-lg font-semibold text-white mb-3">
-                  Шаг 2: Настроить
-                </h3>
-                <CodeBlock
-                  code={`mkdir -p ~/.config/notion\necho 'ntn_YOUR_API_KEY' > ~/.config/notion/api_key\nchmod 600 ~/.config/notion/api_key`}
-                />
+                <h3 className="text-lg font-semibold text-white mb-3">Шаг 2: Настроить</h3>
+                <CodeBlock code={'mkdir -p ~/.config/notion\necho ntn_YOUR_API_KEY > ~/.config/notion/api_key\nchmod 600 ~/.config/notion/api_key'} />
               </div>
-
               <div>
-                <h3 className="text-lg font-semibold text-white mb-3">
-                  Шаг 3: Поделиться базой с интеграцией
-                </h3>
-                <p className="text-zinc-400">
-                  Открой нужную базу в Notion → ... → Connections → добавь свою
-                  интеграцию
-                </p>
+                <h3 className="text-lg font-semibold text-white mb-3">Шаг 3: Поделиться базой с интеграцией</h3>
+                <p className="text-zinc-400 mb-2">Открой нужную базу в Notion → ... (три точки) → Connections → добавь свою интеграцию</p>
+                <div className="bg-yellow-900/20 border border-yellow-700/40 rounded-xl px-4 py-3 text-yellow-200 text-sm">⚠️ Без этого шага агент не увидит базу — Notion требует явного разрешения для каждой базы</div>
               </div>
-
               <div>
-                <h3 className="text-lg font-semibold text-white mb-3">
-                  Примеры
-                </h3>
-                <CodeBlock
-                  code={`# Поиск страниц\ncurl -X POST https://api.notion.com/v1/search \\\n  -H 'Authorization: Bearer YOUR_KEY' \\\n  -H 'Notion-Version: 2022-06-28' \\\n  -d '{"query": "проект"}'`}
-                />
+                <h3 className="text-lg font-semibold text-white mb-3">Установить skill</h3>
+                <CodeBlock code="clawhub install notion" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-3">Скажи агенту в Telegram</h3>
+                <div className="space-y-2">
+                  {['Найди задачи со статусом In Progress в моей Notion базе', 'Создай новую страницу Идеи для проекта в базе Tasks', 'Покажи все записи из базы CRM где статус = Новый'].map(cmd => (
+                    <div key={cmd} className="bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 text-zinc-300 text-sm font-mono">💬 {cmd}</div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -372,38 +427,26 @@ export default function Block1Lesson3Page() {
 
           {/* ── Other Tab ── */}
           {activeTab === "other" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-6">
               <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-5">
-                <div className="text-2xl mb-2">🐙</div>
-                <h3 className="text-white font-semibold mb-1">GitHub</h3>
-                <p className="text-zinc-400 text-sm">
-                  Управление issues, PR через gh CLI
-                </p>
+                <div className="flex items-center gap-3 mb-3"><span className="text-2xl">🐙</span><h3 className="text-white font-semibold">GitHub</h3></div>
+                <CodeBlock code={'gh auth login\nclawhub install github'} />
+                <div className="mt-3 space-y-1">{['Покажи открытые issues в репо my-org/my-repo', 'Создай PR из ветки feature/login в main', 'Какой статус последнего CI запуска?'].map(cmd => (<div key={cmd} className="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-zinc-400 text-xs font-mono">💬 {cmd}</div>))}</div>
               </div>
               <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-5">
-                <div className="text-2xl mb-2">💬</div>
-                <h3 className="text-white font-semibold mb-1">
-                  Discord / Slack
-                </h3>
-                <p className="text-zinc-400 text-sm">
-                  Как дополнительные каналы
-                </p>
+                <div className="flex items-center gap-3 mb-3"><span className="text-2xl">🐦</span><h3 className="text-white font-semibold">Twitter / X</h3></div>
+                <CodeBlock code="clawhub install xurl" />
+                <p className="text-zinc-400 text-sm mt-2">Нужен X API ключ (developer.twitter.com). Агент может постить, читать ленту, отвечать на упоминания.</p>
               </div>
               <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-5">
-                <div className="text-2xl mb-2">🐦</div>
-                <h3 className="text-white font-semibold mb-1">Twitter / X</h3>
-                <p className="text-zinc-400 text-sm">
-                  xurl skill для постинга
-                </p>
+                <div className="flex items-center gap-3 mb-3"><span className="text-2xl">🐻</span><h3 className="text-white font-semibold">Bear Notes</h3></div>
+                <CodeBlock code="clawhub install bear-notes" />
+                <div className="mt-3 space-y-1">{['Найди заметки с тегом #проект', 'Создай новую заметку: Идеи для продукта'].map(cmd => (<div key={cmd} className="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-zinc-400 text-xs font-mono">💬 {cmd}</div>))}</div>
               </div>
               <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-5">
-                <div className="text-2xl mb-2">📊</div>
-                <h3 className="text-white font-semibold mb-1">
-                  Google Sheets
-                </h3>
-                <p className="text-zinc-400 text-sm">
-                  gog sheets get/update
-                </p>
+                <div className="flex items-center gap-3 mb-3"><span className="text-2xl">🌤</span><h3 className="text-white font-semibold">Погода</h3></div>
+                <p className="text-zinc-400 text-sm mb-2">Встроен — не требует установки. Использует wttr.in (без API ключа).</p>
+                <div className="space-y-1">{['Какая погода в Москве?', 'Прогноз на неделю для Бангкока'].map(cmd => (<div key={cmd} className="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-zinc-400 text-xs font-mono">💬 {cmd}</div>))}</div>
               </div>
             </div>
           )}
@@ -414,6 +457,9 @@ export default function Block1Lesson3Page() {
           <h2 className="text-2xl font-semibold text-white mb-4">
             Найти и установить новый skill
           </h2>
+          <p className="text-zinc-400 mb-4">
+            Все публичные skills доступны на <a href="https://clawhub.ai" target="_blank" rel="noopener noreferrer" className="text-[#FF4422] hover:underline">clawhub.ai</a> — бесплатный реестр. Доступно 37+ skills.
+          </p>
           <CodeBlock
             code={`# Поиск\nclawhub search 'calendar'\nclawhub search 'notion'\n\n# Установка\nclawhub install <skill-slug>\n\n# Список установленных\nclawhub list\n\n# Обновить все\nclawhub update --all`}
           />
@@ -470,6 +516,7 @@ export default function Block1Lesson3Page() {
           </h2>
           <div className="space-y-3">
             {[
+              "Агент нашёл информацию в интернете по моей просьбе",
               "gog auth list показывает мой аккаунт",
               "Агент ответил на вопрос про сегодняшний календарь",
               "Установил хотя бы один новый skill через clawhub",
