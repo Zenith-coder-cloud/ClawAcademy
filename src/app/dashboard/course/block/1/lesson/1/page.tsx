@@ -138,7 +138,17 @@ export default function Block1Lesson1Page() {
         </div>
       </section>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
+        <Image
+          src="/course/block1/lesson1/b1-l1-hero.png"
+          alt="Hero — Telegram + лобстер + Terminal"
+          width={1280}
+          height={720}
+          className="w-full rounded-2xl object-cover mb-6"
+        />
+      </div>
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-10 space-y-8">
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
           <h2 className="text-2xl font-semibold text-white mb-4">Вступление</h2>
           <p className="text-zinc-400 leading-relaxed">
@@ -150,6 +160,13 @@ export default function Block1Lesson1Page() {
 
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
           <h2 className="text-2xl font-semibold text-white mb-4">Установка по ОС</h2>
+          <Image
+            src="/course/block1/lesson1/b1-l1-os-switcher.png"
+            alt="OS Switcher — выбор операционной системы"
+            width={1280}
+            height={720}
+            className="w-full rounded-2xl object-cover mb-6"
+          />
           <div className="flex flex-wrap gap-2 mb-6">
             {osTabs.map((tab) => {
               const isActive = activeOs === tab.id;
@@ -296,6 +313,13 @@ export default function Block1Lesson1Page() {
 
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
           <h2 className="text-2xl font-semibold text-white mb-4">✅ Чекпоинт</h2>
+          <Image
+            src="/course/block1/lesson1/b1-l1-checkpoint.png"
+            alt="Чекпоинт — проверка установки"
+            width={1280}
+            height={720}
+            className="w-full rounded-2xl object-cover mb-6"
+          />
           <div className="space-y-3">
             {[
               "OpenClaw установлен (curl команда выполнена)",
