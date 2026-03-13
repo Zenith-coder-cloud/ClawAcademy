@@ -44,7 +44,6 @@ const automationIssues: AccordionItem[] = [
       "Webhook endpoint защищён. Нужен Authorization header или secret в URL.",
     hint: "Добавь в конфиг: webhook.secret = YOUR_SECRET. Передавай в заголовке: Authorization: Bearer YOUR_SECRET",
   },
-,
   {
     title: "cron run говорит not-due и не запускается",
     content: "При ручном запуске openclaw cron run <jobId> без флага --force задача пропускается если ещё не наступило время по расписанию.",
