@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 /* ─── Troubleshooting issues ─── */
@@ -192,6 +193,7 @@ export default function Block1Lesson3Page() {
           </div>
         </aside>
         <div className="flex-1 min-w-0 flex flex-col gap-8">
+        <Image src="/course/block1/lesson3/b1-l3-skills.png" alt="Skills" width={1280} height={720} className="w-full rounded-2xl object-cover" />
         {/* ── Intro ── */}
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
           <p className="text-zinc-400 leading-relaxed">
@@ -310,6 +312,7 @@ export default function Block1Lesson3Page() {
                 Альтернативы: Gemini Search (нужен Google API ключ), Grok Search (xAI API). Настраиваются через <code className="text-[#FF4422]">openclaw configure</code>.
               </div>
             </div>
+            <img src="/course/block1/lesson3/b1-l3-websearch.png" alt="Web Search" className="w-full rounded-xl object-cover mt-4" />
           )}
 
           {/* ── Google Tab ── */}
@@ -374,6 +377,7 @@ export default function Block1Lesson3Page() {
                   ))}
                 </div>
               </div>
+            <img src="/course/block1/lesson3/b1-l3-google.png" alt="Google Calendar skill" className="w-full rounded-xl object-cover mt-4" />
             </div>
           )}
 
@@ -463,6 +467,7 @@ export default function Block1Lesson3Page() {
           <CodeBlock
             code={`# Поиск\nclawhub search 'calendar'\nclawhub search 'notion'\n\n# Установка\nclawhub install <skill-slug>\n\n# Список установленных\nclawhub list\n\n# Обновить все\nclawhub update --all`}
           />
+          <img src="/course/block1/lesson3/b1-l3-clawhub.png" alt="ClawHub — маркетплейс skills" className="w-full rounded-xl object-cover mt-4" />
           <div className="mt-4 bg-yellow-900/20 border border-yellow-700/40 rounded-xl px-5 py-4 text-yellow-200 text-sm">
             💡 После установки — перезапусти сессию в OpenClaw. Агент подхватит
             skill автоматически.
