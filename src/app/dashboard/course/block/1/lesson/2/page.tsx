@@ -390,7 +390,7 @@ export default function Block1Lesson2Page() {
 
               {/* Step indicators */}
               <div className="flex items-center justify-center gap-3 mb-6">
-                {[0, 1, 2, 3, 4, 5].map((i) => (
+                {[0, 1, 2, 3, 4, 5, 6].map((i) => (
                   <button
                     key={i}
                     onClick={() => setWizardStep(i)}
@@ -542,8 +542,30 @@ export default function Block1Lesson2Page() {
                 </div>
               )}
 
-              {/* Step 5 — Готово */}
+              {/* Step 5 — Telegram channel */}
               {wizardStep === 5 && (
+                <div className="font-mono">
+                  <p className="text-zinc-500 text-sm mb-1">Select channel (QuickStart)</p>
+                  <p className="text-green-400 text-sm mb-3">  Telegram (Bot API)</p>
+                  <p className="text-yellow-400 text-sm mb-3">◆ Enter your Telegram Bot Token</p>
+                  <input
+                    type="text"
+                    placeholder="1234567890:ABCDEFGabcdefg..."
+                    className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-[#FF4422] text-sm font-mono mb-2"
+                    readOnly
+                  />
+                  <p className="text-zinc-600 text-xs mb-4">Получи токен у @BotFather → /newbot (Шаг 1 этого урока)</p>
+                  <button
+                    onClick={() => setWizardStep(6)}
+                    className="px-4 py-2 rounded-lg bg-[#FF4422] text-white text-sm font-medium font-sans hover:bg-[#e63d1e] transition-colors"
+                  >
+                    Continue →
+                  </button>
+                </div>
+              )}
+
+              {/* Step 6 — Готово */}
+              {wizardStep === 6 && (
                 <div className="border border-green-500 rounded-xl p-5">
                   <div className="font-mono text-sm space-y-1 text-green-400 mb-4">
                     <p>✓ API key saved</p>
