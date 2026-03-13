@@ -269,7 +269,7 @@ export default function DashboardPage() {
                     alt={`Блок ${m.id}: ${m.title}`}
                     width={1280}
                     height={720}
-                    className="w-full h-full object-cover"
+                    className="w-16 h-16 object-contain"
                     priority={m.id === 0}
                   />
                   {locked && (
