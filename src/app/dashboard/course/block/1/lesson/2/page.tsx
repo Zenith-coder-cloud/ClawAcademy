@@ -629,6 +629,14 @@ export default function Block1Lesson2Page() {
                       ↑ Смотри инструкцию выше в разделе 1.5 → Anthropic OAuth
                     </button>
                   </div>
+                  {/* Terminal output preview */}
+                  <div className="mt-3 mb-4 bg-zinc-900 border border-zinc-700 rounded-lg p-3 font-mono text-xs">
+                    <p className="text-zinc-500 mb-1">$ claude setup-token</p>
+                    <p className="text-zinc-400 mb-2">✓ Setup token generated successfully</p>
+                    <p className="text-zinc-500 text-xs mb-1">Your setup token:</p>
+                    <p className="text-green-400 break-all">sk-ant-oat01-AbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYz1234567890XXXXXXXX</p>
+                    <p className="text-zinc-600 text-xs mt-2 italic">← скопируй этот токен и вставь в визард</p>
+                  </div>
                   <p className="text-white mb-3">◆ How do you want to provide this setup token?</p>
                   <div className="space-y-1 mb-4">
                     <p className="px-3 py-1.5 text-green-400">● Paste setup token now <span className="text-zinc-500">(Stores the token directly in the auth profile)</span></p>
