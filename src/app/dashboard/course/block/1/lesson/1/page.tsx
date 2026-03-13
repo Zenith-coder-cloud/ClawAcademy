@@ -138,23 +138,23 @@ export default function Block1Lesson1Page() {
         </div>
       </section>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
-        <Image
-          src="/course/block1/lesson1/b1-l1-hero.png"
-          alt="Hero — Telegram + лобстер + Terminal"
-          width={1280}
-          height={720}
-          className="w-full rounded-2xl object-cover mb-6"
-        />
-      </div>
-
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-10 space-y-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
           <h2 className="text-2xl font-semibold text-white mb-4">Вступление</h2>
+          <p className="text-zinc-400 leading-relaxed mb-3">
+            OpenClaw — это gateway между тобой и AI-агентами. Он устанавливается
+            на твоём компьютере или сервере, подключается к Telegram, и с этого
+            момента ты можешь управлять агентами прямо из мессенджера.
+          </p>
+          <p className="text-zinc-400 leading-relaxed mb-3">
+            В отличие от облачных сервисов — OpenClaw работает локально. Твои
+            данные, ключи и логика остаются у тебя. Агент не засыпает, не
+            отключается и не зависит от чужой инфраструктуры.
+          </p>
           <p className="text-zinc-400 leading-relaxed">
-            OpenClaw — это gateway между тобой и AI-агентами. Он запускается на
-            твоём Mac, слушает сообщения из Telegram и выполняет задачи. Сейчас
-            ты его установишь.
+            Установка занимает 5–10 минут. Выбери свою операционную систему ниже
+            и следуй шагам — в конце урока агент будет запущен и готов принимать
+            команды.
           </p>
         </section>
 
