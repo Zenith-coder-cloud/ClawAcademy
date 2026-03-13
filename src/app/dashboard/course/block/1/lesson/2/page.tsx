@@ -304,8 +304,11 @@ export default function Block1Lesson2Page() {
                   <li>Скопируй ключ <code className="text-[#FF4422]">sk-or-v1-...</code></li>
                   <li>Пополни баланс от $5 — Haiku стоит ~$0.001 за запрос</li>
                 </ol>
-                <CodeBlock code="anthropic/claude-haiku-4-5" language="text" />
-                <p className="text-zinc-500 text-sm -mt-2">Рекомендуемая модель для старта</p>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-zinc-400 text-sm">Рекомендуемая модель для старта:</span>
+                  <span className="bg-zinc-700 text-[#FF4422] text-sm font-mono px-3 py-1 rounded-full border border-zinc-600">anthropic/claude-haiku-4-5</span>
+                  <span className="text-zinc-500 text-xs">← выбери в визарде</span>
+                </div>
                 <div className="bg-zinc-800 border border-zinc-700 rounded-xl px-5 py-4 text-zinc-300 text-sm">
                   Haiku через OpenRouter — лучший выбор для начала. Потом можно переключиться на Sonnet или GPT-4o в одну строку конфига.
                 </div>
