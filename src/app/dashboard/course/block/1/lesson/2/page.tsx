@@ -837,7 +837,7 @@ export default function Block1Lesson2Page() {
                 </div>
               )}
 
-              {/* Step 9 — Gateway + Готово */}
+              {/* Step 10 — Gateway service */}
               {wizardStep === 10 && (
                 <div>
                   <p className="text-white mb-2">◆ Gateway service runtime</p>
@@ -848,14 +848,27 @@ export default function Block1Lesson2Page() {
                     <p className="px-3 py-1 text-zinc-500">○ Reinstall</p>
                     <p className="px-3 py-1 text-zinc-500">○ Skip</p>
                   </div>
-                  <div className="border border-green-500 rounded-xl p-5 mt-4">
-                    <div className="space-y-1 text-green-400 mb-4">
+                  <button
+                    onClick={() => setWizardStep(11)}
+                    className="px-4 py-2 rounded-lg bg-[#FF4422] text-white text-sm font-medium font-sans hover:bg-[#e63d1e] transition-colors"
+                  >
+                    Continue →
+                  </button>
+                </div>
+              )}
+
+              {/* Step 11 — Готово */}
+              {wizardStep === 11 && (
+                <div>
+                  <div className="border border-green-500 rounded-xl p-5">
+                    <div className="space-y-1 text-green-400 mb-4 font-mono text-sm">
                       <p>✓ Config saved to ~/.openclaw/openclaw.json</p>
                       <p>✓ Workspace: ~/.openclaw/workspace</p>
                       <p>✓ Sessions OK: ~/.openclaw/agents/main/sessions</p>
                       <p>✓ Gateway restarted</p>
-                      <p>✓ OpenClaw is ready!</p>
+                      <p className="mt-2 text-white font-semibold">✓ OpenClaw is ready!</p>
                     </div>
+                    <p className="text-zinc-400 text-sm mb-3">Теперь открой Telegram и напиши своему боту первое сообщение.</p>
                     <button
                       onClick={() => setWizardStep(0)}
                       className="px-4 py-2 rounded-lg border border-zinc-600 text-zinc-400 hover:text-white text-sm transition-colors font-sans"
