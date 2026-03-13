@@ -178,7 +178,7 @@ export default function Block1Lesson1Page() {
                 <p className="text-zinc-400 mb-3">
                   → Finder → Applications → Utilities → Terminal
                   <br />
-                  или Command+Space → "Terminal"
+                  или Command+Space → &laquo;Terminal&raquo;
                 </p>
               </div>
 

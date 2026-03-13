@@ -16,6 +16,7 @@ interface Block {
   desc: string;
   topics?: string[];
   sections?: Section[];
+  tier?: string;
 }
 
 const blocks: Block[] = [

@@ -95,7 +95,7 @@ function SectionImage({ src, caption }: { src: string; caption?: string }) {
     <figure className="my-6">
       <Image
         src={src}
-        alt={caption}
+        alt={caption ?? ""}
         width={1200}
         height={675}
         className="rounded-xl w-full"
