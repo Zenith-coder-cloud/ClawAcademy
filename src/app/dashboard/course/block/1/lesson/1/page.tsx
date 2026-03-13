@@ -507,7 +507,7 @@ export default function Block1Lesson1Page() {
                       prev.map((v, i) => (i === idx ? !v : v))
                     )
                   }
-                  className="h-4 w-4 accent-[#FF4422]"
+                  className="h-4 w-4 accent-green-500"
                 />
                 <span className="text-zinc-300">{label}</span>
               </label>
