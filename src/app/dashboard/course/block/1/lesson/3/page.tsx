@@ -311,8 +311,8 @@ export default function Block1Lesson3Page() {
               <div className="bg-zinc-800 border border-zinc-700 rounded-xl px-5 py-4 text-zinc-300 text-sm">
                 Альтернативы: Gemini Search (нужен Google API ключ), Grok Search (xAI API). Настраиваются через <code className="text-[#FF4422]">openclaw configure</code>.
               </div>
+              <img src="/course/block1/lesson3/b1-l3-websearch.png" alt="Web Search" className="w-full rounded-xl object-cover mt-4" />
             </div>
-            <img src="/course/block1/lesson3/b1-l3-websearch.png" alt="Web Search" className="w-full rounded-xl object-cover mt-4" />
           )}
 
           {/* ── Google Tab ── */}
