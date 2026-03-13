@@ -335,8 +335,7 @@ export default function Block1Lesson1Page() {
           className="w-full rounded-2xl object-cover"
         />
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
-          <h2 className="text-2xl font-semibold text-white mb-4">Вступление</h2>
-          <p className="text-zinc-400 leading-relaxed">
+                    <p className="text-zinc-400 leading-relaxed">
             OpenClaw — это gateway между тобой и AI-агентами. Он запускается на
             твоём компьютере или сервере, слушает сообщения из Telegram и
             выполняет задачи. Выбери свою ОС ниже и следуй шагам.
