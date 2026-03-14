@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 
 const sections = [
   {
@@ -52,7 +51,7 @@ const sections = [
 ];
 
 const trackColors: Record<string, string> = {
-  all: "#FF4422",
+  all: "#71717A",
   freelancer: "#3B82F6",
   business: "#10B981",
   content: "#8B5CF6",
@@ -60,16 +59,30 @@ const trackColors: Record<string, string> = {
 };
 
 const trackLabels: Record<string, string> = {
-  all: "Все",
+  all: "🌐 Для всех",
   freelancer: "🧑‍💼",
   business: "🏢",
   content: "📢",
   money: "💰",
 };
 
-export default function Block3Page() {
-  const [openSection, setOpenSection] = useState<number>(0);
+function TrackBadge({ track }: { track: string }) {
+  const color = trackColors[track];
+  return (
+    <span
+      className="text-xs px-2 py-0.5 rounded-full border whitespace-nowrap"
+      style={{
+        borderColor: color,
+        color: color,
+        backgroundColor: `${color}10`,
+      }}
+    >
+      {trackLabels[track]}
+    </span>
+  );
+}
 
+export default function Block3Page() {
   return (
     <main className="min-h-screen bg-[#0D0D0D] text-zinc-200">
       {/* Header */}
@@ -79,76 +92,148 @@ export default function Block3Page() {
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
             Мультиагент и автоматизация
           </h1>
-          <p className="text-zinc-400 text-lg">
-            Перестань управлять агентами — пусть они управляют собой
+          <p className="text-xl md:text-2xl font-bold text-white mb-2">
+            «Перестань управлять агентами — пусть они управляют собой»
+          </p>
+          <p className="text-zinc-400 text-base">
+            20 уроков · 4 трека · Выбери свой путь после урока 3 и получи готовую
+            схему для своей задачи
           </p>
         </div>
       </section>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
-        {/* Description */}
+        {/* Description + CTA */}
         <div className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800 mb-8">
-          <p className="text-zinc-400 leading-relaxed">
-            20 уроков · 4 трека · От теории мультиагентных систем до запуска
-            собственной автономной команды агентов. Выбери свой трек после урока 3
-            и получи практические схемы для своей задачи.
-          </p>
           <Link
             href="/dashboard/course/block/3/lesson/1"
-            className="inline-flex items-center mt-6 px-6 py-3 rounded-xl bg-[#FF4422] text-white font-semibold hover:bg-[#e63d1e] transition-colors"
+            className="inline-flex items-center px-6 py-3 rounded-xl bg-[#FF4422] text-white font-semibold hover:bg-[#e63d1e] transition-colors"
           >
             Начать с урока 1 →
           </Link>
         </div>
 
-        {/* Sections accordion */}
-        <div className="space-y-4">
-          {sections.map((section, idx) => {
-            const isOpen = openSection === idx;
-            return (
-              <div
-                key={section.title}
-                className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden"
+        {/* Journey path */}
+        <div className="bg-zinc-800 rounded-2xl p-6 md:p-8 border border-zinc-700 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr_auto_1fr] items-start gap-4 md:gap-2 text-center">
+            {/* Step 1 */}
+            <div className="flex flex-col items-center gap-2">
+              <span className="text-sm font-semibold text-zinc-400">Шаг 1</span>
+              <span className="text-2xl">📚</span>
+              <span className="text-white font-semibold text-sm">Уроки 1–2</span>
+              <span className="text-zinc-400 text-xs leading-tight">
+                Основы
+                <br />
+                мультиагента
+              </span>
+            </div>
+
+            {/* Arrow 1 */}
+            <div className="hidden md:flex items-center justify-center pt-6 text-zinc-500 text-xl">
+              →
+            </div>
+
+            {/* Step 2 (accent) */}
+            <div className="flex flex-col items-center gap-2">
+              <span className="text-sm font-semibold" style={{ color: "#FF4422" }}>
+                Шаг 2
+              </span>
+              <span className="text-2xl">🎯</span>
+              <span
+                className="font-semibold text-sm"
+                style={{ color: "#FF4422" }}
               >
-                <button
-                  className="w-full flex items-center justify-between px-6 py-4 text-left"
-                  onClick={() => setOpenSection(isOpen ? -1 : idx)}
-                >
-                  <span className="text-white font-semibold">{section.title}</span>
-                  <span className="text-zinc-500 text-sm">
-                    {section.lessons.length} уроков · {isOpen ? "Скрыть" : "Показать"}
-                  </span>
-                </button>
-                {isOpen && (
-                  <div className="px-6 pb-5 space-y-2">
-                    {section.lessons.map((lesson) => (
-                      <Link
-                        key={lesson.num}
-                        href={`/dashboard/course/block/3/lesson/${lesson.num}`}
-                        className="flex items-center gap-3 bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-3 hover:border-[#FF4422] transition-colors group"
+                Урок 3: Квиз
+              </span>
+              <span className="text-zinc-400 text-xs leading-tight">
+                Выбери трек
+                <br />
+                из 4 вариантов
+              </span>
+            </div>
+
+            {/* Arrow 2 */}
+            <div className="hidden md:flex items-center justify-center pt-6 text-zinc-500 text-xl">
+              →
+            </div>
+
+            {/* Step 3 */}
+            <div className="flex flex-col items-center gap-2">
+              <span className="text-sm font-semibold text-zinc-400">Шаг 3</span>
+              <span className="text-2xl">⚡</span>
+              <span className="text-white font-semibold text-sm">Уроки 4–20</span>
+              <span className="text-zinc-400 text-xs leading-tight">
+                Практика
+                <br />
+                по своей задаче
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Sections — all expanded */}
+        <div className="space-y-4">
+          {sections.map((section) => (
+            <div
+              key={section.title}
+              className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden"
+            >
+              <div className="px-6 py-4">
+                <span className="text-white font-semibold">
+                  {section.title}
+                </span>
+                <span className="text-zinc-500 text-sm ml-3">
+                  {section.lessons.length} уроков
+                </span>
+              </div>
+              <div className="px-6 pb-5 space-y-2">
+                {section.lessons.map((lesson) => {
+                  const isQuiz = lesson.num === 3;
+                  return (
+                    <Link
+                      key={lesson.num}
+                      href={`/dashboard/course/block/3/lesson/${lesson.num}`}
+                      className={`relative flex items-center gap-3 rounded-lg px-4 py-3 transition-colors group ${
+                        isQuiz
+                          ? "bg-[#FF4422]/5 border border-[#FF4422]/50 hover:border-[#FF4422]"
+                          : "bg-zinc-950 border border-zinc-800 hover:border-[#FF4422]"
+                      }`}
+                    >
+                      <span
+                        className="w-6 h-6 rounded-full border flex items-center justify-center text-xs shrink-0"
+                        style={{
+                          borderColor: isQuiz
+                            ? "#FF4422"
+                            : trackColors[lesson.track],
+                          color: isQuiz
+                            ? "#FF4422"
+                            : trackColors[lesson.track],
+                        }}
                       >
-                        <span
-                          className="w-6 h-6 rounded-full border flex items-center justify-center text-xs shrink-0"
-                          style={{
-                            borderColor: trackColors[lesson.track],
-                            color: trackColors[lesson.track],
-                          }}
-                        >
-                          {lesson.num}
-                        </span>
-                        <span className="text-zinc-300 group-hover:text-white flex-1">
+                        {lesson.num}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-zinc-300 group-hover:text-white">
                           {lesson.title}
                         </span>
-                        <span className="text-xs text-zinc-500">
-                          {trackLabels[lesson.track]}
+                        {isQuiz && (
+                          <p className="text-xs text-zinc-500 mt-0.5">
+                            Определяет твой персональный путь в блоке
+                          </p>
+                        )}
+                      </div>
+                      {isQuiz && (
+                        <span className="absolute top-2 right-3 text-xs font-semibold text-[#FF4422]">
+                          ⭐ Ключевой урок
                         </span>
-                      </Link>
-                    ))}
-                  </div>
-                )}
+                      )}
+                      {!isQuiz && <TrackBadge track={lesson.track} />}
+                    </Link>
+                  );
+                })}
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
 
         {/* Back link */}
