@@ -8,7 +8,11 @@ export type TrackId =
   | "business"
   | "student"
   | "investor"
-  | "seller";
+  | "seller"
+  | "developer"
+  | "marketer"
+  | "hr"
+  | "life";
 
 type TrackMeta = {
   id: TrackId;
@@ -59,6 +63,34 @@ export const TRACKS: Record<TrackId, TrackMeta> = {
     color: "#EC4899",
     result:
       "Твой путь: Автоответчик → Ресёрчер → Описания товаров → Мониторинг отзывов",
+  },
+  developer: {
+    id: "developer",
+    label: "👨‍💻 Разработчик",
+    color: "#06B6D4",
+    result:
+      "Твой путь: Автоответчик → Ресёрчер → Code Review → Документация",
+  },
+  marketer: {
+    id: "marketer",
+    label: "📊 Маркетолог",
+    color: "#F97316",
+    result:
+      "Твой путь: Автоответчик → Ресёрчер → Аналитика кампаний → A/B тесты",
+  },
+  hr: {
+    id: "hr",
+    label: "👥 HR / Рекрутер",
+    color: "#A855F7",
+    result:
+      "Твой путь: Автоответчик → Ресёрчер → Скрининг резюме → Вакансии",
+  },
+  life: {
+    id: "life",
+    label: "🏠 Для жизни",
+    color: "#84CC16",
+    result:
+      "Твой путь: Автоответчик → Ресёрчер → Планировщик дня → Финансы → Путешествия",
   },
 };
 
@@ -294,6 +326,22 @@ export function QuizBlock({
             id: "seller" as TrackId,
             label: "🛍️ Продавец / e-commerce — продаю товары онлайн или офлайн",
           },
+          {
+            id: "developer" as TrackId,
+            label: "👨‍💻 Разработчик / программист — пишу код, делаю продукты",
+          },
+          {
+            id: "marketer" as TrackId,
+            label: "📊 Маркетолог — запускаю кампании, работаю с данными и аудиторией",
+          },
+          {
+            id: "hr" as TrackId,
+            label: "👥 HR / Рекрутер — ищу людей, строю команды, веду онбординг",
+          },
+          {
+            id: "life" as TrackId,
+            label: "🏠 Просто живу — хочу агентов для личной жизни, планирования и быта",
+          },
         ],
       },
       {
@@ -446,6 +494,30 @@ export function TrackChoiceCards() {
             title: "Урок 16: Агент описаний товаров",
             desc: "Продающие описания за 5 минут",
             href: "/dashboard/course/block/2/lesson/16",
+          },
+          {
+            id: "developer" as TrackId,
+            title: "Урок 18: Агент code review",
+            desc: "Находи баги до продакшна",
+            href: "/dashboard/course/block/2/lesson/18",
+          },
+          {
+            id: "marketer" as TrackId,
+            title: "Урок 20: Агент аналитики кампаний",
+            desc: "Превращай цифры в решения",
+            href: "/dashboard/course/block/2/lesson/20",
+          },
+          {
+            id: "hr" as TrackId,
+            title: "Урок 22: Агент скрининга резюме",
+            desc: "Найди лучших из 200 кандидатов",
+            href: "/dashboard/course/block/2/lesson/22",
+          },
+          {
+            id: "life" as TrackId,
+            title: "Урок 24: Агент планировщика дня",
+            desc: "Начинай день с ясностью",
+            href: "/dashboard/course/block/2/lesson/24",
           },
         ]
       ).map((card) => (
