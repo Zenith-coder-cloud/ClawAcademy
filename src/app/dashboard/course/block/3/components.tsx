@@ -192,7 +192,7 @@ export function BlockCompleteCard({ trackLabel }: { trackLabel: string }) {
         У тебя теперь есть работающая мультиагентная система.
       </p>
       <p className="text-zinc-400 mb-6">
-        Следующий шаг — Блок 4: Продвинутые схемы: SaaS и аутстаффинг
+        Следующий шаг — Блок 4: Продай своего агента: ClawHub и виртуальный сотрудник
       </p>
       <a
         href="/dashboard/course/block/4"
