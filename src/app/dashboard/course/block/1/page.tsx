@@ -92,7 +92,7 @@ export default function Block1IndexPage() {
             </span>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-            Блок 1 — Установка и первый агент
+            Установка и первый агент
           </h1>
           <p className="text-zinc-400">
             Запустишь OpenClaw и создашь первого Telegram-агента за 15 минут
