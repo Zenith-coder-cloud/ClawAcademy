@@ -195,10 +195,10 @@ export function BlockCompleteCard({ trackLabel }: { trackLabel: string }) {
         Следующий шаг — Блок 5: Бизнес-модель: упаковка, клиенты, прайсинг
       </p>
       <a
-        href="/dashboard/course/block/5"
+        href="/dashboard"
         className="inline-flex items-center px-5 py-3 rounded-xl border border-zinc-800 text-zinc-300 hover:text-white hover:border-[#FF4422] transition-colors"
       >
-        Перейти к Блоку 5 →
+        ← Вернуться к программе
       </a>
     </div>
   );

@@ -93,6 +93,34 @@ function LessonCard({
 export default function Block0IndexPage() {
   return (
     <main className="min-h-screen bg-[#0D0D0D] px-4 py-12">
+      {/* Block Navigation */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-4">
+        <div className="flex items-center gap-2 flex-wrap">
+          <Link href="/dashboard" className="text-xs text-zinc-500 hover:text-white transition-colors mr-2">
+            ← Дашборд
+          </Link>
+          {[
+            { num: 0, href: "/dashboard/course/block/0/lesson/1" },
+            { num: 1, href: "/dashboard/course/block/1/lesson/1" },
+            { num: 2, href: "/dashboard/course/block/2/lesson/1" },
+            { num: 3, href: "/dashboard/course/block/3/lesson/1" },
+            { num: 4, href: "/dashboard/course/block/4/lesson/1" },
+          ].map((b) => (
+            <Link
+              key={b.num}
+              href={b.href}
+              className={`text-xs px-3 py-1 rounded-lg border transition-colors ${
+                b.num === 0
+                  ? "border-[#FF4422] text-[#FF4422]"
+                  : "border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500"
+              }`}
+            >
+              Блок {b.num}
+            </Link>
+          ))}
+        </div>
+      </div>
+
       <div className="max-w-4xl mx-auto">
         <Link
           href="/dashboard"
@@ -102,7 +130,7 @@ export default function Block0IndexPage() {
         </Link>
 
         <h1 className="text-2xl md:text-4xl font-bold text-white mt-6">
-          Блок 1: Вход — что такое ИИ-агент
+          Блок 0: Вход — что такое ИИ-агент
         </h1>
         <p className="text-zinc-500 mt-2">4 урока · ~60 минут</p>
 
