@@ -102,7 +102,7 @@ export default function Block0IndexPage() {
         </Link>
 
         <h1 className="text-2xl md:text-4xl font-bold text-white mt-6">
-          Блок 1: Вход — что такое ИИ-агент
+          Блок 0: Вход — что такое ИИ-агент
         </h1>
         <p className="text-zinc-500 mt-2">4 урока · ~60 минут</p>
 
