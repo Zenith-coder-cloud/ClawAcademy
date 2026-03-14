@@ -12,7 +12,7 @@ const allModules = [
   { id: 1, title: "Установка и первый агент", cover: "/covers/block1.png" },
   { id: 2, title: "Агент на работе: первые реальные кейсы", cover: "/covers/block2.png" },
   { id: 3, title: "Мультиагент и автоматизация", cover: "/covers/block3.png" },
-  { id: 4, title: "Продвинутые схемы: SaaS и аутстаффинг", cover: "/covers/block4.png" },
+  { id: 4, title: "Продай своего агента: ClawHub и виртуальный сотрудник", cover: "/covers/block4.png" },
   { id: 5, title: "Бизнес-модель: упаковка, клиенты, прайсинг", cover: "/covers/block5.png" },
 ];
 
