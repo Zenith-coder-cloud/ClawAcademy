@@ -100,15 +100,34 @@ export default function Block1IndexPage() {
         </div>
       </section>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
-        {/* Block Switcher */}
-        <div className="flex gap-2 mb-6 overflow-x-auto">
-          <Link href="/dashboard/course/block/1" className="flex-shrink-0 px-4 py-2 rounded-lg border text-sm font-medium transition-colors border-[#FF4422] text-[#FF4422] bg-[#FF4422]/10">Блок 1</Link>
-          <Link href="/dashboard/course/block/2" className="flex-shrink-0 px-4 py-2 rounded-lg border text-sm font-medium transition-colors border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500">Блок 2</Link>
-          <Link href="/dashboard/course/block/3" className="flex-shrink-0 px-4 py-2 rounded-lg border text-sm font-medium transition-colors border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500">Блок 3</Link>
-          <Link href="/dashboard/course/block/4" className="flex-shrink-0 px-4 py-2 rounded-lg border text-sm font-medium transition-colors border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500">Блок 4</Link>
+      {/* Block Navigation */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-4">
+        <div className="flex items-center gap-2">
+          <Link href="/dashboard" className="text-xs text-zinc-500 hover:text-white transition-colors mr-2">
+            ← Дашборд
+          </Link>
+          {[
+            { num: 1, href: "/dashboard/course/block/1/lesson/1" },
+            { num: 2, href: "/dashboard/course/block/2/lesson/1" },
+            { num: 3, href: "/dashboard/course/block/3/lesson/1" },
+            { num: 4, href: "/dashboard/course/block/4/lesson/1" },
+          ].map((b) => (
+            <Link
+              key={b.num}
+              href={b.href}
+              className={`text-xs px-3 py-1 rounded-lg border transition-colors ${
+                b.num === 1
+                  ? "border-[#FF4422] text-[#FF4422]"
+                  : "border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500"
+              }`}
+            >
+              Блок {b.num}
+            </Link>
+          ))}
         </div>
+      </div>
 
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex flex-col gap-4">
           {lessons.map((lesson) => (
             <LessonCard key={lesson.id} {...lesson} />
