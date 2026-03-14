@@ -138,6 +138,12 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
 
         {/* ── Content ───────────────────────────────────── */}
         <div className="flex-1 min-w-0 flex flex-col gap-8">
+          <img
+            src={`/course/block3/lesson${lesson.id}/b3-l${lesson.id}-hero.png`}
+            alt={lesson.title}
+            className="w-full rounded-2xl object-cover"
+          />
+
           {/* Why Needed */}
           <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
             <h2 className="text-2xl font-semibold text-white mb-4">Зачем это нужно</h2>
