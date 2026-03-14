@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { PathSelector } from "./components";
+
 
 const sections = [
   {
@@ -90,9 +90,6 @@ export default function Block4Page() {
       </section>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
-        {/* Path Selector */}
-        <PathSelector />
-
         {/* CTA */}
         <div className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800 mb-8">
           <Link
