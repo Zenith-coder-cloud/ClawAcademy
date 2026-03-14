@@ -47,11 +47,11 @@ const trackColors: Record<string, string> = {
 };
 
 const trackLabels: Record<string, string> = {
-  all: "\uD83C\uDF10 Для всех",
-  freelancer: "\uD83E\uDDD1\u200D\uD83D\uDCBC",
-  business: "\uD83C\uDFE2",
-  content: "\uD83D\uDCE2",
-  money: "\uD83D\uDCB0",
+  all: "🌐 Для всех",
+  freelancer: "🧑‍💼",
+  business: "🏢",
+  content: "📢",
+  money: "💰",
 };
 
 function TrackBadge({ track }: { track: string }) {
@@ -109,7 +109,7 @@ export default function Block4Page() {
             {/* Step 1 */}
             <div className="flex flex-col items-center gap-2">
               <span className="text-sm font-semibold text-zinc-400">Секция 1</span>
-              <span className="text-2xl">\uD83D\uDD04</span>
+              <span className="text-2xl">🔄</span>
               <span className="text-white font-semibold text-sm">Уроки 1–2</span>
               <span className="text-zinc-400 text-xs leading-tight">
                 Разворот
@@ -121,7 +121,7 @@ export default function Block4Page() {
             {/* Step 2 */}
             <div className="flex flex-col items-center gap-2">
               <span className="text-sm font-semibold" style={{ color: "#FF4422" }}>Секция 2</span>
-              <span className="text-2xl">\uD83D\uDC64</span>
+              <span className="text-2xl">👤</span>
               <span className="font-semibold text-sm" style={{ color: "#FF4422" }}>Уроки 3–6</span>
               <span className="text-zinc-400 text-xs leading-tight">
                 Виртуальный
@@ -133,7 +133,7 @@ export default function Block4Page() {
             {/* Step 3 */}
             <div className="flex flex-col items-center gap-2">
               <span className="text-sm font-semibold text-zinc-400">Секция 3</span>
-              <span className="text-2xl">\uD83C\uDFEA</span>
+              <span className="text-2xl">🏪</span>
               <span className="text-white font-semibold text-sm">Уроки 7–9</span>
               <span className="text-zinc-400 text-xs leading-tight">
                 ClawHub
@@ -145,7 +145,7 @@ export default function Block4Page() {
             {/* Step 4 */}
             <div className="flex flex-col items-center gap-2">
               <span className="text-sm font-semibold text-zinc-400">Секция 4</span>
-              <span className="text-2xl">\u2699\uFE0F</span>
+              <span className="text-2xl">⚙️</span>
               <span className="text-white font-semibold text-sm">Уроки 10–12</span>
               <span className="text-zinc-400 text-xs leading-tight">
                 SaaS
@@ -209,7 +209,7 @@ export default function Block4Page() {
                       </div>
                       {isCapstone && (
                         <span className="absolute top-2 right-3 text-xs font-semibold text-[#FF4422]">
-                          \u2B50 Финал
+                          ⭐ Финал
                         </span>
                       )}
                       {!isCapstone && <TrackBadge track={lesson.track} />}

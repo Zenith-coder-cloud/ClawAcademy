@@ -161,6 +161,9 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
               <Link href="/dashboard/course/block/3/lesson/1" className="flex-1 text-center text-xs py-1 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
                 Блок 3
               </Link>
+              <Link href="/dashboard/course/block/4/lesson/1" className="flex-1 text-center text-xs py-1 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
+                Блок 4
+              </Link>
             </div>
             <p className="text-xs text-zinc-500 font-semibold uppercase mb-3">Блок 2</p>
             <nav className="flex flex-col gap-1">
