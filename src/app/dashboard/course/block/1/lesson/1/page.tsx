@@ -303,6 +303,20 @@ export default function Block1Lesson1Page() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 flex gap-8">
         <aside className="hidden md:block w-56 shrink-0">
           <div className="sticky top-6 bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+            <Link href="/dashboard" className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-white transition-colors mb-3">
+              ← Дашборд
+            </Link>
+            <div className="flex gap-1 mb-3">
+              <Link href="/dashboard/course/block/1/lesson/1" className="flex-1 text-center text-xs py-1 rounded-lg border border-[#FF4422] text-[#FF4422] transition-colors">
+                Блок 1
+              </Link>
+              <Link href="/dashboard/course/block/2/lesson/1" className="flex-1 text-center text-xs py-1 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
+                Блок 2
+              </Link>
+              <Link href="/dashboard/course/block/3/lesson/1" className="flex-1 text-center text-xs py-1 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
+                Блок 3
+              </Link>
+            </div>
             <p className="text-xs text-zinc-500 font-semibold uppercase mb-3">Блок 1</p>
             <nav className="flex flex-col gap-1">
               {[
