@@ -213,7 +213,7 @@ export default function Block0Lesson3Page() {
   };
 
   return (
-    <main className="min-h-screen bg-[#0D0D0D] text-white">
+    <main className="min-h-screen bg-[#0D0D0D] text-zinc-200">
       {/* Header */}
       <section className="border-b border-zinc-900">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
