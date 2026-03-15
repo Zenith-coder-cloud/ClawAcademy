@@ -212,22 +212,22 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
             </Link>
             <div className="grid grid-cols-3 gap-1 mb-3">
               <Link href="/dashboard/course/block/0/lesson/1" title="Блок 0: Что такое ИИ-агент" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
-                Б 0
+                0
               </Link>
               <Link href="/dashboard/course/block/1/lesson/1" title="Блок 1: Установка и первый агент" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
-                Б 1
+                1
               </Link>
               <Link href="/dashboard/course/block/2/lesson/1" title="Блок 2: Первые реальные кейсы" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
-                Б 2
+                2
               </Link>
               <Link href="/dashboard/course/block/3/lesson/1" title="Блок 3: Мультиагент и автоматизация" className="text-center text-xs py-1.5 rounded-lg border border-[#FF4422] text-[#FF4422]">
-                Б 3
+                3
               </Link>
               <Link href="/dashboard/course/block/4/lesson/1" title="Блок 4: Продай своего агента" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
-                Б 4
+                4
               </Link>
               <Link href="/dashboard/course/block/5/lesson/1" title="Блок 5: Агентский бизнес" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
-                Б 5
+                5
               </Link>
             </div>
             <p className="text-xs text-zinc-500 font-semibold uppercase mb-3">Блок 3</p>
