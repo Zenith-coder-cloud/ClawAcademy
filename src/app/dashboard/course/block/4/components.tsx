@@ -230,13 +230,13 @@ export function BlockCompleteCard({ trackLabel }: { trackLabel: string }) {
         Теперь ты знаешь как продавать своих агентов и зарабатывать на них.
       </p>
       <p className="text-zinc-400 mb-6">
-        Следующий шаг — Блок 5: Бизнес-модель: упаковка, клиенты, прайсинг
+        Следующий шаг — Блок 5: Агентский бизнес: от фрилансера к агентству
       </p>
       <a
-        href="/dashboard"
+        href="/dashboard/course/block/5"
         className="inline-flex items-center px-5 py-3 rounded-xl border border-zinc-800 text-zinc-300 hover:text-white hover:border-[#FF4422] transition-colors"
       >
-        ← Вернуться к программе
+        Перейти к Блоку 5 →
       </a>
     </div>
   );

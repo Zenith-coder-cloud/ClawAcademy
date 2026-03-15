@@ -4,48 +4,44 @@ import Link from "next/link";
 
 const sections = [
   {
-    title: "Секция 1: Почему мультиагент",
+    title: "Секция 1: Основы агентского бизнеса",
     lessons: [
-      { num: 1, title: "Один агент — это потолок", track: "all" },
-      { num: 2, title: "Роли: Orchestrator, Workers, Monitor", track: "all" },
-      { num: 3, title: "Квиз: Выбери свою команду", track: "all" },
+      { num: 1, title: "От первого дохода к системе", track: "all" },
+      { num: 2, title: "Первый помощник: делегирование без потери контроля", track: "all" },
+      { num: 3, title: "Машина лидогенерации: клиенты приходят сами", track: "all" },
+      { num: 4, title: "Личный бренд ИИ-эксперта", track: "all" },
     ],
   },
   {
-    title: "Секция 2: Архитектура команды",
+    title: "Секция 2: Масштаб по треку",
     lessons: [
-      { num: 4, title: "Делегирование и изоляция", track: "all" },
-      { num: 5, title: "Cron + мультиагент", track: "all" },
-      { num: 6, title: "Агент-проверяльщик (QA)", track: "all" },
-      { num: 7, title: "Живой пример: Zen + Dev + Mark", track: "all" },
+      { num: 5, title: "Фрилансер: от проектов к ретейнерам", track: "freelancer" },
+      { num: 6, title: "Фрилансер: субподряд и партнёрства", track: "freelancer" },
+      { num: 7, title: "Бизнес: агентство внутри компании", track: "business" },
+      { num: 8, title: "Бизнес: операционная система агентства", track: "business" },
+      { num: 9, title: "Контент: медиа-империя на агентах", track: "content" },
+      { num: 10, title: "Контент: монетизация медиа-портфолио", track: "content" },
+      { num: 11, title: "Студент: стартап на базе студенческого проекта", track: "student" },
+      { num: 12, title: "Студент: привлечение инвестиций и масштаб", track: "student" },
+      { num: 13, title: "Инвестор: фонд на агентах", track: "investor" },
+      { num: 14, title: "Инвестор: масштаб и трек-рекорд", track: "investor" },
+      { num: 15, title: "Продавец: маркетплейс агентство", track: "seller" },
+      { num: 16, title: "Продавец: собственный e-com бренд", track: "seller" },
+      { num: 17, title: "Разработчик: SaaS на агентах", track: "developer" },
+      { num: 18, title: "Разработчик: рост и enterprise", track: "developer" },
+      { num: 19, title: "Маркетолог: performance агентство", track: "marketer" },
+      { num: 20, title: "Маркетолог: стратегическое консалтинговое агентство", track: "marketer" },
+      { num: 21, title: "HR: кадровое агентство нового поколения", track: "hr" },
+      { num: 22, title: "HR: HR-аутсорсинг как SaaS", track: "hr" },
+      { num: 23, title: "Жизнь: помогаю другим — сообщество", track: "life" },
+      { num: 24, title: "Жизнь: личный коучинг с агентами", track: "life" },
     ],
   },
   {
-    title: "Секция 3: Практика по трекам",
+    title: "Секция 3: Финмодель и капстоун",
     lessons: [
-      { num: 8, title: "КП + трекер + коммуникатор", track: "freelancer" },
-      { num: 9, title: "Агент-биллинг", track: "freelancer" },
-      { num: 10, title: "CRM + поддержка + аналитика", track: "business" },
-      { num: 11, title: "Агент-воронка", track: "business" },
-      { num: 12, title: "Research → Write → Publish", track: "content" },
-      { num: 13, title: "Редактор + дистрибьютор", track: "content" },
-      { num: 14, title: "Мониторинг рынков и агент-сигнальщик", track: "money" },
-      { num: 15, title: "Агент-планировщик возможностей", track: "money" },
-    ],
-  },
-  {
-    title: "Секция 4: Управление и мониторинг",
-    lessons: [
-      { num: 16, title: "Токены, бюджеты, watchdog", track: "all" },
-      { num: 17, title: "Обработка ошибок и fallback", track: "all" },
-    ],
-  },
-  {
-    title: "Секция 5: Безопасность и финал",
-    lessons: [
-      { num: 18, title: "Границы агента", track: "all" },
-      { num: 19, title: "Секреты и API ключи", track: "all" },
-      { num: 20, title: "Капстоун: запусти свою систему", track: "all" },
+      { num: 25, title: "Финансовая модель агентства", track: "all" },
+      { num: 26, title: "Капстоун: агентство запущено", track: "all" },
     ],
   },
 ];
@@ -55,7 +51,13 @@ const trackColors: Record<string, string> = {
   freelancer: "#3B82F6",
   business: "#10B981",
   content: "#8B5CF6",
-  money: "#F59E0B",
+  student: "#F59E0B",
+  investor: "#10B981",
+  seller: "#EC4899",
+  developer: "#06B6D4",
+  marketer: "#F97316",
+  hr: "#A855F7",
+  life: "#84CC16",
 };
 
 const trackLabels: Record<string, string> = {
@@ -63,7 +65,13 @@ const trackLabels: Record<string, string> = {
   freelancer: "🧑‍💼",
   business: "🏢",
   content: "📢",
-  money: "💰",
+  student: "🎓",
+  investor: "💰",
+  seller: "🛍️",
+  developer: "👨‍💻",
+  marketer: "📊",
+  hr: "👥",
+  life: "🏠",
 };
 
 function TrackBadge({ track }: { track: string }) {
@@ -82,22 +90,22 @@ function TrackBadge({ track }: { track: string }) {
   );
 }
 
-export default function Block3Page() {
+export default function Block5Page() {
   return (
     <main className="min-h-screen bg-[#0D0D0D] text-zinc-200">
       {/* Header */}
       <section className="border-b border-zinc-900">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <p className="text-[#FF4422] text-sm font-semibold mb-2">Block 3</p>
+          <p className="text-[#FF4422] text-sm font-semibold mb-2">Block 5</p>
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
-            Мультиагент и автоматизация
+            Агентский бизнес: от фрилансера к агентству
           </h1>
           <p className="text-xl md:text-2xl font-bold text-white mb-2">
-            «Перестань управлять агентами — пусть они управляют собой»
+            «От $1000 к $5000+: система которая растёт без тебя»
           </p>
           <p className="text-zinc-400 text-base">
-            20 уроков · 4 трека · Выбери свой путь после урока 3 и получи готовую
-            схему для своей задачи
+            26 уроков · 10 треков · Выбери свой путь после урока 4 и масштабируй
+            бизнес по своему треку
           </p>
         </div>
       </section>
@@ -119,7 +127,7 @@ export default function Block3Page() {
               key={b.num}
               href={b.href}
               className={`text-xs px-3 py-1 rounded-lg border transition-colors ${
-                b.num === 3
+                b.num === 5
                   ? "border-[#FF4422] text-[#FF4422]"
                   : "border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500"
               }`}
@@ -134,7 +142,7 @@ export default function Block3Page() {
         {/* Description + CTA */}
         <div className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800 mb-8">
           <Link
-            href="/dashboard/course/block/3/lesson/1"
+            href="/dashboard/course/block/5/lesson/1"
             className="inline-flex items-center px-6 py-3 rounded-xl bg-[#FF4422] text-white font-semibold hover:bg-[#e63d1e] transition-colors"
           >
             Начать с урока 1 →
@@ -148,11 +156,11 @@ export default function Block3Page() {
             <div className="flex flex-col items-center gap-2">
               <span className="text-sm font-semibold text-zinc-400">Шаг 1</span>
               <span className="text-2xl">📚</span>
-              <span className="text-white font-semibold text-sm">Уроки 1–2</span>
+              <span className="text-white font-semibold text-sm">Уроки 1–4</span>
               <span className="text-zinc-400 text-xs leading-tight">
                 Основы
                 <br />
-                мультиагента
+                агентского бизнеса
               </span>
             </div>
 
@@ -168,12 +176,12 @@ export default function Block3Page() {
               </span>
               <span className="text-2xl">🎯</span>
               <span className="text-white font-semibold text-sm">
-                Урок 3: Квиз
+                Уроки 5–24
               </span>
               <span className="text-zinc-400 text-xs leading-tight">
-                Выбери трек
+                Масштаб
                 <br />
-                из 4 вариантов
+                по своему треку
               </span>
             </div>
 
@@ -186,11 +194,10 @@ export default function Block3Page() {
             <div className="flex flex-col items-center gap-2">
               <span className="text-sm font-semibold text-zinc-400">Шаг 3</span>
               <span className="text-2xl">⚡</span>
-              <span className="text-white font-semibold text-sm">Уроки 4–20</span>
+              <span className="text-white font-semibold text-sm">Уроки 25–26</span>
               <span className="text-zinc-400 text-xs leading-tight">
-                Практика
-                <br />
-                по своей задаче
+                Финмодель
+                <br />и капстоун
               </span>
             </div>
           </div>
@@ -213,26 +220,17 @@ export default function Block3Page() {
               </div>
               <div className="px-6 pb-5 space-y-2">
                 {section.lessons.map((lesson) => {
-                  const isQuiz = lesson.num === 3;
                   return (
                     <Link
                       key={lesson.num}
-                      href={`/dashboard/course/block/3/lesson/${lesson.num}`}
-                      className={`relative flex items-center gap-3 rounded-lg px-4 py-3 transition-colors group ${
-                        isQuiz
-                          ? "bg-[#FF4422]/5 border border-[#FF4422]/50 hover:border-[#FF4422]"
-                          : "bg-zinc-950 border border-zinc-800 hover:border-[#FF4422]"
-                      }`}
+                      href={`/dashboard/course/block/5/lesson/${lesson.num}`}
+                      className="relative flex items-center gap-3 rounded-lg px-4 py-3 transition-colors group bg-zinc-950 border border-zinc-800 hover:border-[#FF4422]"
                     >
                       <span
                         className="w-6 h-6 rounded-full border flex items-center justify-center text-xs shrink-0"
                         style={{
-                          borderColor: isQuiz
-                            ? "#FF4422"
-                            : trackColors[lesson.track],
-                          color: isQuiz
-                            ? "#FF4422"
-                            : trackColors[lesson.track],
+                          borderColor: trackColors[lesson.track],
+                          color: trackColors[lesson.track],
                         }}
                       >
                         {lesson.num}
@@ -241,18 +239,8 @@ export default function Block3Page() {
                         <span className="text-zinc-300 group-hover:text-white">
                           {lesson.title}
                         </span>
-                        {isQuiz && (
-                          <p className="text-xs text-zinc-500 mt-0.5">
-                            Определяет твой персональный путь в блоке
-                          </p>
-                        )}
                       </div>
-                      {isQuiz && (
-                        <span className="absolute top-2 right-3 text-xs font-semibold text-[#FF4422]">
-                          ⭐ Ключевой урок
-                        </span>
-                      )}
-                      {!isQuiz && <TrackBadge track={lesson.track} />}
+                      <TrackBadge track={lesson.track} />
                     </Link>
                   );
                 })}
