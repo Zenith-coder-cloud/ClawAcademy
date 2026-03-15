@@ -6,6 +6,8 @@ import {
   QuizBlock,
   TrackBadge,
   TRACKS,
+  BlockKnowledgeCheck,
+  block2KnowledgeQuestions,
   type TrackId,
 } from "./components";
 
@@ -348,6 +350,16 @@ export default function Block2IndexPage() {
               {...lesson}
             />
           ))}
+        </div>
+
+        <div className="mt-12">
+          <h2 className="text-xl font-bold text-white mb-4">Проверь знания Block 2</h2>
+          <BlockKnowledgeCheck
+            blockNum={2}
+            questions={block2KnowledgeQuestions}
+            nextBlockHref="/dashboard/course/block/3"
+            nextBlockLabel="Block 3: Мультиагент"
+          />
         </div>
 
         <div className="mt-2">
