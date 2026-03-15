@@ -307,6 +307,9 @@ export default function Block1Lesson1Page() {
               ← Дашборд
             </Link>
             <div className="flex gap-1 mb-3">
+              <Link href="/dashboard/course/block/0/lesson/1" className="flex-1 text-center text-xs py-1 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
+                Блок 0
+              </Link>
               <Link href="/dashboard/course/block/1/lesson/1" className="flex-1 text-center text-xs py-1 rounded-lg border border-[#FF4422] text-[#FF4422] transition-colors">
                 Блок 1
               </Link>
