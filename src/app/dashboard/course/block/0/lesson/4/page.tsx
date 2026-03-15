@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -85,6 +86,41 @@ function BlockStep({
         <p className="text-zinc-300 text-sm italic border-l-2 border-[#FF4422] pl-3">{highlight}</p>
       </div>
     </div>
+  );
+}
+
+function NextBlockButton() {
+  const [tier, setTier] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/auth/session")
+      .then(r => r.json())
+      .then(d => setTier(d?.tier ?? "free"))
+      .catch(() => setTier("free"));
+  }, []);
+
+  if (tier === null) return (
+    <div className="flex-1 py-3 bg-zinc-800 rounded-lg animate-pulse" />
+  );
+
+  if (tier === "free" || tier === null) {
+    return (
+      <a
+        href="/dashboard?upgrade=1"
+        className="flex-1 py-3 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-semibold rounded-lg transition-colors text-sm text-center"
+      >
+        Получить доступ к курсу →
+      </a>
+    );
+  }
+
+  return (
+    <a
+      href="/dashboard/course/block/1/lesson/1"
+      className="flex-1 py-3 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-semibold rounded-lg transition-colors text-sm text-center"
+    >
+      Начать Block 1 →
+    </a>
   );
 }
 
@@ -413,12 +449,7 @@ export default function Block0Lesson4Page() {
           >
             ← Предыдущий урок
           </Link>
-          <Link
-            href="/dashboard"
-            className="flex-1 py-3 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-medium rounded-lg transition-colors text-sm text-center"
-          >
-            К следующему блоку →
-          </Link>
+          <NextBlockButton />
         </div>
       </div>
     </main>

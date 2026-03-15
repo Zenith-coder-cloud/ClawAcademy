@@ -787,27 +787,27 @@ export default function Block0Lesson1Page() {
           <ul className="text-zinc-400 leading-relaxed mb-6 list-disc list-inside space-y-1">
             <li>
               <span className="text-white font-semibold">Урок 2:</span>{" "}
-              Честное сравнение OpenClaw vs ChatGPT Agents vs n8n - когда что выбрать, как их комбинировать и где каждый из них проигрывает
+              OpenClaw vs ChatGPT vs n8n — честное сравнение: когда что использовать и почему агенты выигрывают
             </li>
             <li>
               <span className="text-white font-semibold">Урок 3:</span>{" "}
-              Разбираем реальные кейсы заработка с агентами - конкретные ниши, конкретные цифры
+              Реальные кейсы: как фрилансер, предприниматель, студент и разработчик зарабатывают с агентами прямо сейчас
             </li>
             <li>
               <span className="text-white font-semibold">Урок 4:</span>{" "}
-              Твоя карта пути по курсу - что ты умеешь после каждого блока и как это монетизировать
+              Твой план действий: карта курса, выбор трека и первые шаги к $1000+ от агентов
             </li>
           </ul>
         </section>
 
         {/* ── Navigation ── */}
         <div className="flex gap-4 mt-4">
-          <button
-            disabled
-            className="flex-1 py-3 bg-zinc-800 text-zinc-600 font-medium rounded-lg cursor-not-allowed text-sm"
+          <Link
+            href="/dashboard"
+            className="flex-1 py-3 bg-zinc-900 border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 font-medium rounded-lg transition-colors text-sm text-center"
           >
-            Предыдущий урок
-          </button>
+            ← Дашборд
+          </Link>
           <Link
             href="/dashboard/course/block/0/lesson/2"
             className="flex-1 py-3 bg-[#FF4422] hover:bg-[#e63d1e] text-white font-medium rounded-lg transition-colors text-sm text-center"
