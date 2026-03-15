@@ -11,6 +11,7 @@ import {
   LessonSteps,
   PromptCopyBlock,
   QuizBlock,
+  SectionProgressBarB3,
   TimerBadge,
   TrackBadge,
   TRACKS,
@@ -259,6 +260,10 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
 
         {/* ── Content ───────────────────────────────────── */}
         <div className="flex-1 min-w-0 flex flex-col gap-8">
+          {/* Section Progress Bar */}
+          <SectionProgressBarB3 currentLesson={lessonId} />
+
+          {/* Hero Image */}
           <img
             src={`/course/block3/lesson${lesson.id}/b3-l${lesson.id}-hero.png`}
             alt={lesson.title}
