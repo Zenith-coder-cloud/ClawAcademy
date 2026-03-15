@@ -344,12 +344,12 @@ export default function Block1Lesson1Page() {
           </div>
         </aside>
         <div className="flex-1 min-w-0 flex flex-col gap-8">
-        <div className="relative w-full aspect-[16/7] md:aspect-[16/6] rounded-2xl overflow-hidden">
+        <div className="relative w-full rounded-2xl overflow-hidden" style={{ aspectRatio: '2752/1536' }}>
           <Image
             src="/course/block1/lesson1/b1-l1-os-switcher.png"
             alt="Установка OpenClaw"
             fill
-            className="object-cover"
+            className="object-contain"
             priority
           />
         </div>
