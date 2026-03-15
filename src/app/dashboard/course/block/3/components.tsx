@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from "react";
 
-export type TrackId = "freelancer" | "business" | "content" | "money" | "all";
+export type TrackId =
+  | "freelancer" | "content" | "business" | "money"
+  | "student" | "investor" | "seller" | "developer" | "marketer" | "hr" | "life"
+  | "all";
 
 type TrackMeta = {
   id: TrackId;
@@ -30,6 +33,41 @@ export const TRACKS: Record<TrackId, TrackMeta> = {
     id: "money",
     label: "💰 Заработок",
     color: "#F59E0B",
+  },
+  student: {
+    id: "student",
+    label: "🎓 Студент",
+    color: "#F59E0B",
+  },
+  investor: {
+    id: "investor",
+    label: "💰 Инвестор",
+    color: "#10B981",
+  },
+  seller: {
+    id: "seller",
+    label: "🛍️ Продавец",
+    color: "#EC4899",
+  },
+  developer: {
+    id: "developer",
+    label: "👨‍💻 Разработчик",
+    color: "#06B6D4",
+  },
+  marketer: {
+    id: "marketer",
+    label: "📊 Маркетолог",
+    color: "#F97316",
+  },
+  hr: {
+    id: "hr",
+    label: "👥 HR / Рекрутер",
+    color: "#A855F7",
+  },
+  life: {
+    id: "life",
+    label: "🏠 Для жизни",
+    color: "#84CC16",
   },
   all: {
     id: "all",
@@ -230,6 +268,41 @@ const quizOptions: QuizOption[] = [
     id: "money",
     label: "💰 Мониторинг рынков и поиск возможностей — сигналы, анализ",
     nextLesson: 14,
+  },
+  {
+    id: "student",
+    label: "🎓 Учёбу и подготовку к экзаменам — конспекты, карточки, повторение",
+    nextLesson: 21,
+  },
+  {
+    id: "investor",
+    label: "💰 Инвестиции и анализ проектов — мониторинг, due diligence",
+    nextLesson: 23,
+  },
+  {
+    id: "seller",
+    label: "🛍️ Продажи товаров — описания, листинги, мониторинг конкурентов",
+    nextLesson: 25,
+  },
+  {
+    id: "developer",
+    label: "👨‍💻 Разработку и код — code review, рефакторинг, документация",
+    nextLesson: 27,
+  },
+  {
+    id: "marketer",
+    label: "📊 Маркетинг и аналитику — отчёты, A/B тесты, кампании",
+    nextLesson: 29,
+  },
+  {
+    id: "hr",
+    label: "👥 HR и рекрутинг — скрининг кандидатов, онбординг",
+    nextLesson: 31,
+  },
+  {
+    id: "life",
+    label: "🏠 Личную жизнь — планирование дня, финансы, привычки",
+    nextLesson: 33,
   },
 ];
 
