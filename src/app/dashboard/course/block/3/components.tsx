@@ -589,3 +589,44 @@ export function QuizBlock({
     </div>
   );
 }
+
+/* ── Section Progress Bar B3 ──────────────────────────────── */
+const SECTIONS_B3 = [
+  { label: "Основы", range: [1, 7] },
+  { label: "Фрилансер", range: [8, 9] },
+  { label: "Бизнес", range: [10, 11] },
+  { label: "Контент", range: [12, 13] },
+  { label: "Заработок", range: [14, 15] },
+  { label: "Продвинутые", range: [16, 20] },
+  { label: "Студент", range: [21, 22] },
+  { label: "Инвестор", range: [23, 24] },
+  { label: "Продавец", range: [25, 26] },
+  { label: "Разработчик", range: [27, 28] },
+  { label: "Маркетолог", range: [29, 30] },
+  { label: "HR", range: [31, 32] },
+  { label: "Для жизни", range: [33, 34] },
+];
+
+export function SectionProgressBarB3({ currentLesson }: { currentLesson: number }) {
+  return (
+    <div className="flex items-center gap-1 mb-6 overflow-x-auto scrollbar-none">
+      {SECTIONS_B3.map((section, idx) => {
+        const [start, end] = section.range;
+        const isCurrent = currentLesson >= start && currentLesson <= end;
+        const isPast = currentLesson > end;
+        return (
+          <div key={section.label} className="flex items-center gap-1">
+            {idx > 0 && <span className="text-zinc-600 text-xs mx-0.5">→</span>}
+            <div className={`px-2.5 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
+              isCurrent ? "bg-[#FF4422]/15 text-[#FF4422] border border-[#FF4422]/40"
+              : isPast ? "bg-zinc-800 text-zinc-500 border border-zinc-700"
+              : "bg-zinc-900 text-zinc-600 border border-zinc-800"
+            }`}>
+              {section.label} ({start}–{end})
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
