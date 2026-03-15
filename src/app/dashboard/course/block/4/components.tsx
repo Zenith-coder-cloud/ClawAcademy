@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from "react";
 
-export type TrackId = "freelancer" | "business" | "content" | "money" | "all";
+export type TrackId =
+  | "freelancer" | "business" | "content" | "money"
+  | "student" | "investor" | "seller" | "developer" | "marketer" | "hr" | "life"
+  | "all";
 
 type TrackMeta = {
   id: TrackId;
@@ -30,6 +33,41 @@ export const TRACKS: Record<TrackId, TrackMeta> = {
     id: "money",
     label: "💰 Заработок",
     color: "#F59E0B",
+  },
+  student: {
+    id: "student",
+    label: "🎓 Студент",
+    color: "#F59E0B",
+  },
+  investor: {
+    id: "investor",
+    label: "💰 Инвестор",
+    color: "#10B981",
+  },
+  seller: {
+    id: "seller",
+    label: "🛍️ Продавец",
+    color: "#EC4899",
+  },
+  developer: {
+    id: "developer",
+    label: "👨‍💻 Разработчик",
+    color: "#06B6D4",
+  },
+  marketer: {
+    id: "marketer",
+    label: "📊 Маркетолог",
+    color: "#F97316",
+  },
+  hr: {
+    id: "hr",
+    label: "👥 HR / Рекрутер",
+    color: "#A855F7",
+  },
+  life: {
+    id: "life",
+    label: "🏠 Для жизни",
+    color: "#84CC16",
   },
   all: {
     id: "all",
@@ -210,6 +248,15 @@ const SECTIONS = [
   { label: "Вирт. сотрудник", range: [3, 6] },
   { label: "ClawHub", range: [7, 9] },
   { label: "SaaS", range: [10, 12] },
+  { label: "Бизнес", range: [13, 14] },
+  { label: "Контент", range: [15, 16] },
+  { label: "Студент", range: [17, 18] },
+  { label: "Инвестор", range: [19, 20] },
+  { label: "Продавец", range: [21, 22] },
+  { label: "Разработчик", range: [23, 24] },
+  { label: "Маркетолог", range: [25, 26] },
+  { label: "HR", range: [27, 28] },
+  { label: "Для жизни", range: [29, 30] },
 ];
 
 export function SectionProgressBar({ currentLesson }: { currentLesson: number }) {
@@ -244,12 +291,21 @@ export function SectionProgressBar({ currentLesson }: { currentLesson: number })
 }
 
 /* ── Path Selector ─────────────────────────────────────────── */
-export type PathId = "employee" | "clawhub" | "saas";
+export type PathId = "employee" | "clawhub" | "saas" | "business" | "content" | "student" | "investor" | "seller" | "developer" | "marketer" | "hr" | "life";
 
 const PATHS: { id: PathId; icon: string; title: string; desc: string; lessons: number[] }[] = [
   { id: "employee", icon: "👤", title: "Виртуальный сотрудник", desc: "Настраиваешь агента под клиента, получаешь ретейнер $300–1000/мес", lessons: [3, 4, 5, 6] },
   { id: "clawhub", icon: "🏪", title: "ClawHub Marketplace", desc: "Публикуешь агента, продаётся без твоего участия. Пассивный доход", lessons: [7, 8, 9] },
   { id: "saas", icon: "⚙️", title: "SaaS продукт", desc: "Один агент для многих клиентов. Максимальный масштаб", lessons: [10, 11] },
+  { id: "business", icon: "🏢", title: "Бизнес — агентство", desc: "Строишь агентные системы под ключ для других бизнесов", lessons: [13, 14] },
+  { id: "content", icon: "📢", title: "Контент — медиа агент", desc: "Продаёшь контент-системы блогерам и бизнесам", lessons: [15, 16] },
+  { id: "student", icon: "🎓", title: "Студент — образовательный агент", desc: "Образовательный агент как продукт: бот-тьютор, курс, корпоратив", lessons: [17, 18] },
+  { id: "investor", icon: "💰", title: "Инвестор — финансовый агент", desc: "Платный аналитический канал на базе агентов", lessons: [19, 20] },
+  { id: "seller", icon: "🛍️", title: "Продавец — е-ком агент", desc: "Автоматизация для продавцов маркетплейсов как B2B сервис", lessons: [21, 22] },
+  { id: "developer", icon: "👨‍💻", title: "Разработчик — API агент", desc: "Агент как API или CLI для технических команд", lessons: [23, 24] },
+  { id: "marketer", icon: "📊", title: "Маркетолог — агентство", desc: "Маркетинговое агентство на агентах для малого бизнеса", lessons: [25, 26] },
+  { id: "hr", icon: "👥", title: "HR — рекрутинг-сервис", desc: "Рекрутинговое агентство на агентах: скрининг и онбординг", lessons: [27, 28] },
+  { id: "life", icon: "🏠", title: "Для жизни — белый лейбл", desc: "Агенты для повседневной жизни как продукт", lessons: [29, 30] },
 ];
 
 export function PathSelector() {
@@ -273,7 +329,7 @@ export function PathSelector() {
       <p className="text-zinc-400 text-sm mb-5">
         Выбранный путь подсветит нужные уроки в сайдбаре
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {PATHS.map((path) => {
           const isSelected = selected === path.id;
           return (

@@ -31,6 +31,24 @@ const sidebarLinks = [
   { num: 10, title: "Multi-tenant", pathTag: "saas" as const },
   { num: 11, title: "Биллинг", pathTag: "saas" as const },
   { num: 12, title: "Капстоун", pathTag: null },
+  { num: 13, title: "Бизнес: агентство", pathTag: "business" as const },
+  { num: 14, title: "Бизнес: контракт", pathTag: "business" as const },
+  { num: 15, title: "Контент: медиа", pathTag: "content" as const },
+  { num: 16, title: "Контент: масштаб", pathTag: "content" as const },
+  { num: 17, title: "Студент: продукт", pathTag: "student" as const },
+  { num: 18, title: "Студент: масштаб", pathTag: "student" as const },
+  { num: 19, title: "Инвестор: сервис", pathTag: "investor" as const },
+  { num: 20, title: "Инвестор: масштаб", pathTag: "investor" as const },
+  { num: 21, title: "Продавец: е-ком", pathTag: "seller" as const },
+  { num: 22, title: "Продавец: масштаб", pathTag: "seller" as const },
+  { num: 23, title: "Разработчик: API", pathTag: "developer" as const },
+  { num: 24, title: "Разработчик: рост", pathTag: "developer" as const },
+  { num: 25, title: "Маркетолог: агентство", pathTag: "marketer" as const },
+  { num: 26, title: "Маркетолог: масштаб", pathTag: "marketer" as const },
+  { num: 27, title: "HR: рекрутинг", pathTag: "hr" as const },
+  { num: 28, title: "HR: масштаб", pathTag: "hr" as const },
+  { num: 29, title: "Жизнь: продукт", pathTag: "life" as const },
+  { num: 30, title: "Жизнь: масштаб", pathTag: "life" as const },
 ];
 
 /* ── Main LessonTemplate component ──────────────────────────── */
@@ -40,7 +58,7 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
 
   useEffect(() => {
     const stored = localStorage.getItem("b4_path") as PathId | null;
-    if (stored && ["employee", "clawhub", "saas"].includes(stored)) {
+    if (stored && ["employee", "clawhub", "saas", "business", "content", "student", "investor", "seller", "developer", "marketer", "hr", "life"].includes(stored)) {
       setSelectedPath(stored);
     }
   }, []);
@@ -64,6 +82,20 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
 
   const isLesson2 = lessonId === 2;
   const isLesson8 = lessonId === 8;
+
+  const nextByTrack: Record<string, { href: string; label: string }> = {
+    freelancer: { href: "lesson/3", label: "Урок 3: Виртуальный сотрудник →" },
+    business:   { href: "lesson/13", label: "Урок 13: Бизнес — агентство →" },
+    content:    { href: "lesson/15", label: "Урок 15: Контент — медиа агент →" },
+    student:    { href: "lesson/17", label: "Урок 17: Студент — образовательный агент →" },
+    investor:   { href: "lesson/19", label: "Урок 19: Инвестор — финансовый агент →" },
+    seller:     { href: "lesson/21", label: "Урок 21: Продавец — е-ком агент →" },
+    developer:  { href: "lesson/23", label: "Урок 23: Разработчик — API агент →" },
+    marketer:   { href: "lesson/25", label: "Урок 25: Маркетолог — агентство →" },
+    hr:         { href: "lesson/27", label: "Урок 27: HR — рекрутинг-сервис →" },
+    life:       { href: "lesson/29", label: "Урок 29: Для жизни — белый лейбл →" },
+    money:      { href: "lesson/7", label: "Урок 7: ClawHub →" },
+  };
 
   return (
     <main className="min-h-screen bg-[#0D0D0D] text-zinc-200">
@@ -320,7 +352,14 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
             >
               ← {lesson.prevLesson ? "Назад" : "К блоку"}
             </Link>
-            {nextHref ? (
+            {isLesson2 && selectedPath && nextByTrack[selectedPath] ? (
+              <Link
+                href={`/dashboard/course/block/4/${nextByTrack[selectedPath].href}`}
+                className="text-[#FF4422] hover:text-[#ff5a3c] transition-colors"
+              >
+                {nextByTrack[selectedPath].label}
+              </Link>
+            ) : nextHref ? (
               <Link
                 href={nextHref}
                 className="text-[#FF4422] hover:text-[#ff5a3c] transition-colors"
