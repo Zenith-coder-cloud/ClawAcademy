@@ -691,7 +691,9 @@ openclaw cron remove --id <job-id>    # удалить`}
               </button>
             )}
           </div>
-          <Accordion items={filteredIssues} />
+          <div className="overflow-y-auto max-h-72">
+            <Accordion items={filteredIssues} />
+          </div>
         </section>
 
         {/* ── Лайфхак ── */}

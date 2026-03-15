@@ -1100,7 +1100,9 @@ export default function Block1Lesson2Page() {
                 </button>
               )}
             </div>
-            <Accordion items={filteredIssues} />
+            <div className="overflow-y-auto max-h-72">
+              <Accordion items={filteredIssues} />
+            </div>
           </section>
 
           {/* ── Чекпоинт ── */}
