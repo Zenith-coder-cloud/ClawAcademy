@@ -107,6 +107,7 @@ export default function Block1IndexPage() {
             ← Дашборд
           </Link>
           {[
+            { num: 0, href: "/dashboard/course/block/0/lesson/1" },
             { num: 1, href: "/dashboard/course/block/1/lesson/1" },
             { num: 2, href: "/dashboard/course/block/2/lesson/1" },
             { num: 3, href: "/dashboard/course/block/3/lesson/1" },
