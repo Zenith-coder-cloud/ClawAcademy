@@ -229,6 +229,9 @@ export default function Page() {
               <Link href="/dashboard/course/block/4/lesson/1" title="Блок 4" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
                 4
               </Link>
+              <Link href="/dashboard/course/block/5/lesson/1" title="Блок 5" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
+                5
+              </Link>
             </div>
             <p className="text-xs text-zinc-500 font-semibold uppercase mb-3">Блок 0</p>
             <nav className="flex flex-col gap-1">

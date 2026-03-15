@@ -298,6 +298,7 @@ export default function Block1Lesson1Page() {
             { num: 2, href: "/dashboard/course/block/2/lesson/1" },
             { num: 3, href: "/dashboard/course/block/3/lesson/1" },
             { num: 4, href: "/dashboard/course/block/4/lesson/1" },
+            { num: 5, href: "/dashboard/course/block/5/lesson/1" },
           ].map((b) => (
             <Link
               key={b.num}
@@ -349,6 +350,9 @@ export default function Block1Lesson1Page() {
               </Link>
               <Link href="/dashboard/course/block/4/lesson/1" className="flex-1 text-center text-xs py-1 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
                 Блок 4
+              </Link>
+              <Link href="/dashboard/course/block/5/lesson/1" className="flex-1 text-center text-xs py-1 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
+                Блок 5
               </Link>
             </div>
             <p className="text-xs text-zinc-500 font-semibold uppercase mb-3">Блок 1</p>
