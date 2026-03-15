@@ -634,3 +634,42 @@ export function TrackChoiceCards() {
     </div>
   );
 }
+
+/* ── Section Progress Bar B2 ──────────────────────────────── */
+const SECTIONS_B2 = [
+  { label: "Основы", range: [1, 2] },
+  { label: "Фрилансер", range: [3, 7] },
+  { label: "Контент", range: [8, 9] },
+  { label: "Бизнес", range: [10, 11] },
+  { label: "Студент", range: [12, 13] },
+  { label: "Инвестор", range: [14, 15] },
+  { label: "Продавец", range: [16, 17] },
+  { label: "Разработчик", range: [18, 19] },
+  { label: "Маркетолог", range: [20, 21] },
+  { label: "HR", range: [22, 23] },
+  { label: "Для жизни", range: [24, 26] },
+];
+
+export function SectionProgressBarB2({ currentLesson }: { currentLesson: number }) {
+  return (
+    <div className="flex items-center gap-1 mb-6 overflow-x-auto scrollbar-none">
+      {SECTIONS_B2.map((section, idx) => {
+        const [start, end] = section.range;
+        const isCurrent = currentLesson >= start && currentLesson <= end;
+        const isPast = currentLesson > end;
+        return (
+          <div key={section.label} className="flex items-center gap-1">
+            {idx > 0 && <span className="text-zinc-600 text-xs mx-0.5">→</span>}
+            <div className={`px-2.5 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
+              isCurrent ? "bg-[#FF4422]/15 text-[#FF4422] border border-[#FF4422]/40"
+              : isPast ? "bg-zinc-800 text-zinc-500 border border-zinc-700"
+              : "bg-zinc-900 text-zinc-600 border border-zinc-800"
+            }`}>
+              {section.label} ({start}–{end})
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
