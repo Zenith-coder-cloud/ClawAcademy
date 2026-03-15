@@ -79,6 +79,27 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
             <TrackBadge track={lesson.track} />
           </div>
           <p className="text-zinc-400 text-lg">{lesson.subtitle}</p>
+
+          {/* Mobile lesson nav */}
+          <div className="md:hidden mt-4 flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+            <Link href="/dashboard" className="shrink-0 text-xs text-zinc-500 hover:text-white transition-colors mr-1">
+              ← Дашборд
+            </Link>
+            {sidebarLinks.map((l) => (
+              <Link
+                key={l.num}
+                href={`/dashboard/course/block/4/lesson/${l.num}`}
+                className={
+                  "shrink-0 text-xs px-2.5 py-1 rounded-lg border transition-colors " +
+                  (lessonId === l.num
+                    ? "border-[#FF4422] text-[#FF4422] bg-[#FF4422]/10"
+                    : "border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500")
+                }
+              >
+                {l.num}
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
