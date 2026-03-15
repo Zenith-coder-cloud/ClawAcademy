@@ -61,7 +61,6 @@ const nextByTrack: Record<string, { href: string; label: string }> = {
   freelancer: { href: "/dashboard/course/block/3/lesson/8", label: "Урок 8: Фрилансер →" },
   business: { href: "/dashboard/course/block/3/lesson/10", label: "Урок 10: Бизнес →" },
   content: { href: "/dashboard/course/block/3/lesson/12", label: "Урок 12: Контент →" },
-  money: { href: "/dashboard/course/block/3/lesson/14", label: "Урок 14: Заработок →" },
   student: { href: "/dashboard/course/block/3/lesson/21", label: "Урок 21: Студент →" },
   investor: { href: "/dashboard/course/block/3/lesson/23", label: "Урок 23: Инвестор →" },
   seller: { href: "/dashboard/course/block/3/lesson/25", label: "Урок 25: Продавец →" },
@@ -108,7 +107,10 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
   useEffect(() => {
     const stored = localStorage.getItem("block3_track") as TrackId | null;
     if (stored && TRACKS[stored] && stored !== "all") setSelectedTrack(stored);
-  }, []);
+    if (lesson) {
+      localStorage.setItem(`b3_lesson_${lesson.id}_visited`, "1");
+    }
+  }, [lesson]);
 
   if (!lesson) {
     return (
@@ -153,6 +155,15 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
             <h1 className="text-3xl md:text-4xl font-bold text-white">{lesson.title}</h1>
             <TimerBadge text={lesson.timerText} />
             <TrackBadge track={lesson.track} />
+            <button
+              onClick={() => {
+                localStorage.removeItem("block3_track");
+                window.location.href = `/dashboard/course/block/3`;
+              }}
+              className="text-xs text-zinc-500 hover:text-zinc-300 underline transition-colors ml-2"
+            >
+              сменить трек
+            </button>
           </div>
           <p className="text-zinc-400 text-lg">{lesson.subtitle}</p>
 

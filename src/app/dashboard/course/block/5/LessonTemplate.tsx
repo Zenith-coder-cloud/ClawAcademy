@@ -57,7 +57,6 @@ const nextByTrack: Record<string, { href: string; label: string }> = {
   marketer: { href: "/dashboard/course/block/5/lesson/19", label: "Урок 19: Маркетолог →" },
   hr: { href: "/dashboard/course/block/5/lesson/21", label: "Урок 21: HR →" },
   life: { href: "/dashboard/course/block/5/lesson/23", label: "Урок 23: Для жизни →" },
-  money: { href: "/dashboard/course/block/5/lesson/25", label: "Урок 25: Финмодель →" },
 };
 
 /* ── Celebration overlay ────────────────────────────────────── */
@@ -97,7 +96,10 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
   useEffect(() => {
     const stored = localStorage.getItem("block5_track") as TrackId | null;
     if (stored && TRACKS[stored] && stored !== "all") setSelectedTrack(stored);
-  }, []);
+    if (lesson) {
+      localStorage.setItem(`b5_lesson_${lesson.id}_visited`, "1");
+    }
+  }, [lesson]);
 
   if (!lesson) {
     return (
@@ -141,6 +143,15 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
             <h1 className="text-3xl md:text-4xl font-bold text-white">{lesson.title}</h1>
             <TimerBadge text={lesson.timerText} />
             <TrackBadge track={lesson.track} />
+            <button
+              onClick={() => {
+                localStorage.removeItem("block5_track");
+                window.location.href = `/dashboard/course/block/5`;
+              }}
+              className="text-xs text-zinc-500 hover:text-zinc-300 underline transition-colors ml-2"
+            >
+              сменить трек
+            </button>
           </div>
           <p className="text-zinc-400 text-lg">{lesson.subtitle}</p>
 

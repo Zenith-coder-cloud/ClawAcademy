@@ -139,7 +139,10 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
   useEffect(() => {
     const stored = localStorage.getItem("block2_track") as ComponentTrackId | null;
     if (stored && TRACKS[stored]) setRecommended(stored);
-  }, []);
+    if (lesson) {
+      localStorage.setItem(`b2_lesson_${lesson.id}_visited`, "1");
+    }
+  }, [lesson]);
 
   if (!lesson) {
     return (
