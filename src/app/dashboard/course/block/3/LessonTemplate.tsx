@@ -250,7 +250,7 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
                   >
                     {l.num}
                   </span>
-                  <span className="truncate">{l.title}</span>
+                  <span className="truncate" title={l.title}>{l.title}</span>
                 </Link>
               ))}
             </nav>
