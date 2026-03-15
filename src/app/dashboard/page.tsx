@@ -7,6 +7,57 @@ import PaymentModal from "@/components/PaymentModal";
 import { useAppKit } from "@reown/appkit/react";
 import { useAccount, useDisconnect, useSignMessage } from "wagmi";
 
+function ContinueSection() {
+  const [progress, setProgress] = useState<{block: number; lesson: number; pct: number}[]>([]);
+
+  useEffect(() => {
+    const blocks = [
+      { num: 2, total: 26 },
+      { num: 3, total: 34 },
+      { num: 4, total: 30 },
+      { num: 5, total: 26 },
+    ];
+    const result = [];
+    for (const b of blocks) {
+      let last = 0;
+      let done = 0;
+      for (let i = 1; i <= b.total; i++) {
+        if (localStorage.getItem(`b${b.num}_lesson_${i}_done`)) { done++; last = i; }
+      }
+      if (last > 0 && done < b.total) {
+        result.push({ block: b.num, lesson: last + 1, pct: Math.round((done / b.total) * 100) });
+      }
+    }
+    setProgress(result);
+  }, []);
+
+  if (progress.length === 0) return null;
+
+  return (
+    <div className="mb-8">
+      <h2 className="text-lg font-bold text-white mb-3">▶ Продолжи обучение</h2>
+      <div className="flex flex-col sm:flex-row gap-3">
+        {progress.map(p => (
+          <a
+            key={p.block}
+            href={`/dashboard/course/block/${p.block}/lesson/${p.lesson}`}
+            className="flex-1 bg-zinc-900 border border-zinc-800 hover:border-[#FF4422]/50 rounded-xl px-4 py-3 transition-colors"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-semibold text-white">Блок {p.block}</span>
+              <span className="text-xs text-zinc-500">{p.pct}%</span>
+            </div>
+            <div className="w-full bg-zinc-800 rounded-full h-1.5 mb-2">
+              <div className="bg-[#FF4422] h-1.5 rounded-full" style={{ width: `${p.pct}%` }} />
+            </div>
+            <span className="text-xs text-[#FF4422]">Урок {p.lesson} →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const allModules = [
   { id: 0, title: "Вход — что такое ИИ-агент", cover: "/covers/block0.png" },
   { id: 1, title: "Установка и первый агент", cover: "/covers/block1.png" },
@@ -229,6 +280,9 @@ export default function DashboardPage() {
             </div>
           </div>
         )}
+
+        {/* Continue Section */}
+        <ContinueSection />
 
         {/* Modules */}
         <h2 className="text-xl font-semibold text-white mb-6">

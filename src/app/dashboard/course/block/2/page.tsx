@@ -2,6 +2,54 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+
+function BlockProgress({ blockNum, total }: { blockNum: number; total: number }) {
+  const [done, setDone] = useState(0);
+  const [lastLesson, setLastLesson] = useState<number | null>(null);
+
+  useEffect(() => {
+    let count = 0;
+    let last: number | null = null;
+    for (let i = 1; i <= total; i++) {
+      if (localStorage.getItem(`b${blockNum}_lesson_${i}_done`)) {
+        count++;
+        last = i;
+      }
+    }
+    setDone(count);
+    setLastLesson(last);
+  }, [blockNum, total]);
+
+  if (done === 0) return null;
+
+  const pct = Math.round((done / total) * 100);
+
+  return (
+    <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl px-5 py-4 mb-6">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-sm text-zinc-400">Твой прогресс</span>
+        <span className="text-sm font-semibold text-white">{done}/{total} уроков · {pct}%</span>
+      </div>
+      <div className="w-full bg-zinc-800 rounded-full h-2 mb-3">
+        <div
+          className="bg-[#FF4422] h-2 rounded-full transition-all duration-500"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      {lastLesson && lastLesson < total && (
+        <a
+          href={`/dashboard/course/block/${blockNum}/lesson/${lastLesson + 1}`}
+          className="inline-flex items-center gap-1.5 text-sm text-[#FF4422] hover:text-white transition-colors font-semibold"
+        >
+          ▶ Продолжить с урока {lastLesson + 1}
+        </a>
+      )}
+      {done === total && (
+        <p className="text-sm text-green-400 font-semibold">✅ Блок завершён!</p>
+      )}
+    </div>
+  );
+}
 import {
   QuizBlock,
   TrackBadge,
@@ -337,6 +385,7 @@ export default function Block2IndexPage() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 flex flex-col gap-8">
+        <BlockProgress blockNum={2} total={26} />
         <div className="mb-2">
           <h2 className="text-xl font-bold text-white mb-2">Выбери свой трек</h2>
           <p className="text-zinc-400 text-sm mb-6">

@@ -86,12 +86,15 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
   const [showCelebration, setShowCelebration] = useState(false);
 
   const handleNextLesson = useCallback((href: string) => {
+    if (lesson) {
+      localStorage.setItem(`b5_lesson_${lesson.id}_done`, "1");
+    }
     setShowCelebration(true);
     setTimeout(() => {
       setShowCelebration(false);
       router.push(href);
     }, 2000);
-  }, [router]);
+  }, [router, lesson]);
 
   useEffect(() => {
     const stored = localStorage.getItem("block5_track") as TrackId | null;
