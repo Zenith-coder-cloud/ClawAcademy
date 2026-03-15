@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 export type TrackId =
-  | "freelancer" | "content" | "business" | "money"
+  | "freelancer" | "content" | "business"
   | "student" | "investor" | "seller" | "developer" | "marketer" | "hr" | "life"
   | "all";
 
@@ -32,12 +32,6 @@ export const TRACKS: Record<TrackId, TrackMeta> = {
     label: "📢 Контент",
     color: "#8B5CF6",
     description: "Ведёшь блог или канал — агенты создают и публикуют контент за тебя",
-  },
-  money: {
-    id: "money",
-    label: "💰 Заработок",
-    color: "#F59E0B",
-    description: "Хочешь заработать на агентах — монетизируешь навыки через разные форматы",
   },
   student: {
     id: "student",
@@ -167,7 +161,13 @@ export function PromptCopyBlock({
           </button>
         </div>
         <pre className="text-sm text-zinc-200 font-mono whitespace-pre-wrap">
-          {code}
+          {code.split(/(\[[^\]]+\])/g).map((part, i) =>
+            /^\[.+\]$/.test(part) ? (
+              <span key={i} className="text-amber-400/80 italic">{part}</span>
+            ) : (
+              part
+            )
+          )}
         </pre>
         {example && (
           <div className="mt-3 border-t border-zinc-800 pt-3">

@@ -1,5 +1,5 @@
 export type TrackId =
-  | "freelancer" | "business" | "content" | "money"
+  | "freelancer" | "business" | "content"
   | "student" | "investor" | "seller" | "developer" | "marketer" | "hr" | "life"
   | "all";
 
@@ -39,7 +39,7 @@ export const lessons: LessonData[] = [
     id: 1,
     title: "Твоя система стала продуктом",
     subtitle: "От пользователя к поставщику: первый шаг к монетизации",
-    timerText: "⏱ 15 мин",
+    timerText: "⏱ 35 мин",
     track: "all",
     whyNeeded:
       "В Blocks 1–3 ты строил систему для себя. Она работает, экономит тебе время, помогает с задачами. Это уже ценность. Но пока ты единственный кто ею пользуется — ты упускаешь большую часть потенциала. В этом блоке всё меняется: ты перестаёшь быть пользователем и становишься поставщиком. Это не усложнение — это следующий уровень той же игры.",
@@ -149,7 +149,7 @@ export const lessons: LessonData[] = [
     id: 3,
     title: "Агент-сотрудник: настройка под клиента",
     subtitle: "Онбординг клиента и создание агента с нуля за 2 часа",
-    timerText: "⏱ 25 мин",
+    timerText: "⏱ 55 мин",
     track: "freelancer",
     pathTag: "employee",
     whyNeeded:
@@ -204,7 +204,7 @@ export const lessons: LessonData[] = [
     id: 4,
     title: "White-label: твой агент под чужим брендом",
     subtitle: "Как продавать дороже, убрав своё имя из интерфейса",
-    timerText: "⏱ 20 мин",
+    timerText: "⏱ 45 мин",
     track: "freelancer",
     pathTag: "employee",
     whyNeeded:
@@ -258,7 +258,7 @@ export const lessons: LessonData[] = [
     id: 5,
     title: "SLA без страха: что обещать клиенту",
     subtitle: "Простой документ который убирает 90% конфликтов",
-    timerText: "⏱ 15 мин",
+    timerText: "⏱ 35 мин",
     track: "freelancer",
     pathTag: "employee",
     whyNeeded:
@@ -307,7 +307,7 @@ export const lessons: LessonData[] = [
     id: 6,
     title: "Продакшн: агент работает — ты спишь",
     subtitle: "Мониторинг, watchdog и алерты для агента клиента",
-    timerText: "⏱ 20 мин",
+    timerText: "⏱ 45 мин",
     track: "freelancer",
     pathTag: "employee",
     whyNeeded:
@@ -357,7 +357,7 @@ export const lessons: LessonData[] = [
     id: 7,
     title: "ClawHub: маркетплейс агентов",
     subtitle: "Как устроен ClawHub и какие агенты продаются лучше",
-    timerText: "⏱ 15 мин",
+    timerText: "⏱ 35 мин",
     track: "all",
     pathTag: "clawhub",
     whyNeeded:
@@ -410,7 +410,7 @@ export const lessons: LessonData[] = [
     id: 8,
     title: "Упаковка агента для продажи",
     subtitle: "Название, описание и скриншот — три элемента которые продают",
-    timerText: "⏱ 25 мин",
+    timerText: "⏱ 55 мин",
     track: "all",
     pathTag: "clawhub",
     whyNeeded:
@@ -464,7 +464,7 @@ export const lessons: LessonData[] = [
     id: 9,
     title: "Первая продажа на ClawHub",
     subtitle: "Как получить первые 10 установок за первую неделю",
-    timerText: "⏱ 20 мин",
+    timerText: "⏱ 45 мин",
     track: "all",
     pathTag: "clawhub",
     whyNeeded:
@@ -514,7 +514,7 @@ export const lessons: LessonData[] = [
     id: 10,
     title: "Один агент для многих: как это работает",
     subtitle: "Multi-tenant: один агент обслуживает 100 клиентов",
-    timerText: "⏱ 20 мин",
+    timerText: "⏱ 45 мин",
     track: "all",
     pathTag: "saas",
     whyNeeded:
@@ -568,7 +568,7 @@ export const lessons: LessonData[] = [
     id: 11,
     title: "Биллинг: как брать деньги за агента",
     subtitle: "Три модели оплаты и как их настроить без своего сайта",
-    timerText: "⏱ 15 мин",
+    timerText: "⏱ 35 мин",
     track: "all",
     pathTag: "saas",
     whyNeeded:
@@ -622,7 +622,7 @@ export const lessons: LessonData[] = [
     id: 12,
     title: "Капстоун: запускаем первого клиента",
     subtitle: "Реальный запуск — не тест, не «скоро», а прямо сейчас",
-    timerText: "⏱ 30 мин",
+    timerText: "⏱ 60 мин",
     track: "all",
     whyNeeded:
       "Это финал Block 4. К этому моменту ты знаешь всё что нужно: как настроить агента для клиента, как его защитить SLA, как мониторить в продакшне, как продавать на ClawHub или строить multi-tenant продукт. Теперь — делаем всё это по-настоящему. Реальный клиент или реальная публикация. Не тест, не «скоро», а прямо сейчас.",
@@ -670,7 +670,7 @@ export const lessons: LessonData[] = [
     id: 13,
     title: "Бизнес: агентское агентство",
     subtitle: "Продаём агентные системы другим бизнесам — под ключ",
-    timerText: "⏱ 25 мин",
+    timerText: "⏱ 55 мин",
     track: "business",
     pathTag: "business",
     whyNeeded:
@@ -720,7 +720,7 @@ export const lessons: LessonData[] = [
     id: 14,
     title: "Бизнес: первый контракт на автоматизацию",
     subtitle: "От встречи до подписания и получения денег",
-    timerText: "⏱ 20 мин",
+    timerText: "⏱ 45 мин",
     track: "business",
     pathTag: "business",
     whyNeeded:
@@ -771,7 +771,7 @@ export const lessons: LessonData[] = [
     id: 15,
     title: "Контент: агент-медиа — продаём контент-системы",
     subtitle: "Контент-агентство на базе ИИ-агентов OpenClaw",
-    timerText: "⏱ 25 мин",
+    timerText: "⏱ 55 мин",
     track: "content",
     pathTag: "content",
     whyNeeded:
@@ -821,7 +821,7 @@ export const lessons: LessonData[] = [
     id: 16,
     title: "Контент: первый медиа-клиент и масштаб",
     subtitle: "Управление несколькими клиентами одновременно",
-    timerText: "⏱ 20 мин",
+    timerText: "⏱ 45 мин",
     track: "content",
     pathTag: "content",
     whyNeeded:
@@ -871,7 +871,7 @@ export const lessons: LessonData[] = [
     id: 17,
     title: "Студент: образовательный агент как продукт",
     subtitle: "Бот-тьютор, дополнение к курсу или корпоративный тренер",
-    timerText: "⏱ 25 мин",
+    timerText: "⏱ 55 мин",
     track: "student",
     pathTag: "student",
     whyNeeded:
@@ -921,7 +921,7 @@ export const lessons: LessonData[] = [
     id: 18,
     title: "Студент: подписка и масштаб через сообщества",
     subtitle: "Реферальная система и студенческие каналы",
-    timerText: "⏱ 20 мин",
+    timerText: "⏱ 45 мин",
     track: "student",
     pathTag: "student",
     whyNeeded:
@@ -971,7 +971,7 @@ export const lessons: LessonData[] = [
     id: 19,
     title: "Инвестор: финансовый аналитик как сервис",
     subtitle: "Платный аналитический канал на базе агентов",
-    timerText: "⏱ 25 мин",
+    timerText: "⏱ 55 мин",
     track: "investor",
     pathTag: "investor",
     whyNeeded:
@@ -1021,7 +1021,7 @@ export const lessons: LessonData[] = [
     id: 20,
     title: "Инвестор: масштаб — от канала к аналитическому сервису",
     subtitle: "Контент-маркетинг и партнёрства для роста подписчиков",
-    timerText: "⏱ 20 мин",
+    timerText: "⏱ 45 мин",
     track: "investor",
     pathTag: "investor",
     whyNeeded:
@@ -1071,7 +1071,7 @@ export const lessons: LessonData[] = [
     id: 21,
     title: "Продавец: е-ком агент как сервис для магазинов",
     subtitle: "Автоматизация для продавцов маркетплейсов как B2B",
-    timerText: "⏱ 25 мин",
+    timerText: "⏱ 55 мин",
     track: "seller",
     pathTag: "seller",
     whyNeeded:
@@ -1121,7 +1121,7 @@ export const lessons: LessonData[] = [
     id: 22,
     title: "Продавец: масштаб — от одного клиента к агентству е-ком",
     subtitle: "Multi-tenant архитектура для нескольких магазинов",
-    timerText: "⏱ 20 мин",
+    timerText: "⏱ 45 мин",
     track: "seller",
     pathTag: "seller",
     whyNeeded:
@@ -1171,7 +1171,7 @@ export const lessons: LessonData[] = [
     id: 23,
     title: "Разработчик: агент как API — продаём техническим командам",
     subtitle: "B2B SaaS для разработчиков — один из самых маржинальных бизнесов",
-    timerText: "⏱ 25 мин",
+    timerText: "⏱ 55 мин",
     track: "developer",
     pathTag: "developer",
     whyNeeded:
@@ -1221,7 +1221,7 @@ export const lessons: LessonData[] = [
     id: 24,
     title: "Разработчик: developer tool экосистема и рост",
     subtitle: "Open Source + Paid модель для developer tools",
-    timerText: "⏱ 20 мин",
+    timerText: "⏱ 45 мин",
     track: "developer",
     pathTag: "developer",
     whyNeeded:
@@ -1272,7 +1272,7 @@ export const lessons: LessonData[] = [
     id: 25,
     title: "Маркетолог: агентство на агентах",
     subtitle: "Маркетинговое агентство нового поколения",
-    timerText: "⏱ 25 мин",
+    timerText: "⏱ 55 мин",
     track: "marketer",
     pathTag: "marketer",
     whyNeeded:
@@ -1323,7 +1323,7 @@ export const lessons: LessonData[] = [
     id: 26,
     title: "Маркетолог: white-label маркетинг для малого бизнеса",
     subtitle: "Масштабируемый пакет для кафе, барбершопов, магазинов",
-    timerText: "⏱ 20 мин",
+    timerText: "⏱ 45 мин",
     track: "marketer",
     pathTag: "marketer",
     whyNeeded:
@@ -1374,7 +1374,7 @@ export const lessons: LessonData[] = [
     id: 27,
     title: "HR / Рекрутер: рекрутинговое агентство на агентах",
     subtitle: "Скрининг, онбординг и закрытие вакансий с ИИ",
-    timerText: "⏱ 25 мин",
+    timerText: "⏱ 55 мин",
     track: "hr",
     pathTag: "hr",
     whyNeeded:
@@ -1424,7 +1424,7 @@ export const lessons: LessonData[] = [
     id: 28,
     title: "HR: масштаб — от фриланса к рекрутинговому агентству",
     subtitle: "Процессы, команда и рост на рекрутинговом рынке",
-    timerText: "⏱ 20 мин",
+    timerText: "⏱ 45 мин",
     track: "hr",
     pathTag: "hr",
     whyNeeded:
@@ -1474,7 +1474,7 @@ export const lessons: LessonData[] = [
     id: 29,
     title: "Для жизни: агенты повседневности как продукт",
     subtitle: "Планирование, финансы, привычки — продаём агентов для жизни",
-    timerText: "⏱ 25 мин",
+    timerText: "⏱ 55 мин",
     track: "life",
     pathTag: "life",
     whyNeeded:
@@ -1524,7 +1524,7 @@ export const lessons: LessonData[] = [
     id: 30,
     title: "Для жизни: масштаб — от бота к экосистеме",
     subtitle: "Рост аудитории и монетизация лайфстайл-агентов",
-    timerText: "⏱ 20 мин",
+    timerText: "⏱ 45 мин",
     track: "life",
     pathTag: "life",
     whyNeeded:

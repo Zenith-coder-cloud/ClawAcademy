@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const sections = [
   {
@@ -91,6 +92,16 @@ function TrackBadge({ track }: { track: string }) {
 }
 
 export default function Block5Page() {
+  const [visitedLessons, setVisitedLessons] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    const visited = new Set<number>();
+    for (let i = 1; i <= 26; i++) {
+      if (localStorage.getItem(`b5_lesson_${i}_visited`)) visited.add(i);
+    }
+    setVisitedLessons(visited);
+  }, []);
+
   return (
     <main className="min-h-screen bg-[#0D0D0D] text-zinc-200">
       {/* Header */}
@@ -252,6 +263,9 @@ export default function Block5Page() {
                         </span>
                       </div>
                       <TrackBadge track={lesson.track} />
+                      <span className="text-xs text-[#FF4422] shrink-0">
+                        {visitedLessons.has(lesson.num) ? "Продолжить →" : "Начать →"}
+                      </span>
                     </Link>
                   );
                 })}

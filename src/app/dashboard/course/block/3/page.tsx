@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const sections = [
   {
@@ -29,8 +30,8 @@ const sections = [
       { num: 11, title: "Агент-воронка", track: "business" },
       { num: 12, title: "Research → Write → Publish", track: "content" },
       { num: 13, title: "Редактор + дистрибьютор", track: "content" },
-      { num: 14, title: "Мониторинг рынков и агент-сигнальщик", track: "money" },
-      { num: 15, title: "Агент-планировщик возможностей", track: "money" },
+      { num: 14, title: "Мониторинг рынков и агент-сигнальщик", track: "freelancer" },
+      { num: 15, title: "Агент-планировщик возможностей", track: "freelancer" },
     ],
   },
   {
@@ -55,7 +56,6 @@ const trackColors: Record<string, string> = {
   freelancer: "#3B82F6",
   business: "#10B981",
   content: "#8B5CF6",
-  money: "#F59E0B",
 };
 
 const trackLabels: Record<string, string> = {
@@ -63,7 +63,6 @@ const trackLabels: Record<string, string> = {
   freelancer: "🧑‍💼",
   business: "🏢",
   content: "📢",
-  money: "💰",
 };
 
 function TrackBadge({ track }: { track: string }) {
@@ -83,6 +82,16 @@ function TrackBadge({ track }: { track: string }) {
 }
 
 export default function Block3Page() {
+  const [visitedLessons, setVisitedLessons] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    const visited = new Set<number>();
+    for (let i = 1; i <= 34; i++) {
+      if (localStorage.getItem(`b3_lesson_${i}_visited`)) visited.add(i);
+    }
+    setVisitedLessons(visited);
+  }, []);
+
   return (
     <main className="min-h-screen bg-[#0D0D0D] text-zinc-200">
       {/* Header */}
@@ -264,6 +273,9 @@ export default function Block3Page() {
                         </span>
                       )}
                       {!isQuiz && <TrackBadge track={lesson.track} />}
+                      <span className="text-xs text-[#FF4422] shrink-0">
+                        {visitedLessons.has(lesson.num) ? "Продолжить →" : "Начать →"}
+                      </span>
                     </Link>
                   );
                 })}

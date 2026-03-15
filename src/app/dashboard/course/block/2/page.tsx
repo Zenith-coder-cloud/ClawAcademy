@@ -201,6 +201,7 @@ function LessonCard({
   available,
   track,
   recommendedTrack,
+  visited,
 }: {
   id: number;
   title: string;
@@ -208,6 +209,7 @@ function LessonCard({
   available: boolean;
   track?: TrackId;
   recommendedTrack: TrackId | null;
+  visited?: boolean;
 }) {
   const isRecommended = track && track === recommendedTrack;
   const isDimmed = recommendedTrack && track && track !== recommendedTrack;
@@ -255,7 +257,7 @@ function LessonCard({
             isRecommended ? "text-[#FF4422]" : "text-[#FF4422]"
           }`}
         >
-          Открыть →
+          {visited ? "Продолжить →" : "Начать →"}
         </span>
       )}
     </div>
@@ -270,10 +272,16 @@ function LessonCard({
 
 export default function Block2IndexPage() {
   const [recommendedTrack, setRecommendedTrack] = useState<TrackId | null>(null);
+  const [visitedLessons, setVisitedLessons] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     const stored = localStorage.getItem("block2_track") as TrackId | null;
     if (stored && TRACKS[stored]) setRecommendedTrack(stored);
+    const visited = new Set<number>();
+    for (let i = 1; i <= 26; i++) {
+      if (localStorage.getItem(`b2_lesson_${i}_visited`)) visited.add(i);
+    }
+    setVisitedLessons(visited);
   }, []);
 
   return (
@@ -347,6 +355,7 @@ export default function Block2IndexPage() {
             <LessonCard
               key={lesson.id}
               recommendedTrack={recommendedTrack}
+              visited={visitedLessons.has(lesson.id)}
               {...lesson}
             />
           ))}
