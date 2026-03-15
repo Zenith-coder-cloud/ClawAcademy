@@ -157,9 +157,10 @@ export default function Block1Lesson3Page() {
           <p className="text-[#FF4422] text-sm font-semibold mb-2">
             Блок 1 · Урок 3 из 4
           </p>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
-            Урок 3 — Подключения и Skills
-          </h1>
+          <div className="flex flex-wrap items-center gap-3 mb-3">
+            <h1 className="text-3xl md:text-4xl font-bold text-white">Урок 3 — Подключения и Skills</h1>
+            <span className="inline-flex items-center gap-1 text-xs text-zinc-400 border border-zinc-700 rounded-full px-2.5 py-1">⏱ 30 минут</span>
+          </div>
           <p className="text-zinc-400 text-lg">
             Google, Notion, Calendar — агент управляет твоей жизнью
           </p>
