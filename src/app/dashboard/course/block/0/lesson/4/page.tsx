@@ -127,24 +127,16 @@ function NextBlockButton() {
 export default function Block0Lesson4Page() {
   return (
     <main className="min-h-screen bg-[#0D0D0D]">
-      {/* ── Hero ── */}
-      <section className="relative w-full aspect-[16/7] md:aspect-[16/6]">
-        <Image src="/course/block0/lesson4/b0l4-01-cover.png" alt="Block 0 Lesson 4 cover" fill className="object-cover" priority />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0D0D0D]" />
-        <div className="absolute bottom-0 left-0 right-0 px-4 pb-6 md:pb-10">
-          <div className="max-w-4xl mx-auto">
-            <nav className="text-zinc-500 text-sm mb-3 flex items-center gap-1.5">
-              <Link href="/dashboard" className="hover:text-zinc-300 transition-colors">Dashboard</Link>
-              <span>/</span>
-              <Link href="/dashboard/course/block/0" className="hover:text-zinc-300 transition-colors">Block 0</Link>
-              <span>/</span>
-              <span className="text-zinc-300">Урок 4</span>
-            </nav>
-            <span className="inline-block px-3 py-1 bg-[#FF4422] text-white text-xs font-bold rounded mb-3">0</span>
-            <h1 className="text-2xl md:text-4xl font-bold text-white leading-tight">
-              Твой результат и карта пути: от Block 0 до Block 5
-            </h1>
-            <p className="text-zinc-400 mt-2">Шесть блоков. Четыре типа результата. Реальные цифры по каждому.</p>
+      {/* Header */}
+      <section className="border-b border-zinc-900">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <p className="text-[#FF4422] text-sm font-semibold mb-2">Блок 0 · Урок 4 из 4</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">Твой результат и карта пути: от Block 0 до Block 5</h1>
+          <p className="text-zinc-400 text-lg">Шесть блоков. Четыре типа результата. Реальные цифры по каждому.</p>
+        </div>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="w-full bg-zinc-800 h-1 rounded-full mt-2">
+            <div className="bg-[#FF4422] h-1 rounded-full" style={{ width: "100%" }} />
           </div>
         </div>
       </section>
@@ -201,6 +193,11 @@ export default function Block0Lesson4Page() {
         </aside>
 
         <div className="flex-1 min-w-0 flex flex-col gap-6">
+
+        {/* Hero image */}
+        <div className="relative w-full aspect-[16/7] md:aspect-[16/6] rounded-2xl overflow-hidden">
+          <Image src="/course/block0/lesson4/b0l4-01-cover.png" alt="Block 0 Lesson 4 cover" fill className="object-cover" priority />
+        </div>
 
         {/* ── Goals ── */}
         <section className="bg-zinc-900 rounded-xl p-6">

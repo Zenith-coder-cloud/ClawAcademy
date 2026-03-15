@@ -206,6 +206,20 @@ function Quiz() {
 export default function Page() {
   return (
     <main className="min-h-screen bg-black text-zinc-200">
+      {/* ── Header ── */}
+      <section className="border-b border-zinc-900">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <p className="text-[#FF4422] text-sm font-semibold mb-2">Блок 0 · Урок 2 из 4</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">OpenClaw vs ChatGPT vs n8n — честное сравнение</h1>
+          <p className="text-zinc-400 text-lg">Когда что выбирать — без маркетинга и фанатизма</p>
+        </div>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="w-full bg-zinc-800 h-1 rounded-full mt-2">
+            <div className="bg-[#FF4422] h-1 rounded-full" style={{ width: "50%" }} />
+          </div>
+        </div>
+      </section>
+
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 flex gap-8">
         {/* ── Sidebar ── */}
         <aside className="hidden md:block w-56 shrink-0">

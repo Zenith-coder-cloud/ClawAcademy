@@ -217,6 +217,11 @@ export default function Block1Lesson2Page() {
             4 шага — и агент отвечает в Telegram
           </p>
         </div>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="w-full bg-zinc-800 h-1 rounded-full mt-2">
+            <div className="bg-[#FF4422] h-1 rounded-full" style={{ width: "50%" }} />
+          </div>
+        </div>
       </section>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 flex gap-8">
@@ -226,22 +231,13 @@ export default function Block1Lesson2Page() {
             <Link href="/dashboard" className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-white transition-colors mb-3">
               ← Дашборд
             </Link>
-            <div className="flex gap-1 mb-3">
-              <Link href="/dashboard/course/block/0/lesson/1" className="flex-1 text-center text-xs py-1 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
-                Блок 0
-              </Link>
-              <Link href="/dashboard/course/block/1/lesson/1" className="flex-1 text-center text-xs py-1 rounded-lg border border-[#FF4422] text-[#FF4422] transition-colors">
-                Блок 1
-              </Link>
-              <Link href="/dashboard/course/block/2/lesson/1" className="flex-1 text-center text-xs py-1 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
-                Блок 2
-              </Link>
-              <Link href="/dashboard/course/block/3/lesson/1" className="flex-1 text-center text-xs py-1 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
-                Блок 3
-              </Link>
-              <Link href="/dashboard/course/block/4/lesson/1" className="flex-1 text-center text-xs py-1 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
-                Блок 4
-              </Link>
+            <div className="grid grid-cols-3 gap-1 mb-3">
+              <Link href="/dashboard/course/block/0/lesson/1" title="Блок 0: Что такое ИИ-агент" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">0</Link>
+              <Link href="/dashboard/course/block/1/lesson/1" title="Блок 1: Установка и первый агент" className="text-center text-xs py-1.5 rounded-lg border border-[#FF4422] text-[#FF4422]">1</Link>
+              <Link href="/dashboard/course/block/2/lesson/1" title="Блок 2: Первые реальные кейсы" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">2</Link>
+              <Link href="/dashboard/course/block/3/lesson/1" title="Блок 3: Мультиагент и автоматизация" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">3</Link>
+              <Link href="/dashboard/course/block/4/lesson/1" title="Блок 4: Продай своего агента" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">4</Link>
+              <Link href="/dashboard/course/block/5/lesson/1" title="Блок 5: Агентский бизнес" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">5</Link>
             </div>
             <p className="text-xs text-zinc-500 font-semibold uppercase mb-3">
               Блок 1
