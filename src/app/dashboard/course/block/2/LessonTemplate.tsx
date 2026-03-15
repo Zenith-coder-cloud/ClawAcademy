@@ -8,6 +8,7 @@ import {
   Checklist,
   LessonSteps,
   PromptCopyBlock,
+  SectionProgressBarB2,
   TimerBadge,
   TrackBadge,
   TrackChoiceCards,
@@ -268,6 +269,9 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
 
         {/* ── Content ───────────────────────────────────── */}
         <div className="flex-1 min-w-0 flex flex-col gap-8">
+          {/* Section Progress Bar */}
+          <SectionProgressBarB2 currentLesson={lessonId} />
+
           <img
             src={`/course/block2/lesson${lesson.id}/b2-l${lesson.id}-hero.png`}
             alt={lesson.title}
