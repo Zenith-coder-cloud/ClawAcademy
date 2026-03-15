@@ -157,22 +157,22 @@ export default function Block0Lesson4Page() {
               ← Дашборд
             </Link>
             <div className="grid grid-cols-3 gap-1 mb-3">
-              <Link href="/dashboard/course/block/0/lesson/1" title="Блок 0" className={"text-center text-xs py-1.5 rounded-lg border transition-colors " + (0 === 0 ? "border-[#FF4422] text-[#FF4422]" : "border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500")}>
+              <Link href="/dashboard/course/block/0/lesson/1" title="Блок 0: Что такое ИИ-агент" className={"text-center text-xs py-1.5 rounded-lg border transition-colors " + (0 === 0 ? "border-[#FF4422] text-[#FF4422]" : "border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500")}>
                 0
               </Link>
-              <Link href="/dashboard/course/block/1/lesson/1" title="Блок 1" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
+              <Link href="/dashboard/course/block/1/lesson/1" title="Блок 1: Установка и первый агент" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
                 1
               </Link>
-              <Link href="/dashboard/course/block/2/lesson/1" title="Блок 2" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
+              <Link href="/dashboard/course/block/2/lesson/1" title="Блок 2: Первые реальные кейсы" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
                 2
               </Link>
-              <Link href="/dashboard/course/block/3/lesson/1" title="Блок 3" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
+              <Link href="/dashboard/course/block/3/lesson/1" title="Блок 3: Мультиагент и автоматизация" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
                 3
               </Link>
-              <Link href="/dashboard/course/block/4/lesson/1" title="Блок 4" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
+              <Link href="/dashboard/course/block/4/lesson/1" title="Блок 4: Продай своего агента" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
                 4
               </Link>
-              <Link href="/dashboard/course/block/5/lesson/1" title="Блок 5" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
+              <Link href="/dashboard/course/block/5/lesson/1" title="Блок 5: Агентский бизнес" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
                 5
               </Link>
             </div>
