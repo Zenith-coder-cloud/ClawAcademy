@@ -27,6 +27,7 @@ export interface LessonData {
   prevLesson: number | null;
   nextLesson: number | null;
   completionTrackLabel?: string;
+  promptExample?: string;
 }
 
 export const TOTAL_LESSONS = 34;
@@ -76,6 +77,7 @@ export const lessons: LessonData[] = [
     ],
     prevLesson: null,
     nextLesson: 2,
+    promptExample: "Мои типичные задачи: написать пост в Telegram → проверить факты → опубликовать. Сейчас делаю 3 запроса к агенту вручную, занимает 40 минут.",
   },
 
   // ─── LESSON 2 ──────────────────────────────────────────────
@@ -136,6 +138,7 @@ export const lessons: LessonData[] = [
     ],
     prevLesson: 1,
     nextLesson: 3,
+    promptExample: "Задача: еженедельный дайджест новостей. Orchestrator: получает задачу. Worker 1 — Researcher: ищет 5 новостей. Worker 2 — Writer: пишет пост. Monitor: проверяет факты.",
   },
 
   // ─── LESSON 3 — Quiz ──────────────────────────────────────

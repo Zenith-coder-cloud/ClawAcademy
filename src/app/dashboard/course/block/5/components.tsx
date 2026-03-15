@@ -134,9 +134,11 @@ export function LessonSteps({ steps }: { steps: string[] }) {
 export function PromptCopyBlock({
   code,
   instruction,
+  example,
 }: {
   code: string;
   instruction?: string;
+  example?: string;
 }) {
   const [copied, setCopied] = useState(false);
 
@@ -167,6 +169,12 @@ export function PromptCopyBlock({
         <pre className="text-sm text-zinc-200 font-mono whitespace-pre-wrap">
           {code}
         </pre>
+        {example && (
+          <div className="mt-3 border-t border-zinc-800 pt-3">
+            <p className="text-xs text-zinc-500 mb-1">💡 Пример заполнения:</p>
+            <pre className="text-xs text-zinc-400 font-mono whitespace-pre-wrap italic">{example}</pre>
+          </div>
+        )}
       </div>
     </div>
   );
