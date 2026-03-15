@@ -291,9 +291,10 @@ export default function Block1Lesson1Page() {
           <p className="text-[#FF4422] text-sm font-semibold mb-2">
             Блок 1 · Урок 1 из 4
           </p>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
-            Урок 1 — Установка OpenClaw
-          </h1>
+          <div className="flex flex-wrap items-center gap-3 mb-3">
+            <h1 className="text-3xl md:text-4xl font-bold text-white">Урок 1 — Установка OpenClaw</h1>
+            <span className="inline-flex items-center gap-1 text-xs text-zinc-400 border border-zinc-700 rounded-full px-2.5 py-1">⏱ 15 минут</span>
+          </div>
           <p className="text-zinc-400 text-lg">
             Твой агент будет запущен через 15 минут
           </p>
@@ -343,13 +344,15 @@ export default function Block1Lesson1Page() {
           </div>
         </aside>
         <div className="flex-1 min-w-0 flex flex-col gap-8">
-        <Image
-          src="/course/block1/lesson1/b1-l1-os-switcher.png"
-          alt="Установка OpenClaw"
-          width={1280}
-          height={720}
-          className="w-full rounded-2xl object-cover"
-        />
+        <div className="relative w-full aspect-[16/7] md:aspect-[16/6] rounded-2xl overflow-hidden">
+          <Image
+            src="/course/block1/lesson1/b1-l1-os-switcher.png"
+            alt="Установка OpenClaw"
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
                     <p className="text-zinc-400 leading-relaxed">
             OpenClaw — это gateway между тобой и AI-агентами. Он запускается на

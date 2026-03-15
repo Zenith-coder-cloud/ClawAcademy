@@ -210,9 +210,10 @@ export default function Block1Lesson2Page() {
           <p className="text-[#FF4422] text-sm font-semibold mb-2">
             Блок 1 · Урок 2 из 4
           </p>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
-            Урок 2 — Первый Telegram-агент
-          </h1>
+          <div className="flex flex-wrap items-center gap-3 mb-3">
+            <h1 className="text-3xl md:text-4xl font-bold text-white">Урок 2 — Первый Telegram-агент</h1>
+            <span className="inline-flex items-center gap-1 text-xs text-zinc-400 border border-zinc-700 rounded-full px-2.5 py-1">⏱ 45 минут</span>
+          </div>
           <p className="text-zinc-400 text-lg">
             4 шага — и агент отвечает в Telegram
           </p>
