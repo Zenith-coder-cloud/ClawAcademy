@@ -37,14 +37,35 @@ const sidebarLinks = [
   { num: 18, title: "Границы агента" },
   { num: 19, title: "Секреты и ключи" },
   { num: 20, title: "Капстоун" },
+  { num: 21, title: "Студент: обучение" },
+  { num: 22, title: "Студент: экзамены" },
+  { num: 23, title: "Инвестор: мониторинг" },
+  { num: 24, title: "Инвестор: анализ" },
+  { num: 25, title: "Продавец: описания" },
+  { num: 26, title: "Продавец: конкуренты" },
+  { num: 27, title: "Разработчик: review" },
+  { num: 28, title: "Разработчик: доки" },
+  { num: 29, title: "Маркетолог: отчёты" },
+  { num: 30, title: "Маркетолог: A/B" },
+  { num: 31, title: "HR: скрининг" },
+  { num: 32, title: "HR: онбординг" },
+  { num: 33, title: "Жизнь: планирование" },
+  { num: 34, title: "Жизнь: финансы" },
 ];
 
 /* ── next-by-track map for lessons 3 and 7 ─────────────────── */
 const nextByTrack: Record<string, { href: string; label: string }> = {
-  freelancer: { href: "/dashboard/course/block/3/lesson/8", label: "Урок 8: Фрилансер — 3 агента →" },
-  business: { href: "/dashboard/course/block/3/lesson/10", label: "Урок 10: Бизнес — CRM + поддержка →" },
-  content: { href: "/dashboard/course/block/3/lesson/12", label: "Урок 12: Контент — конвейер →" },
-  money: { href: "/dashboard/course/block/3/lesson/14", label: "Урок 14: Заработок — мониторинг →" },
+  freelancer: { href: "/dashboard/course/block/3/lesson/8", label: "Урок 8: Фрилансер →" },
+  business: { href: "/dashboard/course/block/3/lesson/10", label: "Урок 10: Бизнес →" },
+  content: { href: "/dashboard/course/block/3/lesson/12", label: "Урок 12: Контент →" },
+  money: { href: "/dashboard/course/block/3/lesson/14", label: "Урок 14: Заработок →" },
+  student: { href: "/dashboard/course/block/3/lesson/21", label: "Урок 21: Студент →" },
+  investor: { href: "/dashboard/course/block/3/lesson/23", label: "Урок 23: Инвестор →" },
+  seller: { href: "/dashboard/course/block/3/lesson/25", label: "Урок 25: Продавец →" },
+  developer: { href: "/dashboard/course/block/3/lesson/27", label: "Урок 27: Разработчик →" },
+  marketer: { href: "/dashboard/course/block/3/lesson/29", label: "Урок 29: Маркетолог →" },
+  hr: { href: "/dashboard/course/block/3/lesson/31", label: "Урок 31: HR →" },
+  life: { href: "/dashboard/course/block/3/lesson/33", label: "Урок 33: Для жизни →" },
 };
 
 /* ── Main LessonTemplate component ──────────────────────────── */
