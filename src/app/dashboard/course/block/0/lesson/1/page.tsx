@@ -220,7 +220,7 @@ function Quiz() {
 /* ------------------------------------------------------------------ */
 export default function Block0Lesson1Page() {
   return (
-    <main className="min-h-screen bg-[#0D0D0D]">
+    <main className="min-h-screen bg-[#0D0D0D] text-zinc-200">
       {/* ── Header ── */}
       <section className="border-b border-zinc-900">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -231,38 +231,6 @@ export default function Block0Lesson1Page() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="w-full bg-zinc-800 h-1 rounded-full mt-2">
             <div className="bg-[#FF4422] h-1 rounded-full" style={{ width: "25%" }} />
-          </div>
-        </div>
-      </section>
-
-      {/* ── Hero ── */}
-      <section className="relative w-full aspect-[16/7] md:aspect-[16/6]">
-        <Image
-          src="/course/block0/lesson1/b0-l1-cover.png"
-          alt="Block 0 Lesson 1 cover"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0D0D0D]" />
-        <div className="absolute bottom-0 left-0 right-0 px-4 pb-6 md:pb-10">
-          <div className="max-w-4xl mx-auto">
-            {/* Breadcrumb */}
-            <nav className="text-zinc-500 text-sm mb-3 flex items-center gap-1.5">
-              <Link href="/dashboard" className="hover:text-zinc-300 transition-colors">
-                Dashboard
-              </Link>
-              <span>/</span>
-              <span>Block 0</span>
-              <span>/</span>
-              <span className="text-zinc-300">Урок 1</span>
-            </nav>
-            <span className="inline-block px-3 py-1 bg-[#FF4422] text-white text-xs font-bold rounded mb-3">
-              0
-            </span>
-            <h1 className="text-2xl md:text-4xl font-bold text-white leading-tight">
-              Что такое ИИ-агент и чем он отличается от чат-бота
-            </h1>
           </div>
         </div>
       </section>
