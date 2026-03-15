@@ -272,6 +272,16 @@ export default function Page() {
         </aside>
 
         <div className="flex-1 min-w-0 flex flex-col gap-6">
+        {/* ── Hero Image ── */}
+        <div className="relative w-full aspect-[16/7] md:aspect-[16/6] rounded-2xl overflow-hidden">
+          <Image
+            src="/course/block0/lesson2/b0l2-01-cover.png"
+            alt="OpenClaw vs ChatGPT vs n8n"
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
         {/* Cover */}
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-10 mb-10 border border-zinc-800">
           <p className="text-[#FF4422] text-sm font-semibold mb-2">

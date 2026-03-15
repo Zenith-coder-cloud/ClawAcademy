@@ -287,6 +287,16 @@ export default function Block0Lesson1Page() {
         </aside>
 
         <div className="flex-1 min-w-0 flex flex-col gap-6">
+        {/* ── Hero Image ── */}
+        <div className="relative w-full aspect-[16/7] md:aspect-[16/6] rounded-2xl overflow-hidden">
+          <Image
+            src="/course/block0/lesson1/b0-l1-cover.png"
+            alt="Что такое ИИ-агент"
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
         {/* ── Goals ── */}
         <section className="bg-zinc-900 rounded-xl p-6">
           <h2 className="text-2xl font-bold text-white mb-4">Цели урока</h2>
