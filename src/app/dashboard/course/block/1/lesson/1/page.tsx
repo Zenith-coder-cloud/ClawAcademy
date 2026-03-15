@@ -675,7 +675,9 @@ export default function Block1Lesson1Page() {
               <button onClick={() => setSearchQuery('')} className='absolute right-3 top-3 text-zinc-500 hover:text-zinc-300'>✕</button>
             )}
           </div>
-          <Accordion items={filteredIssues} />
+          <div className="overflow-y-auto max-h-72">
+            <Accordion items={filteredIssues} />
+          </div>
         </section>
 
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
