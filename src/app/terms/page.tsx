@@ -1,0 +1,99 @@
+export const metadata = {
+  title: "Условия использования — ClawAcademy",
+  description: "Публичная оферта и условия использования платформы ClawAcademy",
+};
+
+export default function TermsPage() {
+  return (
+    <div className="min-h-screen bg-[#0D0D0D] text-zinc-300">
+      <div className="max-w-3xl mx-auto px-6 py-16">
+        <a href="/" className="text-zinc-500 hover:text-white text-sm mb-8 inline-block transition-colors">← На главную</a>
+
+        <h1 className="text-3xl font-bold text-white mb-2">Условия использования</h1>
+        <p className="text-zinc-500 text-sm mb-10">Редакция от 16 марта 2025 г.</p>
+
+        <div className="space-y-8 text-sm leading-relaxed">
+
+          <section>
+            <h2 className="text-white font-semibold text-base mb-3">1. Общие положения</h2>
+            <p className="text-zinc-400">
+              Настоящий документ является публичной офертой оператора образовательной платформы ClawAcademy
+              (далее — «Платформа», «мы», «нас»), размещённой по адресу <strong className="text-zinc-300">clawacademy.io</strong>.
+              Регистрируясь или получая доступ к материалам Платформы, вы (далее — «Пользователь»)
+              принимаете настоящие Условия в полном объёме. Если вы не согласны с Условиями — прекратите
+              использование Платформы.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-base mb-3">2. Предмет и доступ к контенту</h2>
+            <ul className="text-zinc-400 space-y-2 list-disc list-inside">
+              <li>Платформа предоставляет доступ к образовательным материалам (уроки, промпты, практические задания) по теме ИИ-агентов и автоматизации.</li>
+              <li>Часть материалов доступна бесплатно (тариф Free). Расширенный доступ предоставляется на платной основе согласно актуальным тарифам.</li>
+              <li>Платформа оставляет за собой право изменять состав и содержание материалов без предварительного уведомления.</li>
+              <li>Доступ к материалам предоставляется исключительно для личного использования.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-base mb-3">3. Регистрация и аккаунт</h2>
+            <ul className="text-zinc-400 space-y-2 list-disc list-inside">
+              <li>Для доступа к платным материалам требуется авторизация через Telegram или подключение криптовалютного кошелька.</li>
+              <li>Пользователь несёт ответственность за сохранность доступа к своему аккаунту.</li>
+              <li>Запрещена передача доступа третьим лицам, совместное использование аккаунта.</li>
+              <li>Платформа вправе заблокировать аккаунт при нарушении настоящих Условий без возврата оплаты.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-base mb-3">4. Оплата и возврат</h2>
+            <ul className="text-zinc-400 space-y-2 list-disc list-inside">
+              <li>Оплата производится в криптовалюте. Транзакции в блокчейн-сети необратимы.</li>
+              <li>Факт оплаты подтверждает согласие Пользователя с настоящими Условиями и активирует соответствующий тариф.</li>
+              <li>Возврат средств возможен в течение 48 часов с момента оплаты при условии, что Пользователь не открыл более 3 уроков платного тарифа. Запрос направляется в поддержку через Telegram: <a href="https://t.me/ClawAcademyChat" target="_blank" rel="noopener noreferrer" className="text-[#FF4422] hover:underline">t.me/ClawAcademyChat</a>.</li>
+              <li>После использования более 3 уроков возврат не производится.</li>
+              <li>Платформа не несёт ответственности за колебания курса криптовалют.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-base mb-3">5. Интеллектуальная собственность</h2>
+            <ul className="text-zinc-400 space-y-2 list-disc list-inside">
+              <li>Все материалы Платформы (тексты, изображения, промпты, видео) защищены авторским правом и принадлежат Платформе.</li>
+              <li>Запрещено копирование, распространение, перепродажа или публикация материалов Платформы без письменного разрешения.</li>
+              <li>Нарушение авторских прав влечёт блокировку аккаунта и юридическую ответственность в соответствии с применимым законодательством.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-base mb-3">6. Ограничение ответственности</h2>
+            <ul className="text-zinc-400 space-y-2 list-disc list-inside">
+              <li>Образовательные материалы Платформы носят информационный характер. Результаты обучения зависят от усилий Пользователя и не гарантируются.</li>
+              <li>Платформа не несёт ответственности за убытки, возникшие в результате применения полученных знаний.</li>
+              <li>Платформа не гарантирует бесперебойную работу сервиса и не несёт ответственности за технические сбои.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-base mb-3">7. Изменения и прекращение</h2>
+            <p className="text-zinc-400">
+              Платформа вправе изменять настоящие Условия. Актуальная версия размещается по адресу
+              clawacademy.io/terms. Продолжение использования Платформы после изменений означает их принятие.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-white font-semibold text-base mb-3">8. Связь и поддержка</h2>
+            <p className="text-zinc-400">
+              По вопросам, связанным с настоящими Условиями, обращайтесь в сообщество:{" "}
+              <a href="https://t.me/ClawAcademyChat" target="_blank" rel="noopener noreferrer" className="text-[#FF4422] hover:underline">
+                t.me/ClawAcademyChat
+              </a>
+            </p>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  );
+}
