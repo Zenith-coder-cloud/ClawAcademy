@@ -1,5 +1,331 @@
-import { redirect } from "next/navigation";
+"use client";
 
-export default function Block4IndexPage() {
-  redirect("/dashboard/course/block/4/lesson/1");
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
+function BlockProgress({ blockNum, total }: { blockNum: number; total: number }) {
+  const [done, setDone] = useState(0);
+  const [lastLesson, setLastLesson] = useState<number | null>(null);
+
+  useEffect(() => {
+    let count = 0;
+    let last: number | null = null;
+    for (let i = 1; i <= total; i++) {
+      if (localStorage.getItem(`b${blockNum}_lesson_${i}_done`)) {
+        count++;
+        last = i;
+      }
+    }
+    setDone(count);
+    setLastLesson(last);
+  }, [blockNum, total]);
+
+  if (done === 0) return null;
+
+  const pct = Math.round((done / total) * 100);
+
+  return (
+    <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl px-5 py-4 mb-6">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-sm text-zinc-400">Твой прогресс</span>
+        <span className="text-sm font-semibold text-white">{done}/{total} уроков · {pct}%</span>
+      </div>
+      <div className="w-full bg-zinc-800 rounded-full h-2 mb-3">
+        <div
+          className="bg-[#FF4422] h-2 rounded-full transition-all duration-500"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      {lastLesson && lastLesson < total && (
+        <a
+          href={`/dashboard/course/block/${blockNum}/lesson/${lastLesson + 1}`}
+          className="inline-flex items-center gap-1.5 text-sm text-[#FF4422] hover:text-white transition-colors font-semibold"
+        >
+          ▶ Продолжить с урока {lastLesson + 1}
+        </a>
+      )}
+      {done === total && (
+        <p className="text-sm text-green-400 font-semibold">✅ Блок завершён!</p>
+      )}
+    </div>
+  );
+}
+
+const sections = [
+  {
+    title: "Секция 1: Разворот — от пользователя к поставщику",
+    lessons: [
+      { num: 1, title: "Твоя система стала продуктом", track: "all" },
+      { num: 2, title: "Выбери свой путь", track: "all" },
+    ],
+  },
+  {
+    title: "Секция 2: Виртуальный сотрудник",
+    lessons: [
+      { num: 3, title: "Агент-сотрудник: настройка под клиента", track: "freelancer" },
+      { num: 4, title: "White-label: агент под чужим брендом", track: "freelancer" },
+      { num: 5, title: "SLA без страха: что обещать клиенту", track: "freelancer" },
+      { num: 6, title: "Продакшн: агент работает — ты спишь", track: "freelancer" },
+    ],
+  },
+  {
+    title: "Секция 3: ClawHub — маркетплейс агентов",
+    lessons: [
+      { num: 7, title: "ClawHub: маркетплейс агентов", track: "all" },
+      { num: 8, title: "Упаковка агента для продажи", track: "all" },
+      { num: 9, title: "Первая продажа на ClawHub", track: "all" },
+    ],
+  },
+  {
+    title: "Секция 4: Один агент для многих — первые шаги к SaaS",
+    lessons: [
+      { num: 10, title: "Один агент для многих: multi-tenant", track: "all" },
+      { num: 11, title: "Биллинг: как брать деньги за агента", track: "all" },
+      { num: 12, title: "Капстоун: запускаем первого клиента", track: "all" },
+    ],
+  },
+];
+
+const trackColors: Record<string, string> = {
+  all: "#71717A",
+  freelancer: "#3B82F6",
+  business: "#10B981",
+  content: "#8B5CF6",
+};
+
+const trackLabels: Record<string, string> = {
+  all: "🌐 Для всех",
+  freelancer: "🧑‍💼",
+  business: "🏢",
+  content: "📢",
+};
+
+function TrackBadge({ track }: { track: string }) {
+  const color = trackColors[track];
+  return (
+    <span
+      className="text-xs px-2 py-0.5 rounded-full border whitespace-nowrap"
+      style={{
+        borderColor: color,
+        color: color,
+        backgroundColor: `${color}10`,
+      }}
+    >
+      {trackLabels[track]}
+    </span>
+  );
+}
+
+export default function Block4Page() {
+  const [visitedLessons, setVisitedLessons] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    const visited = new Set<number>();
+    for (let i = 1; i <= 30; i++) {
+      if (localStorage.getItem(`b4_lesson_${i}_visited`)) visited.add(i);
+    }
+    setVisitedLessons(visited);
+  }, []);
+
+  return (
+    <main className="min-h-screen bg-[#0D0D0D] text-zinc-200">
+      {/* Header */}
+      <section className="border-b border-zinc-900">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <p className="text-[#FF4422] text-sm font-semibold mb-2">Block 4</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
+            Продай своего агента: ClawHub и виртуальный сотрудник
+          </h1>
+          <p className="text-xl md:text-2xl font-bold text-white mb-2">
+            «Ты строил — теперь продаёшь. Первые $1000 с агентов»
+          </p>
+          <p className="text-zinc-400 text-base">
+            12 уроков · 4 секции · Выбери свой путь монетизации
+          </p>
+        </div>
+      </section>
+
+      {/* Block Navigation */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-4">
+        <div className="flex items-center gap-2">
+          <Link href="/dashboard" className="text-xs text-zinc-500 hover:text-white transition-colors mr-2">
+            ← Дашборд
+          </Link>
+          {[
+            { num: 1, href: "/dashboard/course/block/1/lesson/1" },
+            { num: 2, href: "/dashboard/course/block/2/lesson/1" },
+            { num: 3, href: "/dashboard/course/block/3/lesson/1" },
+            { num: 4, href: "/dashboard/course/block/4/lesson/1" },
+          ].map((b) => (
+            <Link
+              key={b.num}
+              href={b.href}
+              className={`text-xs px-3 py-1 rounded-lg border transition-colors ${
+                b.num === 4
+                  ? "border-[#FF4422] text-[#FF4422]"
+                  : "border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500"
+              }`}
+            >
+              Блок {b.num}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
+        <BlockProgress blockNum={4} total={30} />
+        {/* CTA */}
+        <div className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800 mb-8">
+          <Link
+            href="/dashboard/course/block/4/lesson/1"
+            className="inline-flex items-center px-6 py-3 rounded-xl bg-[#FF4422] text-white font-semibold hover:bg-[#e63d1e] transition-colors"
+          >
+            Начать с урока 1 →
+          </Link>
+        </div>
+
+        {/* Journey path */}
+        <div className="bg-zinc-800 rounded-2xl p-6 md:p-8 border border-zinc-700 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr] items-start gap-4 md:gap-2 text-center">
+            {/* Step 1 */}
+            <div className="flex flex-col items-center gap-2">
+              <span className="text-sm font-semibold text-zinc-400">Секция 1</span>
+              <span className="text-2xl">🔄</span>
+              <span className="text-white font-semibold text-sm">Уроки 1–2</span>
+              <span className="text-zinc-400 text-xs leading-tight">
+                Разворот
+                <br />
+                от пользователя к поставщику
+              </span>
+            </div>
+            <div className="hidden md:flex items-center justify-center pt-6 text-zinc-500 text-xl">→</div>
+            {/* Step 2 */}
+            <div className="flex flex-col items-center gap-2">
+              <span className="text-sm font-semibold text-zinc-400">Секция 2</span>
+              <span className="text-2xl">👤</span>
+              <span className="text-white font-semibold text-sm">Уроки 3–6</span>
+              <span className="text-zinc-400 text-xs leading-tight">
+                Виртуальный
+                <br />
+                сотрудник
+              </span>
+            </div>
+            <div className="hidden md:flex items-center justify-center pt-6 text-zinc-500 text-xl">→</div>
+            {/* Step 3 */}
+            <div className="flex flex-col items-center gap-2">
+              <span className="text-sm font-semibold text-zinc-400">Секция 3</span>
+              <span className="text-2xl">🏪</span>
+              <span className="text-white font-semibold text-sm">Уроки 7–9</span>
+              <span className="text-zinc-400 text-xs leading-tight">
+                ClawHub
+                <br />
+                маркетплейс
+              </span>
+            </div>
+            <div className="hidden md:flex items-center justify-center pt-6 text-zinc-500 text-xl">→</div>
+            {/* Step 4 */}
+            <div className="flex flex-col items-center gap-2">
+              <span className="text-sm font-semibold text-zinc-400">Секция 4</span>
+              <span className="text-2xl">⚙️</span>
+              <span className="text-white font-semibold text-sm">Уроки 10–12</span>
+              <span className="text-zinc-400 text-xs leading-tight">
+                SaaS
+                <br />
+                и капстоун
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Prerequisites */}
+        <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 mb-4">
+          <h3 className="text-white font-bold text-lg mb-3">📋 Что нужно знать перед этим блоком</h3>
+          <ul className="space-y-2 text-zinc-400 text-sm">
+            <li className="flex gap-2"><span className="text-[#FF4422]">✓</span>Прошёл Block 3 — у тебя работает мультиагентная система</li>
+            <li className="flex gap-2"><span className="text-[#FF4422]">✓</span>Умеешь настраивать cron и цепочки агентов</li>
+            <li className="flex gap-2"><span className="text-[#FF4422]">✓</span>Понимаешь свой трек — знаешь какую задачу решают твои агенты</li>
+          </ul>
+          <p className="text-zinc-500 text-xs mt-3">Если чего-то нет — <a href="/dashboard/course/block/3" className="text-[#FF4422] hover:underline">вернись в Block 3</a></p>
+        </div>
+
+        {/* Sections — all expanded */}
+        <div className="space-y-4">
+          {sections.map((section) => (
+            <div
+              key={section.title}
+              className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden"
+            >
+              <div className="px-6 py-4">
+                <span className="text-white font-semibold">
+                  {section.title}
+                </span>
+                <span className="text-zinc-500 text-sm ml-3">
+                  {section.lessons.length} уроков
+                </span>
+              </div>
+              <div className="px-6 pb-5 space-y-2">
+                {section.lessons.map((lesson) => {
+                  const isCapstone = lesson.num === 12;
+                  return (
+                    <Link
+                      key={lesson.num}
+                      href={`/dashboard/course/block/4/lesson/${lesson.num}`}
+                      className={`relative flex items-center gap-3 rounded-lg px-4 py-3 transition-colors group ${
+                        isCapstone
+                          ? "bg-[#FF4422]/5 border border-[#FF4422]/50 hover:border-[#FF4422]"
+                          : "bg-zinc-950 border border-zinc-800 hover:border-[#FF4422]"
+                      }`}
+                    >
+                      <span
+                        className="w-6 h-6 rounded-full border flex items-center justify-center text-xs shrink-0"
+                        style={{
+                          borderColor: isCapstone
+                            ? "#FF4422"
+                            : trackColors[lesson.track],
+                          color: isCapstone
+                            ? "#FF4422"
+                            : trackColors[lesson.track],
+                        }}
+                      >
+                        {lesson.num}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-zinc-300 group-hover:text-white">
+                          {lesson.title}
+                        </span>
+                        {isCapstone && (
+                          <p className="text-xs text-zinc-500 mt-0.5">
+                            Финальный запуск — реальный клиент или публикация
+                          </p>
+                        )}
+                      </div>
+                      {isCapstone && (
+                        <span className="absolute top-2 right-3 text-xs font-semibold text-[#FF4422]">
+                          ⭐ Финал
+                        </span>
+                      )}
+                      {!isCapstone && <TrackBadge track={lesson.track} />}
+                      <span className="text-xs text-[#FF4422] shrink-0">
+                        {visitedLessons.has(lesson.num) ? "Продолжить →" : "Начать →"}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Back link */}
+        <div className="mt-8">
+          <Link
+            href="/dashboard"
+            className="text-zinc-400 hover:text-zinc-200 text-sm transition-colors"
+          >
+            ← Вернуться к курсу
+          </Link>
+        </div>
+      </div>
+    </main>
+  );
 }
