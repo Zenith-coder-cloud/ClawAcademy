@@ -7,7 +7,6 @@ import {
   Checklist,
   LessonSteps,
   PromptCopyBlock,
-  QuizBlock,
   TimerBadge,
   TrackBadge,
   TRACKS,
@@ -17,55 +16,47 @@ import { getLessonById, TOTAL_LESSONS } from "./data/lessons";
 
 /* ── sidebar lesson links ───────────────────────────────────── */
 const sidebarLinks = [
-  { num: 1, title: "Один агент — это потолок" },
-  { num: 2, title: "Роли в команде агентов" },
-  { num: 3, title: "Выбери свою команду" },
-  { num: 4, title: "Делегирование и изоляция" },
-  { num: 5, title: "Cron + мультиагент" },
-  { num: 6, title: "QA-агент" },
-  { num: 7, title: "Zen + Dev + Mark" },
-  { num: 8, title: "Фрилансер: 3 агента" },
-  { num: 9, title: "Фрилансер: биллинг" },
-  { num: 10, title: "Бизнес: CRM + поддержка" },
-  { num: 11, title: "Бизнес: воронка" },
-  { num: 12, title: "Контент: конвейер" },
-  { num: 13, title: "Контент: редактор" },
-  { num: 14, title: "Заработок: мониторинг" },
-  { num: 15, title: "Заработок: возможности" },
-  { num: 16, title: "Токены и watchdog" },
-  { num: 17, title: "Ошибки и fallback" },
-  { num: 18, title: "Границы агента" },
-  { num: 19, title: "Секреты и ключи" },
-  { num: 20, title: "Капстоун" },
-  { num: 21, title: "Студент: обучение" },
-  { num: 22, title: "Студент: экзамены" },
-  { num: 23, title: "Инвестор: мониторинг" },
-  { num: 24, title: "Инвестор: анализ" },
-  { num: 25, title: "Продавец: описания" },
-  { num: 26, title: "Продавец: конкуренты" },
-  { num: 27, title: "Разработчик: review" },
-  { num: 28, title: "Разработчик: доки" },
-  { num: 29, title: "Маркетолог: отчёты" },
-  { num: 30, title: "Маркетолог: A/B" },
-  { num: 31, title: "HR: скрининг" },
-  { num: 32, title: "HR: онбординг" },
-  { num: 33, title: "Жизнь: планирование" },
-  { num: 34, title: "Жизнь: финансы" },
+  { num: 1, title: "От дохода к системе" },
+  { num: 2, title: "Первый помощник" },
+  { num: 3, title: "Машина лидогенерации" },
+  { num: 4, title: "Личный бренд" },
+  { num: 5, title: "Фрилансер: ретейнеры" },
+  { num: 6, title: "Фрилансер: партнёрства" },
+  { num: 7, title: "Бизнес: агентство" },
+  { num: 8, title: "Бизнес: операционка" },
+  { num: 9, title: "Контент: медиа-империя" },
+  { num: 10, title: "Контент: монетизация" },
+  { num: 11, title: "Студент: стартап" },
+  { num: 12, title: "Студент: инвестиции" },
+  { num: 13, title: "Инвестор: фонд" },
+  { num: 14, title: "Инвестор: масштаб" },
+  { num: 15, title: "Продавец: агентство" },
+  { num: 16, title: "Продавец: свой бренд" },
+  { num: 17, title: "Разработчик: SaaS" },
+  { num: 18, title: "Разработчик: enterprise" },
+  { num: 19, title: "Маркетолог: performance" },
+  { num: 20, title: "Маркетолог: консалтинг" },
+  { num: 21, title: "HR: агентство" },
+  { num: 22, title: "HR: аутсорсинг" },
+  { num: 23, title: "Жизнь: сообщество" },
+  { num: 24, title: "Жизнь: коучинг" },
+  { num: 25, title: "Финмодель" },
+  { num: 26, title: "Капстоун" },
 ];
 
-/* ── next-by-track map for lessons 3 and 7 ─────────────────── */
+/* ── next-by-track map for lesson 4 ─────────────────────────── */
 const nextByTrack: Record<string, { href: string; label: string }> = {
-  freelancer: { href: "/dashboard/course/block/3/lesson/8", label: "Урок 8: Фрилансер →" },
-  business: { href: "/dashboard/course/block/3/lesson/10", label: "Урок 10: Бизнес →" },
-  content: { href: "/dashboard/course/block/3/lesson/12", label: "Урок 12: Контент →" },
-  money: { href: "/dashboard/course/block/3/lesson/14", label: "Урок 14: Заработок →" },
-  student: { href: "/dashboard/course/block/3/lesson/21", label: "Урок 21: Студент →" },
-  investor: { href: "/dashboard/course/block/3/lesson/23", label: "Урок 23: Инвестор →" },
-  seller: { href: "/dashboard/course/block/3/lesson/25", label: "Урок 25: Продавец →" },
-  developer: { href: "/dashboard/course/block/3/lesson/27", label: "Урок 27: Разработчик →" },
-  marketer: { href: "/dashboard/course/block/3/lesson/29", label: "Урок 29: Маркетолог →" },
-  hr: { href: "/dashboard/course/block/3/lesson/31", label: "Урок 31: HR →" },
-  life: { href: "/dashboard/course/block/3/lesson/33", label: "Урок 33: Для жизни →" },
+  freelancer: { href: "/dashboard/course/block/5/lesson/5", label: "Урок 5: Фрилансер →" },
+  business: { href: "/dashboard/course/block/5/lesson/7", label: "Урок 7: Бизнес →" },
+  content: { href: "/dashboard/course/block/5/lesson/9", label: "Урок 9: Контент →" },
+  student: { href: "/dashboard/course/block/5/lesson/11", label: "Урок 11: Студент →" },
+  investor: { href: "/dashboard/course/block/5/lesson/13", label: "Урок 13: Инвестор →" },
+  seller: { href: "/dashboard/course/block/5/lesson/15", label: "Урок 15: Продавец →" },
+  developer: { href: "/dashboard/course/block/5/lesson/17", label: "Урок 17: Разработчик →" },
+  marketer: { href: "/dashboard/course/block/5/lesson/19", label: "Урок 19: Маркетолог →" },
+  hr: { href: "/dashboard/course/block/5/lesson/21", label: "Урок 21: HR →" },
+  life: { href: "/dashboard/course/block/5/lesson/23", label: "Урок 23: Для жизни →" },
+  money: { href: "/dashboard/course/block/5/lesson/25", label: "Урок 25: Финмодель →" },
 };
 
 /* ── Main LessonTemplate component ──────────────────────────── */
@@ -74,7 +65,7 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
   const [selectedTrack, setSelectedTrack] = useState<TrackId | null>(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem("block3_track") as TrackId | null;
+    const stored = localStorage.getItem("block5_track") as TrackId | null;
     if (stored && TRACKS[stored] && stored !== "all") setSelectedTrack(stored);
   }, []);
 
@@ -86,25 +77,24 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
     );
   }
 
-  const isQuizLesson = lessonId === 3;
-  const isLesson7 = lessonId === 7;
+  const isLesson4 = lessonId === 4;
 
   // Determine prev/next hrefs
   const prevHref = lesson.prevLesson
-    ? `/dashboard/course/block/3/lesson/${lesson.prevLesson}`
-    : "/dashboard/course/block/3";
+    ? `/dashboard/course/block/5/lesson/${lesson.prevLesson}`
+    : "/dashboard/course/block/5";
 
   let nextHref: string | null = null;
   let nextLabel: string | null = null;
 
-  if (isQuizLesson || isLesson7) {
+  if (isLesson4) {
     // Next depends on track
     if (selectedTrack && nextByTrack[selectedTrack]) {
       nextHref = nextByTrack[selectedTrack].href;
       nextLabel = nextByTrack[selectedTrack].label;
     }
   } else if (lesson.nextLesson) {
-    nextHref = `/dashboard/course/block/3/lesson/${lesson.nextLesson}`;
+    nextHref = `/dashboard/course/block/5/lesson/${lesson.nextLesson}`;
     nextLabel = `Урок ${lesson.nextLesson} →`;
   }
 
@@ -114,7 +104,7 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
       <section className="border-b border-zinc-900">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <p className="text-[#FF4422] text-sm font-semibold mb-2">
-            Блок 3 · Урок {lesson.id} из {TOTAL_LESSONS}
+            Блок 5 · Урок {lesson.id} из {TOTAL_LESSONS}
           </p>
           <div className="flex flex-wrap items-center gap-3 mb-3">
             <h1 className="text-3xl md:text-4xl font-bold text-white">{lesson.title}</h1>
@@ -131,7 +121,7 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
             {sidebarLinks.map((l) => (
               <Link
                 key={l.num}
-                href={`/dashboard/course/block/3/lesson/${l.num}`}
+                href={`/dashboard/course/block/5/lesson/${l.num}`}
                 className={
                   "shrink-0 text-xs px-2.5 py-1 rounded-lg border transition-colors " +
                   (lessonId === l.num
@@ -163,22 +153,22 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
               <Link href="/dashboard/course/block/2/lesson/1" className="flex-1 text-center text-xs py-1 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
                 Блок 2
               </Link>
-              <Link href="/dashboard/course/block/3/lesson/1" className="flex-1 text-center text-xs py-1 rounded-lg border-[#FF4422] text-[#FF4422]">
+              <Link href="/dashboard/course/block/3/lesson/1" className="flex-1 text-center text-xs py-1 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
                 Блок 3
               </Link>
               <Link href="/dashboard/course/block/4/lesson/1" className="flex-1 text-center text-xs py-1 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
                 Блок 4
               </Link>
-              <Link href="/dashboard/course/block/5/lesson/1" className="flex-1 text-center text-xs py-1 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
+              <Link href="/dashboard/course/block/5/lesson/1" className="flex-1 text-center text-xs py-1 rounded-lg border-[#FF4422] text-[#FF4422]">
                 Блок 5
               </Link>
             </div>
-            <p className="text-xs text-zinc-500 font-semibold uppercase mb-3">Блок 3</p>
+            <p className="text-xs text-zinc-500 font-semibold uppercase mb-3">Блок 5</p>
             <nav className="flex flex-col gap-1">
               {sidebarLinks.map((l) => (
                 <Link
                   key={l.num}
-                  href={`/dashboard/course/block/3/lesson/${l.num}`}
+                  href={`/dashboard/course/block/5/lesson/${l.num}`}
                   className={
                     "flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors " +
                     (lessonId === l.num
@@ -204,7 +194,7 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
         {/* ── Content ───────────────────────────────────── */}
         <div className="flex-1 min-w-0 flex flex-col gap-8">
           <img
-            src={`/course/block3/lesson${lesson.id}/b3-l${lesson.id}-hero.png`}
+            src={`/course/block5/lesson${lesson.id}/b5-l${lesson.id}-hero.png`}
             alt={lesson.title}
             className="w-full rounded-2xl object-cover"
           />
@@ -215,24 +205,15 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
             <p className="text-zinc-400 leading-relaxed whitespace-pre-line">{lesson.whyNeeded}</p>
           </section>
 
-          {/* Quiz (lesson 3 only) */}
-          {isQuizLesson && (
-            <QuizBlock
-              onTrackChange={(t) => setSelectedTrack(t)}
-            />
-          )}
-
           {/* Case */}
-          {!isQuizLesson && (
-            <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
-              <h2 className="text-2xl font-semibold text-white mb-4">{lesson.caseTitle}</h2>
-              <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-5 text-zinc-300 space-y-2">
-                {lesson.caseItems.map((item) => (
-                  <p key={item}>{item}</p>
-                ))}
-              </div>
-            </section>
-          )}
+          <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+            <h2 className="text-2xl font-semibold text-white mb-4">{lesson.caseTitle}</h2>
+            <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-5 text-zinc-300 space-y-2">
+              {lesson.caseItems.map((item) => (
+                <p key={item}>{item}</p>
+              ))}
+            </div>
+          </section>
 
           {/* Capabilities (optional) */}
           {lesson.capabilities && lesson.capabilities.length > 0 && (
@@ -290,7 +271,7 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
           <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
             <h2 className="text-2xl font-semibold text-white mb-4">Чеклист</h2>
             <Checklist
-              storageKey={`block3_lesson${lesson.id}_checklist`}
+              storageKey={`block5_lesson${lesson.id}_checklist`}
               items={lesson.checklist}
             />
           </section>
@@ -313,7 +294,7 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
             </section>
           )}
 
-          {/* BlockCompleteCard (lesson 20 only) */}
+          {/* BlockCompleteCard (lesson 26 only) */}
           {lesson.completionTrackLabel && (
             <BlockCompleteCard trackLabel={lesson.completionTrackLabel} />
           )}
@@ -326,15 +307,22 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
             >
               ← {lesson.prevLesson ? "Назад" : "К блоку"}
             </Link>
-            {nextHref ? (
+            {isLesson4 && selectedTrack && nextByTrack[selectedTrack] ? (
+              <Link
+                href={nextByTrack[selectedTrack].href}
+                className="text-[#FF4422] hover:text-[#ff5a3c] transition-colors"
+              >
+                {nextByTrack[selectedTrack].label}
+              </Link>
+            ) : isLesson4 ? (
+              <span className="text-zinc-600">Выбери трек →</span>
+            ) : nextHref ? (
               <Link
                 href={nextHref}
                 className="text-[#FF4422] hover:text-[#ff5a3c] transition-colors"
               >
                 {nextLabel}
               </Link>
-            ) : isQuizLesson || isLesson7 ? (
-              <span className="text-zinc-600">Выбери трек →</span>
             ) : lesson.nextLesson === null && !lesson.completionTrackLabel ? (
               <span className="text-zinc-600">Следующий урок →</span>
             ) : null}
