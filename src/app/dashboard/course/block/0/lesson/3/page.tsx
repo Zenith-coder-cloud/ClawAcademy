@@ -214,6 +214,20 @@ export default function Block0Lesson3Page() {
 
   return (
     <main className="min-h-screen bg-[#0D0D0D] text-white">
+      {/* Header */}
+      <section className="border-b border-zinc-900">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <p className="text-[#FF4422] text-sm font-semibold mb-2">Блок 0 · Урок 3 из 4</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">Реальные истории успеха</h1>
+          <p className="text-zinc-400 text-lg">12 доказанных кейсов с реальными цифрами</p>
+        </div>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="w-full bg-zinc-800 h-1 rounded-full mt-2">
+            <div className="bg-[#FF4422] h-1 rounded-full" style={{ width: "75%" }} />
+          </div>
+        </div>
+      </section>
+
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 flex gap-8">
         {/* ── Sidebar ── */}
         <aside className="hidden md:block w-56 shrink-0">
@@ -266,37 +280,6 @@ export default function Block0Lesson3Page() {
         </aside>
 
         <div className="flex-1 min-w-0 flex flex-col gap-6">
-      <section className="max-w-6xl mx-auto px-4 pt-10 pb-8">
-        <nav className="text-zinc-500 text-sm mb-4 flex items-center gap-1.5">
-          <Link
-            href="/dashboard"
-            className="hover:text-zinc-300 transition-colors"
-          >
-            Dashboard
-          </Link>
-          <span>/</span>
-          <Link
-            href="/dashboard/course/block/0"
-            className="hover:text-zinc-300 transition-colors"
-          >
-            Блок 0
-          </Link>
-          <span>/</span>
-          <span className="text-zinc-300">Урок 3</span>
-        </nav>
-
-        <div className="flex flex-col gap-4">
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF4422]/15 text-[#FF4422] text-xs font-semibold tracking-wide w-fit">
-            Кейсы • Реальные цифры
-          </span>
-          <h1 className="text-3xl md:text-5xl font-bold leading-tight">
-            Урок 3: Реальные истории успеха
-          </h1>
-          <p className="text-zinc-400 text-lg md:text-xl">
-            12 доказанных кейсов. Реальные люди. Конкретные цифры.
-          </p>
-        </div>
-      </section>
 
       <section className="max-w-6xl mx-auto px-4 pb-6">
         <div className="flex flex-wrap gap-3">

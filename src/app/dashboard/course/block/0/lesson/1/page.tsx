@@ -221,6 +221,20 @@ function Quiz() {
 export default function Block0Lesson1Page() {
   return (
     <main className="min-h-screen bg-[#0D0D0D]">
+      {/* ── Header ── */}
+      <section className="border-b border-zinc-900">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <p className="text-[#FF4422] text-sm font-semibold mb-2">Блок 0 · Урок 1 из 4</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">Что такое ИИ-агент — и почему это не просто чат-бот</h1>
+          <p className="text-zinc-400 text-lg">Разница между чат-ботом и агентом, который работает за тебя</p>
+        </div>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="w-full bg-zinc-800 h-1 rounded-full mt-2">
+            <div className="bg-[#FF4422] h-1 rounded-full" style={{ width: "25%" }} />
+          </div>
+        </div>
+      </section>
+
       {/* ── Hero ── */}
       <section className="relative w-full aspect-[16/7] md:aspect-[16/6]">
         <Image
