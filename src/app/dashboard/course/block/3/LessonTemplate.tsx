@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import {
   BlockCompleteCard,
+  BlockKnowledgeCheck,
+  block3KnowledgeQuestions,
   Checklist,
   LessonSteps,
   PromptCopyBlock,
@@ -357,6 +359,18 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
           {/* BlockCompleteCard (lesson 20 only) */}
           {lesson.completionTrackLabel && (
             <BlockCompleteCard trackLabel={lesson.completionTrackLabel} />
+          )}
+
+          {lesson.id === 20 && (
+            <div className="mt-8">
+              <h2 className="text-xl font-bold text-white mb-4">Проверь знания Block 3</h2>
+              <BlockKnowledgeCheck
+                blockNum={3}
+                questions={block3KnowledgeQuestions}
+                nextBlockHref="/dashboard/course/block/4"
+                nextBlockLabel="Block 4: Продай агента"
+              />
+            </div>
           )}
 
           {/* Navigation */}

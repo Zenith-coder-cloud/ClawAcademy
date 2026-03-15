@@ -454,6 +454,104 @@ export function QuizBlock({
   );
 }
 
+export const block2KnowledgeQuestions = [
+  { q: "Что отличает ИИ-агента от обычного ChatGPT?", options: ["Агент может использовать инструменты и выполнять действия автономно", "Агент даёт более длинные ответы", "Агент работает быстрее", "Агент не требует промптов"], correct: 0 },
+  { q: "Что такое cron в контексте агентов?", options: ["Способ хранения данных", "Расписание для автоматического запуска задач", "Тип агентного промпта", "Метод обучения агента"], correct: 1 },
+  { q: "Какой агент из Block 2 подходит для фрилансера?", options: ["Агент-парсер рынка", "Контент-агент для TG", "Email-агент и агент КП", "Агент мониторинга цен"], correct: 2 },
+  { q: "Что такое трек в ClawAcademy?", options: ["Порядковый номер урока", "Персонализированный путь обучения под твою роль", "Тип подписки", "Раздел настроек"], correct: 1 },
+  { q: "Какой первый шаг при настройке агента?", options: ["Написать код", "Определить задачу и промпт", "Купить API-ключ", "Нанять программиста"], correct: 1 },
+];
+
+export function BlockKnowledgeCheck({
+  blockNum,
+  questions,
+  nextBlockHref,
+  nextBlockLabel,
+}: {
+  blockNum: number;
+  questions: { q: string; options: string[]; correct: number }[];
+  nextBlockHref: string;
+  nextBlockLabel: string;
+}) {
+  const [current, setCurrent] = useState(0);
+  const [selected, setSelected] = useState<number | null>(null);
+  const [score, setScore] = useState(0);
+  const [finished, setFinished] = useState(false);
+
+  function handleSelect(idx: number) {
+    if (selected !== null) return;
+    setSelected(idx);
+    if (idx === questions[current].correct) setScore((s) => s + 1);
+  }
+
+  function handleNext() {
+    if (current + 1 >= questions.length) {
+      setFinished(true);
+    } else {
+      setCurrent((c) => c + 1);
+      setSelected(null);
+    }
+  }
+
+  if (finished) {
+    const passed = score >= Math.ceil(questions.length * 0.6);
+    return (
+      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 md:p-8">
+        <h3 className="text-xl font-bold text-white mb-2">
+          {passed ? "✅ Готов к следующему блоку!" : "📖 Стоит повторить"}
+        </h3>
+        <p className="text-zinc-400 mb-2">
+          Результат: {score} из {questions.length}
+        </p>
+        {passed ? (
+          <p className="text-zinc-400 mb-6">
+            Отличный результат! Ты усвоил Block {blockNum}. Переходи к {nextBlockLabel}.
+          </p>
+        ) : (
+          <p className="text-zinc-400 mb-6">
+            Ничего страшного — вот что стоит повторить перед {nextBlockLabel}: вернись к урокам где были ошибки, потом попробуй снова.
+          </p>
+        )}
+        <a
+          href={nextBlockHref}
+          className="inline-flex items-center px-5 py-3 rounded-xl bg-[#FF4422] hover:bg-[#e63d1e] text-white font-semibold transition-colors"
+        >
+          {nextBlockLabel} →
+        </a>
+      </div>
+    );
+  }
+
+  const q = questions[current];
+  return (
+    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 md:p-8">
+      <div className="flex items-center gap-2 mb-4">
+        <span className="text-xs text-zinc-500 font-medium uppercase tracking-wide">Проверка знаний Block {blockNum}</span>
+        <span className="text-xs text-zinc-600">· {current + 1}/{questions.length}</span>
+      </div>
+      <div className="w-full h-1 bg-zinc-800 rounded-full mb-6">
+        <div className="h-1 bg-[#FF4422] rounded-full transition-all" style={{ width: `${((current + 1) / questions.length) * 100}%` }} />
+      </div>
+      <p className="text-white font-semibold text-lg mb-5">{q.q}</p>
+      <div className="flex flex-col gap-3 mb-6">
+        {q.options.map((opt, idx) => {
+          let cls = "w-full text-left px-4 py-3 rounded-lg border text-sm transition-colors ";
+          if (selected === null) cls += "bg-zinc-800 border-zinc-700 text-zinc-300 hover:border-zinc-500 cursor-pointer";
+          else if (idx === q.correct) cls += "bg-green-900/50 border-green-500 text-green-300";
+          else if (idx === selected) cls += "bg-red-900/50 border-red-500 text-red-300";
+          else cls += "bg-zinc-800 border-zinc-700 text-zinc-500";
+          return <button key={idx} className={cls} onClick={() => handleSelect(idx)}>{opt}</button>;
+        })}
+      </div>
+      {selected !== null && (
+        <button onClick={handleNext} className="px-5 py-2 bg-[#FF4422] hover:bg-[#e63d1e] text-white rounded-lg text-sm font-semibold transition-colors">
+          {current + 1 >= questions.length ? "Посмотреть результат →" : "Следующий вопрос →"}
+        </button>
+      )}
+    </div>
+  );
+}
+
 export function TrackChoiceCards() {
   return (
     <div className="grid md:grid-cols-3 gap-4">
