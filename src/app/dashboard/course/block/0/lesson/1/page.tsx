@@ -291,12 +291,12 @@ export default function Block0Lesson1Page() {
 
         <div className="flex-1 min-w-0 flex flex-col gap-6">
         {/* ── Hero Image ── */}
-        <div className="relative w-full rounded-2xl overflow-hidden" style={{ aspectRatio: '1800/1004' }}>
+        <div className="relative w-full rounded-2xl overflow-hidden" style={{ aspectRatio: '1376/768' }}>
           <Image
             src="/course/block0/lesson1/b0-l1-cover.png"
             alt="Что такое ИИ-агент"
             fill
-            className="object-contain"
+            className="object-cover"
             priority
           />
         </div>
