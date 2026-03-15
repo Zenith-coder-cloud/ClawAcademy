@@ -196,6 +196,17 @@ export default function Block3Page() {
           </div>
         </div>
 
+        {/* Prerequisites */}
+        <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 mb-4">
+          <h3 className="text-white font-bold text-lg mb-3">📋 Что нужно знать перед этим блоком</h3>
+          <ul className="space-y-2 text-zinc-400 text-sm">
+            <li className="flex gap-2"><span className="text-[#FF4422]">✓</span>Прошёл Block 2 — умеешь запускать агентов для реальных задач</li>
+            <li className="flex gap-2"><span className="text-[#FF4422]">✓</span>Понимаешь что такое промпт и как агент получает задачу</li>
+            <li className="flex gap-2"><span className="text-[#FF4422]">✓</span>Есть хотя бы один работающий агент в своём треке</li>
+          </ul>
+          <p className="text-zinc-500 text-xs mt-3">Если чего-то нет — <a href="/dashboard/course/block/2" className="text-[#FF4422] hover:underline">вернись в Block 2</a></p>
+        </div>
+
         {/* Sections — all expanded */}
         <div className="space-y-4">
           {sections.map((section) => (

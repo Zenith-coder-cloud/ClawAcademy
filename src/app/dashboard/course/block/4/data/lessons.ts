@@ -27,6 +27,7 @@ export interface LessonData {
   prevLesson: number | null;
   nextLesson: number | null;
   completionTrackLabel?: string;
+  promptExample?: string;
   pathTag?: "employee" | "clawhub" | "saas" | "business" | "content" | "student" | "investor" | "seller" | "developer" | "marketer" | "hr" | "life";
 }
 
@@ -91,6 +92,7 @@ export const lessons: LessonData[] = [
     ],
     prevLesson: null,
     nextLesson: 2,
+    promptExample: "Моя система: агент-автоответчик для Telegram-канала про инвестиции. Умеет: отвечать на вопросы подписчиков, отправлять дайджест, напоминать о вебинарах. Думаю продать как сервис другим авторам каналов.",
   },
 
   // ─── LESSON 2 ──────────────────────────────────────────────
@@ -139,6 +141,7 @@ export const lessons: LessonData[] = [
     ],
     prevLesson: 1,
     nextLesson: 3,
+    promptExample: "Я фрилансер, специализируюсь на автоматизации для малого бизнеса. Мой агент экономит клиенту 10 часов/неделю на документах. Рассматриваю: виртуального сотрудника для бухгалтерий.",
   },
 
   // ─── LESSON 3 ──────────────────────────────────────────────

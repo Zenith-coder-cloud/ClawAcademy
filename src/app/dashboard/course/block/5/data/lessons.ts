@@ -26,6 +26,7 @@ export interface LessonData {
   prevLesson: number | null;
   nextLesson: number | null;
   completionTrackLabel?: string;
+  promptExample?: string;
 }
 
 export const TOTAL_LESSONS = 26;
@@ -82,6 +83,7 @@ export const lessons: LessonData[] = [
     ],
     prevLesson: null,
     nextLesson: 2,
+    promptExample: "Зарабатываю $800/мес. Делаю сам: пишу КП (3 ч/нед), веду переписку с клиентами (5 ч/нед), составляю отчёты (2 ч/нед), ищу новых клиентов (4 ч/нед). Итого: 14 часов/нед рутины.",
   },
 
   // ─── LESSON 2 ──────────────────────────────────────────────
@@ -132,6 +134,7 @@ export const lessons: LessonData[] = [
     ],
     prevLesson: 1,
     nextLesson: 3,
+    promptExample: "Хочу делегировать: финальная правка постов (агент пишет, помощник правит), публикация по расписанию, стандартные ответы клиентам (FAQ). Бюджет: $200/мес за 10 часов/неделю.",
   },
 
   // ─── LESSON 3 ──────────────────────────────────────────────

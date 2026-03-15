@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 import {
   BlockCompleteCard,
   Checklist,
@@ -68,10 +69,39 @@ const nextByTrack: Record<string, { href: string; label: string }> = {
   life: { href: "/dashboard/course/block/3/lesson/33", label: "Урок 33: Для жизни →" },
 };
 
+/* ── Celebration overlay ────────────────────────────────────── */
+function LessonCelebration({ lessonNum, total }: { lessonNum: number; total: number }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+      <div className="bg-zinc-900/95 border border-[#FF4422]/30 rounded-2xl px-8 py-6 flex flex-col items-center gap-3 animate-scale-in shadow-2xl">
+        <span className="text-4xl">🎉</span>
+        <p className="text-white font-bold text-xl">Урок {lessonNum} завершён!</p>
+        <div className="w-48 bg-zinc-800 rounded-full h-2">
+          <div
+            className="bg-[#FF4422] h-2 rounded-full transition-all duration-700"
+            style={{ width: `${Math.round((lessonNum / total) * 100)}%` }}
+          />
+        </div>
+        <p className="text-zinc-400 text-sm">{lessonNum} из {total} уроков блока</p>
+      </div>
+    </div>
+  );
+}
+
 /* ── Main LessonTemplate component ──────────────────────────── */
 export default function LessonTemplate({ lessonId }: { lessonId: number }) {
   const lesson = getLessonById(lessonId);
+  const router = useRouter();
   const [selectedTrack, setSelectedTrack] = useState<TrackId | null>(null);
+  const [showCelebration, setShowCelebration] = useState(false);
+
+  const handleNextLesson = useCallback((href: string) => {
+    setShowCelebration(true);
+    setTimeout(() => {
+      setShowCelebration(false);
+      router.push(href);
+    }, 2000);
+  }, [router]);
 
   useEffect(() => {
     const stored = localStorage.getItem("block3_track") as TrackId | null;
@@ -110,6 +140,7 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
 
   return (
     <main className="min-h-screen bg-[#0D0D0D] text-zinc-200">
+      {showCelebration && <LessonCelebration lessonNum={lesson.id} total={TOTAL_LESSONS} />}
       {/* ── Header ────────────────────────────────────────── */}
       <section className="border-b border-zinc-900">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -142,6 +173,15 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
                 {l.num}
               </Link>
             ))}
+          </div>
+        </div>
+        {/* Progress bar */}
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="w-full bg-zinc-800 h-1 rounded-full mt-2">
+            <div
+              className="bg-[#FF4422] h-1 rounded-full transition-all"
+              style={{ width: `${Math.round((lesson.id / TOTAL_LESSONS) * 100)}%` }}
+            />
           </div>
         </div>
       </section>
@@ -276,6 +316,7 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
               <PromptCopyBlock
                 instruction={lesson.promptInstruction}
                 code={lesson.prompt}
+                example={lesson.promptExample}
               />
             </section>
           )}
@@ -327,12 +368,12 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
               ← {lesson.prevLesson ? "Назад" : "К блоку"}
             </Link>
             {nextHref ? (
-              <Link
-                href={nextHref}
+              <button
+                onClick={() => handleNextLesson(nextHref!)}
                 className="text-[#FF4422] hover:text-[#ff5a3c] transition-colors"
               >
                 {nextLabel}
-              </Link>
+              </button>
             ) : isQuizLesson || isLesson7 ? (
               <span className="text-zinc-600">Выбери трек →</span>
             ) : lesson.nextLesson === null && !lesson.completionTrackLabel ? (

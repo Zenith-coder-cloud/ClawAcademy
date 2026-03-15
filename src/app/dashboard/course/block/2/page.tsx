@@ -208,6 +208,7 @@ function LessonCard({
   recommendedTrack: TrackId | null;
 }) {
   const isRecommended = track && track === recommendedTrack;
+  const isDimmed = recommendedTrack && track && track !== recommendedTrack;
   const baseClass =
     "relative flex items-center justify-between gap-4 rounded-xl border p-5 transition-colors";
 
@@ -217,7 +218,9 @@ function LessonCard({
         available
           ? isRecommended
             ? "border-[#FF4422] bg-zinc-900/80"
-            : "border-zinc-800 bg-zinc-900/70 hover:border-[#FF4422]"
+            : isDimmed
+              ? "border-zinc-800 bg-zinc-900/70 hover:border-[#FF4422] opacity-40"
+              : "border-zinc-800 bg-zinc-900/70 hover:border-[#FF4422]"
           : "border-zinc-900 bg-zinc-900/40 opacity-60 cursor-not-allowed"
       }`}
     >
@@ -324,7 +327,18 @@ export default function Block2IndexPage() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 flex flex-col gap-8">
-        <QuizBlock onTrackChange={setRecommendedTrack} />
+        <div className="mb-2">
+          <h2 className="text-xl font-bold text-white mb-2">Выбери свой трек</h2>
+          <p className="text-zinc-400 text-sm mb-6">
+            Ответь на 2 вопроса — получишь персональный маршрут по блоку
+          </p>
+          <QuizBlock onTrackChange={setRecommendedTrack} />
+          {recommendedTrack && (
+            <p className="mt-4 text-zinc-400 text-sm">
+              ✅ Твой трек: <span className="text-white font-semibold">{TRACKS[recommendedTrack]?.label}</span> — уроки для тебя подсвечены ниже
+            </p>
+          )}
+        </div>
 
         <div className="flex flex-col gap-4">
           {lessons.map((lesson) => (
