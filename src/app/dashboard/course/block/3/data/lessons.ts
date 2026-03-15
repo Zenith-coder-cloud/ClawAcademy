@@ -52,7 +52,7 @@ export const lessons: LessonData[] = [
       "Получить первый набросок мультиагентной цепочки",
     ],
     prompt:
-      "Покажи мне какие задачи я сейчас делаю в несколько шагов — и как их объединить в одну автоматизированную цепочку агентов. Мои типичные задачи: [ОПИШИ СВОИ ЗАДАЧИ]",
+      "Show me which tasks I currently do in multiple steps — and how to combine them into a single automated chain of agents. My typical tasks: [DESCRIBE YOUR TASKS]",
     steps: [
       "Вспомни любую задачу из Block 2 где ты делал несколько запросов подряд",
       "Запиши: Шаг 1 → Шаг 2 → Шаг 3 (что делал каждый раз)",
@@ -113,7 +113,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — Orchestrator. Твоя задача: [ЗАДАЧА]. Разбей её на подзадачи для следующих исполнителей: Researcher, Writer, Monitor. Для каждого укажи точно что он должен сделать и что вернуть.",
+      "You are the Orchestrator. Your task: [TASK]. Break it down into subtasks for the following workers: Researcher, Writer, Monitor. For each one, specify exactly what they should do and what they should return.",
     steps: [
       "Выбери одну задачу из своего трека которую хочешь автоматизировать",
       "Определи нужные роли: Orchestrator нужен всегда. Какие Workers?",
@@ -207,7 +207,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Я передаю тебе задачу как Worker-[РОЛЬ]. Вот твоё задание: [ЗАДАНИЕ]. Вот входные данные: [ДАННЫЕ]. Верни результат в формате: [ФОРМАТ]. Больше ничего не добавляй и не интерпретируй — только выполни своё задание.",
+      "I am assigning you a task as Worker-[ROLE]. Here is your assignment: [ASSIGNMENT]. Here is the input data: [DATA]. Return the result in the format: [FORMAT]. Do not add or interpret anything else — just complete your assignment.",
     steps: [
       "Возьми систему из урока 2 (твои роли и задачи)",
       "Для каждого Worker'а напиши: что он получает (Input) и что возвращает (Output)",
@@ -271,7 +271,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Настрой расписание для следующей цепочки агентов: [ЦЕПОЧКА]. Первый агент запускается в [ВРЕМЯ]. Каждый следующий — через [ИНТЕРВАЛ] после предыдущего. В конце — уведомление мне с итогом или описанием ошибки.",
+      "Set up a schedule for the following chain of agents: [CHAIN]. The first agent launches at [TIME]. Each subsequent one — [INTERVAL] after the previous one finishes. At the end — send me a notification with the summary or error description.",
     steps: [
       "Выбери задачу из своего трека которую хочешь запускать автоматически",
       "Разбей на шаги: что делает агент 1, агент 2, агент 3 — и в какое время",
@@ -327,7 +327,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — QA-агент. Прочитай следующий результат работы и проверь: 1) Все факты и цифры актуальные и точные? 2) Тон и стиль соответствует: [ОПИСАНИЕ СТИЛЯ]? 3) Задача «[ИСХОДНАЯ ЗАДАЧА]» выполнена полностью? Если всё ок — ответь одним словом: APPROVED. Если есть проблемы — перечисли конкретные замечания с указанием что именно не так.",
+      "You are the QA agent. Read the following work result and check: 1) Are all facts and figures current and accurate? 2) Does the tone and style match: [STYLE DESCRIPTION]? 3) Is the task \"[ORIGINAL TASK]\" completed in full? If everything is OK — reply with one word: APPROVED. If there are issues — list specific comments indicating what exactly is wrong.",
     steps: [
       "Возьми любой результат от своего агента из Block 2",
       "Запусти промпт QA-агента — посмотри что он найдёт",
@@ -399,7 +399,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Опиши мне структуру мультиагентной системы для задачи: [ЗАДАЧА]. Укажи: 1) Список агентов и их роли, 2) Порядок работы шаг за шагом, 3) Что каждый агент получает и что возвращает, 4) Кто общается с пользователем.",
+      "Describe the structure of a multi-agent system for the task: [TASK]. Specify: 1) List of agents and their roles, 2) Step-by-step workflow, 3) What each agent receives and what it returns, 4) Who communicates with the user.",
     steps: [
       "Прочитай описание системы Zen+Dev+Mark+Search+Brow выше",
       "Найди аналогии со своей задачей: какие роли тебе нужны?",
@@ -459,7 +459,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Управляй системой трёх агентов: КП-агент, Трекер-агент, Коммуникатор-агент. При получении нового запроса от клиента — определи кому передать задачу и передай в нужном формате. Сообщи мне только финальный результат или если требуется моё решение.",
+      "Manage a system of three agents: Proposal Agent, Tracker Agent, Communicator Agent. When receiving a new request from a client — determine which agent should handle the task and pass it in the correct format. Report to me only the final result or if my decision is needed.",
     steps: [
       "Выбери один реальный проект или клиента для теста",
       "Настрой Orchestrator с промптом выше",
@@ -523,7 +523,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — агент учёта рабочего времени и биллинга. Записывай часы в формате: [дата] | [клиент] | [задача] | [часы] | [ставка]. По команде «инвойс [клиент] за [период]» — сформируй инвойс с итоговой суммой и детализацией. По команде «статус оплат» — покажи какие инвойсы ожидают оплаты.",
+      "You are a time tracking and billing agent. Record hours in the format: [date] | [client] | [task] | [hours] | [rate]. On the command \"invoice [client] for [period]\" — generate an invoice with the total amount and breakdown. On the command \"payment status\" — show which invoices are awaiting payment.",
     steps: [
       "Запусти агент с промптом выше",
       "Внеси 3–5 реальных записей о работе за последнюю неделю",
@@ -583,7 +583,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Управляй бизнес-системой из трёх агентов: CRM, Поддержка, Аналитик. При входящем запросе от клиента — передай Агенту поддержки. При обновлении статуса сделки — обнови CRM. По воскресеньям в 18:00 — запрашивай у Аналитика еженедельный отчёт и присылай его мне.",
+      "Manage a business system of three agents: CRM, Support, Analyst. When receiving an incoming request from a client — pass it to the Support Agent. When a deal status is updated — update the CRM. On Sundays at 18:00 — request a weekly report from the Analyst and send it to me.",
     steps: [
       "Составь список из 5–10 типичных вопросов твоих клиентов",
       "Настрой агент поддержки с ответами на эти вопросы",
@@ -635,7 +635,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — агент управления воронкой продаж. Для каждого лида отслеживай текущий этап из списка: [СПИСОК ЭТАПОВ]. При переходе на новый этап — формируй сообщение по шаблону этапа. Если лид завис на этапе более [N] дней — предупреди меня. Этапы и шаблоны: [описание]",
+      "You are a sales funnel management agent. For each lead, track the current stage from the list: [LIST OF STAGES]. When moving to a new stage — compose a message using the stage template. If a lead is stuck at a stage for more than [N] days — alert me. Stages and templates: [description]",
     steps: [
       "Опиши свою воронку: какие этапы, типичное время на каждом",
       "Напиши шаблон сообщения для каждого этапа",
@@ -695,7 +695,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Запускай ежедневный контент-конвейер в [ВРЕМЯ]. Шаг 1 — Researcher: собери главные новости в нише [НИША] за последние 24 часа. Шаг 2 — Writer: на основе дайджеста напиши пост в стиле [ОПИСАНИЕ СТИЛЯ]. Шаг 3 — Publisher: адаптируй пост под [ПЛАТФОРМЫ]. Пришли мне финальные варианты на проверку.",
+      "Launch the daily content pipeline at [TIME]. Step 1 — Researcher: collect the top news in the niche [NICHE] from the last 24 hours. Step 2 — Writer: based on the digest, write a post in the style of [STYLE DESCRIPTION]. Step 3 — Publisher: adapt the post for [PLATFORMS]. Send me the final versions for review.",
     steps: [
       "Определи свою нишу и опиши стиль своего контента",
       "Настрой Researcher — источники которые он должен мониторить",
@@ -752,7 +752,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Прочитай пост и проверь: 1) Первое предложение — захватывает ли оно внимание? Предложи 2 альтернативы если нет. 2) Нет ли грамматических ошибок? 3) Соответствует ли длина формату [ПЛАТФОРМА]? 4) Есть ли чёткий призыв к действию в конце? Верни: исправленный пост + список замечаний.",
+      "Read the post and check: 1) Does the first sentence grab attention? Suggest 2 alternatives if not. 2) Are there any grammatical errors? 3) Does the length match the format for [PLATFORM]? 4) Is there a clear call to action at the end? Return: corrected post + list of comments.",
     steps: [
       "Добавь агента-редактора в систему после Writer'а",
       "Скорми ему 3 своих прошлых поста — посмотри что найдёт",
@@ -820,7 +820,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — агент мониторинга рынка. Отслеживай: [АКТИВЫ]. Уведомляй меня только когда: 1) Цена изменилась более чем на [X]% за [ПЕРИОД]. 2) Появилась новость категории [ВЫСОКАЯ ВАЖНОСТЬ]. 3) [УСЛОВИЕ ВХОДА]. Формат уведомления: 🚨 [АКТИВ] | [ИЗМЕНЕНИЕ] | [ПРИЧИНА] | [ПРИОРИТЕТ: срочно / смотреть / не срочно]",
+      "You are a market monitoring agent. Track: [ASSETS]. Notify me only when: 1) Price has changed by more than [X]% over [PERIOD]. 2) A [HIGH IMPORTANCE] category news has appeared. 3) [ENTRY CONDITION]. Notification format: 🚨 [ASSET] | [CHANGE] | [REASON] | [PRIORITY: urgent / watch / not urgent]",
     steps: [
       "Определи что мониторить: активы, пороги уведомлений, условия входа",
       "Настрой агента с промптом выше",
@@ -884,7 +884,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — агент поиска возможностей в нише [НИША]. Каждую неделю находи 3 возможности достойные внимания. Критерии: [КРИТЕРИИ]. Формат отчёта: 📌 [название] | Почему сейчас: [причина] | Риск: [низкий/средний/высокий] | Действие: [что сделать] | Дедлайн: [если есть]",
+      "You are an opportunity-finding agent in the niche [NICHE]. Every week, find 3 opportunities worth attention. Criteria: [CRITERIA]. Report format: 📌 [name] | Why now: [reason] | Risk: [low/medium/high] | Action: [what to do] | Deadline: [if any]",
     steps: [
       "Опиши свою нишу и критерии хорошей возможности",
       "Настрой агента с промптом выше",
@@ -948,7 +948,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — watchdog-агент. Следи за системой [ОПИСАНИЕ]. Останавливай и уведомляй меня если: 1) Агент не отвечает более [N] минут. 2) Агент повторил одну задачу более 3 раз. 3) Потрачено токенов более [ЛИМИТ] за сессию. Каждые 10 минут присылай heartbeat: «✅ Система работает | [что делает каждый агент]»",
+      "You are a watchdog agent. Monitor the system [DESCRIPTION]. Stop and notify me if: 1) An agent has not responded for more than [N] minutes. 2) An agent has repeated the same task more than 3 times. 3) More than [LIMIT] tokens have been spent per session. Every 10 minutes send a heartbeat: \"✅ System running | [what each agent is doing]\"",
     steps: [
       "Определи лимиты для своей системы: таймаут, бюджет токенов",
       "Настрой watchdog с промптом выше",
@@ -1008,7 +1008,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "При выполнении задачи [ЗАДАЧА] используй следующие fallback стратегии: Уровень 1 — при ошибке повтори через 30 секунд (максимум 3 раза). Уровень 2 — если 3 попытки не удались → используй альтернативный источник [АЛЬТЕРНАТИВА]. Уровень 3 — если и альтернатива недоступна → выполни упрощённую версию [УПРОЩЁННАЯ ЗАДАЧА] и уведоми меня: «Система работает в режиме fallback, [ОПИСАНИЕ] недоступно.»",
+      "When performing the task [TASK], use the following fallback strategies: Level 1 — on error, retry after 30 seconds (maximum 3 times). Level 2 — if 3 attempts failed → use the alternative source [ALTERNATIVE]. Level 3 — if the alternative is also unavailable → perform a simplified version [SIMPLIFIED TASK] and notify me: \"System is running in fallback mode, [DESCRIPTION] is unavailable.\"",
     steps: [
       "Определи самые критичные точки своей системы",
       "Для каждой точки: что такое Retry, Alternative, Graceful degradation?",
@@ -1072,7 +1072,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — агент для задачи [ЗАДАЧА]. Твои разрешённые действия: [СПИСОК]. Тебе запрещено: [ЗАПРЕТЫ]. Если тебе понадобится что-то за пределами этих прав — сообщи мне и жди подтверждения. Не действуй самостоятельно за пределами своей зоны.",
+      "You are an agent for the task [TASK]. Your permitted actions: [LIST]. You are prohibited from: [PROHIBITIONS]. If you need something beyond these permissions — notify me and wait for confirmation. Do not act on your own outside your zone.",
     steps: [
       "Возьми список своих агентов из предыдущих уроков",
       "Для каждого агента напиши: «Разрешено: [...]. Запрещено: [...]»",
@@ -1132,7 +1132,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "При работе с этой задачей тебе потребуется API ключ. Я передам его тебе через системные настройки — не через этот диалог. Если тебе нужен ключ для выполнения задачи — сообщи мне об этом, не пытайся угадать или использовать placeholder.",
+      "To work on this task you will need an API key. I will pass it to you through system settings — not through this dialog. If you need a key to complete the task — let me know, do not try to guess or use a placeholder.",
     steps: [
       "Проверь: есть ли в твоих текущих промптах ключи написанные прямо в тексте?",
       "Если да — удали их из текстов, перенеси в системные настройки",
@@ -1188,7 +1188,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — Orchestrator моей мультиагентной системы. Вот полная схема: [СХЕМА СИСТЕМЫ]. Начинай работу. Первая задача: [ЗАДАЧА]. Докладывай мне только финальный результат или если нужно моё решение.",
+      "You are the Orchestrator of my multi-agent system. Here is the full schema: [SYSTEM SCHEMA]. Begin work. First task: [TASK]. Report to me only the final result or if my decision is needed.",
     steps: [
       "Открой схему системы которую сохранил в уроке 7 — обнови её",
       "Проверь каждый пункт чеклиста готовности выше",
@@ -1246,7 +1246,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — агент-конспектировщик. Получаешь текст лекции или учебного материала. Твоя задача: создать структурированный конспект с разделами: 1) Ключевая идея (1-2 предложения), 2) Основные тезисы (список), 3) Определения и термины, 4) Примеры, 5) Вопросы для проверки понимания. Язык конспекта — тот же что у исходного текста.",
+      "You are a note-taking agent. You receive the text of a lecture or study material. Your task: create a structured summary with sections: 1) Key idea (1-2 sentences), 2) Main points (list), 3) Definitions and terms, 4) Examples, 5) Comprehension check questions. The summary language should match the source text.",
     steps: [
       "Создай трёх агентов: Конспектировщик, Карточник, Тренер",
       "Конспектировщику дай системный промпт выше",
@@ -1295,7 +1295,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — агент подготовки к экзамену. У тебя есть доступ к базе знаний студента (карточки и конспекты). Когда студент говорит «готовлюсь к [предмет]» — проанализируй материалы, определи 3 самые слабые темы, предложи план подготовки на [N] дней. В режиме тренировки задавай вопросы и оценивай ответы по шкале 1-5.",
+      "You are an exam preparation agent. You have access to the student's knowledge base (flashcards and summaries). When the student says \"preparing for [subject]\" — analyze the materials, identify the 3 weakest topics, suggest a study plan for [N] days. In training mode, ask questions and rate answers on a scale of 1-5.",
     steps: [
       "Подключи агента к базе карточек (Google Sheet или файл)",
       "Протестируй режим анализа: «покажи мои слабые места»",
@@ -1344,7 +1344,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — инвестиционный аналитик. Твои активы: [список с весами в портфеле]. Получаешь новости. Для каждой оцени: 1) Релевантность для моих активов (есть/нет), 2) Важность (1-10), 3) Направление влияния (↑ рост / ↓ падение / нейтрально), 4) Рекомендация (держать/смотреть/действовать). Присылай только новости с важностью ≥ 7.",
+      "You are an investment analyst. Your assets: [list with portfolio weights]. You receive news. For each one, evaluate: 1) Relevance to my assets (yes/no), 2) Importance (1-10), 3) Impact direction (↑ growth / ↓ decline / neutral), 4) Recommendation (hold/watch/act). Send only news with importance ≥ 7.",
     steps: [
       "Составь список активов которые хочешь мониторить",
       "Настрой Сборщика: cron каждые 4 часа, web_search по каждому активу",
@@ -1393,7 +1393,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — аналитик инвестиционных проектов. Получаешь описание проекта. Проведи анализ по 5 категориям: Команда, Продукт, Токеномика, Конкуренты, Риски. Для каждой категории: оценка (1-5) + 1-2 предложения обоснования. Итоговый verdict: «Стоит смотреть глубже» / «Пропустить» / «Красный флаг». Если красный флаг — объясни почему.",
+      "You are an investment project analyst. You receive a project description. Conduct analysis across 5 categories: Team, Product, Tokenomics, Competitors, Risks. For each category: score (1-5) + 1-2 sentences of justification. Final verdict: \"Worth a deeper look\" / \"Skip\" / \"Red flag\". If red flag — explain why.",
     steps: [
       "Настрой агента с промптом выше",
       "Протестируй на 3 известных проектах (1 хороший, 1 средний, 1 скам)",
@@ -1442,7 +1442,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — копирайтер для e-commerce. Получаешь характеристики товара. Создай описание для [платформа]: 1) Заголовок (до 80 символов, включи главный ключевой запрос), 2) Короткое описание (2-3 предложения, главная польза), 3) Полное описание (150-200 слов, польза + характеристики + для кого), 4) Список характеристик (bullet points). Стиль: продающий, без «уникального» и «эксклюзивного».",
+      "You are an e-commerce copywriter. You receive product specifications. Create a listing for [platform]: 1) Title (up to 80 characters, include the main keyword), 2) Short description (2-3 sentences, main benefit), 3) Full description (150-200 words, benefits + specs + target audience), 4) Feature list (bullet points). Style: sales-oriented, without \"unique\" and \"exclusive\".",
     steps: [
       "Настрой агента с промптом и укажи свою основную платформу",
       "Протестируй на 3 товарах: вставь характеристики, получи описание",
@@ -1491,7 +1491,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — агент мониторинга для продавца. Задача 1: проверь цены конкурентов [список URL или названий]. Если цена изменилась — сообщи: было X, стало Y, изменение Z%. Рекомендация: [повысить/снизить/оставить]. Задача 2: проверь новые отзывы на [мой товар/магазин]. На негативный — напиши вежливый ответ с извинением и предложением решения.",
+      "You are a monitoring agent for a seller. Task 1: check competitor prices [list of URLs or names]. If a price has changed — report: was X, now Y, change Z%. Recommendation: [raise/lower/keep]. Task 2: check new reviews for [my product/store]. For a negative review — write a polite response with an apology and a proposed solution.",
     steps: [
       "Составь список 3-5 прямых конкурентов",
       "Настрой Сборщика: cron каждые 4 часа по ценам конкурентов",
@@ -1540,7 +1540,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — senior code reviewer. Получаешь код на [язык]. Проведи review:\n1. КРИТИЧНО (баги, security issues): список с объяснением\n2. ВАЖНО (производительность, логические проблемы): список\n3. СТИЛЬ (naming, structure, DRY): список\n4. ХОРОШО: что сделано правильно\nДля каждой проблемы: строка, описание, как исправить (с примером кода).",
+      "You are a senior code reviewer. You receive code in [language]. Conduct a review:\n1. CRITICAL (bugs, security issues): list with explanation\n2. IMPORTANT (performance, logic issues): list\n3. STYLE (naming, structure, DRY): list\n4. GOOD: what was done well\nFor each issue: line, description, how to fix (with code example).",
     steps: [
       "Настрой агента с промптом, укажи основной язык и стайлгайд",
       "Протестируй на коде с намеренными ошибками — нашёл ли все?",
@@ -1589,7 +1589,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — технический писатель. Получаешь код проекта (структуру файлов и ключевые модули). Создай README.md: 1) Описание проекта (2-3 предложения), 2) Быстрый старт (команды для запуска), 3) Структура проекта (список папок с описанием), 4) Основные зависимости, 5) Как контрибьютить. Стиль: ясный, без воды, с примерами команд в code blocks.",
+      "You are a technical writer. You receive project code (file structure and key modules). Create README.md: 1) Project description (2-3 sentences), 2) Quick start (commands to run), 3) Project structure (folder list with descriptions), 4) Main dependencies, 5) How to contribute. Style: clear, no fluff, with example commands in code blocks.",
     steps: [
       "Дай агенту структуру твоего проекта (tree команда)",
       "Получи черновик README — отредактируй под специфику",
@@ -1638,7 +1638,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — маркетинговый аналитик. Получаешь данные по каналам за неделю [таблица с метриками]. Создай еженедельный отчёт: 1) Executive summary (3 инсайта), 2) Метрики по каналам с изменением % к прошлой неделе, 3) Аномалии (>20% изменение), 4) Топ-3 рекомендации на следующую неделю. Формат: кратко, с числами, без воды.",
+      "You are a marketing analyst. You receive channel data for the week [table with metrics]. Create a weekly report: 1) Executive summary (3 insights), 2) Metrics by channel with % change vs last week, 3) Anomalies (>20% change), 4) Top 3 recommendations for next week. Format: concise, with numbers, no fluff.",
     steps: [
       "Определи источники данных (Google Sheets с экспортом из кабинетов)",
       "Настрой агента с промптом выше",
@@ -1687,7 +1687,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — маркетолог-тестировщик. Получаешь: текущий вариант [текст/заголовок/CTA], метрика которую оптимизируем [CTR/Open rate/Conversion], аудитория [описание]. Создай 5 альтернативных вариантов. Для каждого: вариант, гипотеза почему сработает лучше, предполагаемый эффект. Разнообразие: разные тактики (вопрос / цифра / срочность / социальное доказательство / персонализация).",
+      "You are a marketing tester. You receive: current variant [text/headline/CTA], metric to optimize [CTR/Open rate/Conversion], audience [description]. Create 5 alternative variants. For each: variant, hypothesis why it will perform better, expected effect. Diversity: different tactics (question / number / urgency / social proof / personalization).",
     steps: [
       "Возьми любую текущую кампанию с метрикой ниже желаемой",
       "Прогони через агента — получи 5 вариантов",
@@ -1736,7 +1736,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — HR-скрининг агент. Получаешь резюме кандидата и критерии вакансии. Оцени кандидата:\n1. Must have: соответствует / не соответствует (для каждого пункта)\n2. Nice to have: что есть из списка\n3. Red flags: есть ли (объясни)\n4. Итоговая оценка: A (в shortlist) / B (на рассмотрение) / C (отклонить)\n5. Обоснование в 2-3 предложениях\n6. Топ-3 вопроса для собеседования если A или B",
+      "You are an HR screening agent. You receive a candidate's resume and job criteria. Evaluate the candidate:\n1. Must have: meets / does not meet (for each item)\n2. Nice to have: what is present from the list\n3. Red flags: any present (explain)\n4. Overall score: A (shortlist) / B (for consideration) / C (reject)\n5. Justification in 2-3 sentences\n6. Top 3 interview questions if A or B",
     steps: [
       "Составь критерии вакансии: must have, nice to have, red flags",
       "Настрой агента с промптом и критериями",
@@ -1785,7 +1785,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — агент онбординга. Ведёшь нового сотрудника [Имя] который вышел [дата]. Каждый рабочий день утром в 9:00 присылай: 1) Напоминание о ближайших встречах сегодня, 2) Задание дня из онбординг-плана, 3) Факт о компании или команде (1 предложение). Если сотрудник задаёт вопрос — отвечай из базы знаний FAQ. Если вопрос вне базы — «уточню и вернусь».",
+      "You are an onboarding agent. You are guiding a new employee [Name] who started on [date]. Every workday morning at 9:00 send: 1) Reminder of upcoming meetings today, 2) Task of the day from the onboarding plan, 3) A fact about the company or team (1 sentence). If the employee asks a question — answer from the FAQ knowledge base. If the question is outside the base — \"I'll check and get back to you\".",
     steps: [
       "Создай FAQ первых 30 дней (спроси у текущих сотрудников что они спрашивали)",
       "Создай онбординг-план: таблица с заданиями по дням",
@@ -1834,7 +1834,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — личный ассистент по планированию. Каждое утро в 7:30 составляй план дня. У тебя есть: список задач [источник], события Google Calendar на сегодня [источник]. Формат плана: 1) ГЛАВНОЕ (1 задача, 90 минут, блок с 9:00), 2) ВСТРЕЧИ (из календаря), 3) ОСТАЛЬНОЕ (список на свободное время). Стиль: краткий, конкретный. Никаких мотивационных слов.",
+      "You are a personal planning assistant. Every morning at 7:30 create a daily plan. You have: task list [source], today's Google Calendar events [source]. Plan format: 1) MAIN (1 task, 90 minutes, block starting at 9:00), 2) MEETINGS (from calendar), 3) EVERYTHING ELSE (list for free time). Style: brief, specific. No motivational words.",
     steps: [
       "Подключи агента к своим задачам (Notion, Todoist, Google Tasks или просто список)",
       "Настрой утренний cron: 7:30, план дня",
@@ -1883,7 +1883,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Ты — агент личных финансов. Каждый вечер в 22:00 пиши: «Добрый вечер! Что потратил сегодня? Формат: категория сумма (например: еда 500, транспорт 200). И отметь привычки: [список привычек] — + или -». Записывай в таблицу. По воскресеньям присылай недельный отчёт: расходы по категориям, % выполнения привычек, 1 инсайт о паттерне.",
+      "You are a personal finance agent. Every evening at 22:00 write: \"Good evening! What did you spend today? Format: category amount (e.g.: food 500, transport 200). And mark habits: [list of habits] — + or -\". Record in a spreadsheet. On Sundays send a weekly report: expenses by category, % of habits completed, 1 insight about a pattern.",
     steps: [
       "Составь список категорий расходов (5-7 штук) и список привычек (3-5)",
       "Настрой месячный бюджет по категориям в таблице",

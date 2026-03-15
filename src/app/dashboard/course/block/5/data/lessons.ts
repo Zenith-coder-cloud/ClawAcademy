@@ -61,7 +61,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Я зарабатываю [X руб/$] в месяц на агентских услугах. Сейчас всё делаю сам: [список задач]. Помоги мне:\n1) Разделить задачи на три категории: автоматизировать агентами / делегировать помощнику / оставить себе\n2) Что должно произойти чтобы мой доход удвоился без увеличения рабочего времени?\n3) Составить \"карту системы\" — кто что делает в идеальном варианте через 3 месяца",
+      "I earn [X $/month] from agent services. Currently I do everything myself: [list of tasks]. Help me:\n1) Split tasks into three categories: automate with agents / delegate to an assistant / keep for myself\n2) What needs to happen for my income to double without increasing working hours?\n3) Create a \"system map\" — who does what in the ideal scenario 3 months from now",
     steps: [
       "Выпиши все задачи которые делаешь за неделю (буквально всё)",
       "Для каждой задачи: может ли агент делать это? Может ли помощник? Только ты?",
@@ -111,7 +111,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Помоги написать описание задачи для помощника на фриланс-бирже. Задачи которые я хочу делегировать: [список]. Бюджет: [X]/мес за [Y] часов в неделю. Составь:\n1) Описание позиции (что делает, что не делает)\n2) Требования к кандидату (минимальные)\n3) Тестовое задание (1-2 часа работы для проверки)\n4) Инструкцию по онбордингу нового помощника",
+      "Help me write a task description for an assistant on a freelance platform. Tasks I want to delegate: [list]. Budget: [X]/month for [Y] hours per week. Create:\n1) Position description (what they do, what they don't do)\n2) Candidate requirements (minimum)\n3) Test assignment (1-2 hours of work to evaluate)\n4) Onboarding instructions for the new assistant",
     steps: [
       "Из карты системы (Урок 1) выбери 3-5 задач для делегирования",
       "Используй промпт — получи описание вакансии",
@@ -162,7 +162,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Я специалист по [ниша]. Хочу настроить систему inbound лидогенерации. Помоги:\n1) Контент-план на месяц: 4 поста которые привлекут потенциальных клиентов [тип клиента] (форматы: кейс/совет/разбор/ошибки)\n2) Лид-магнит: что предложить бесплатно чтобы получить контакт\n3) 3-4 квалификационных вопроса для бота (отсекают неподходящих)\n4) Платформа для моей ниши: LinkedIn/Telegram/ВКонтакте/другое — что лучше и почему",
+      "I'm a specialist in [niche]. I want to set up an inbound lead generation system. Help me:\n1) Content plan for a month: 4 posts that will attract potential clients [client type] (formats: case study/tip/breakdown/mistakes)\n2) Lead magnet: what to offer for free in exchange for a contact\n3) 3-4 qualification questions for a bot (to filter out unqualified leads)\n4) Platform for my niche: LinkedIn/Telegram/VKontakte/other — which is better and why",
     steps: [
       "Выбери платформу где есть твоя аудитория",
       "Получи контент-план используя промпт",
@@ -212,7 +212,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Помоги сформулировать моё позиционирование как ИИ-эксперта. Я работаю с: [клиенты]. Основной результат который я даю: [результат]. Использую: [инструменты/агенты]. Конкуренты говорят: [что обычно говорят в моей нише]. Составь:\n1) 3 варианта позиционирования по формуле\n2) Bio для Telegram (2-3 предложения)\n3) Elevator pitch (30 секунд голосом)\n4) Заголовок для лендинга",
+      "Help me formulate my positioning as an AI expert. I work with: [clients]. The main result I deliver: [result]. I use: [tools/agents]. Competitors say: [what is usually said in my niche]. Create:\n1) 3 positioning options using the formula\n2) Bio for Telegram (2-3 sentences)\n3) Elevator pitch (30 seconds spoken)\n4) Landing page headline",
     steps: [
       "Запроси 3 варианта позиционирования используя промпт",
       "Выбери лучший — отредактируй по своему вкусу",
@@ -261,7 +261,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Я фрилансер, хочу перевести клиента [тип клиента] с разового проекта на ежемесячный ретейнер. Текущий проект стоил [X]. Помоги:\n1) Ретейнер-предложение: что включить чтобы клиент видел ценность каждый месяц\n2) Скрипт разговора: как предложить ретейнер не выглядя навязчиво\n3) Цена: как обосновать ежемесячную оплату если проект уже оплачен\n4) Что автоматизировать агентами чтобы ретейнер не занимал много времени",
+      "I'm a freelancer, I want to move a client [client type] from a one-time project to a monthly retainer. The current project cost [X]. Help me:\n1) Retainer proposal: what to include so the client sees value every month\n2) Conversation script: how to propose a retainer without being pushy\n3) Pricing: how to justify monthly payment if the project is already paid for\n4) What to automate with agents so the retainer doesn't take too much time",
     steps: [
       "Выбери 2-3 существующих клиента которые остались довольны",
       "Для каждого: что ты мог бы делать для них ежемесячно?",
@@ -310,7 +310,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Я фрилансер специализируюсь на [ниша]. Хочу выстроить партнёрскую сеть. Помоги:\n1) Какие специалисты дополняют мою нишу (чьи клиенты могут нуждаться в моих услугах)?\n2) Как предложить взаимный реферальный обмен (скрипт письма)\n3) Как найти агентства которые используют субподрядчиков в моей нише\n4) Как управлять партнёрскими сделками через агента (учёт, контроль, отчёты)",
+      "I'm a freelancer specializing in [niche]. I want to build a partner network. Help me:\n1) What specialists complement my niche (whose clients might need my services)?\n2) How to propose a mutual referral exchange (email script)\n3) How to find agencies that use subcontractors in my niche\n4) How to manage partner deals through an agent (tracking, control, reports)",
     steps: [
       "Составь список из 5 специализаций которые дополняют твою",
       "Найди по 3 фрилансера каждой специализации в Telegram/LinkedIn",
@@ -359,7 +359,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Я строю агентское агентство по внедрению ИИ-агентов для [ниша бизнесов]. Сейчас: [текущее состояние — кол-во клиентов, доход, команда]. Хочу через 6 месяцев: [цель]. Помоги:\n1) Организационная структура агентства для моего уровня\n2) Что нанимать первым: sales, delivery, admin?\n3) Как выстроить процесс delivery чтобы агенты делали 80% работы\n4) Метрики которые нужно отслеживать еженедельно",
+      "I'm building an AI agent implementation agency for [business niche]. Current state: [current state — number of clients, revenue, team]. In 6 months I want: [goal]. Help me:\n1) Organizational structure for my agency at my current level\n2) What to hire first: sales, delivery, or admin?\n3) How to build a delivery process so agents handle 80% of the work\n4) Metrics to track weekly",
     steps: [
       "Определи текущий уровень (1, 2 или 3)",
       "Нарисуй оргсхему: кто что делает сейчас и кто должен быть через 6 мес",
@@ -408,7 +408,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Помоги выстроить операционную систему для моего агентства. Сейчас: [кол-во клиентов, команда, инструменты]. Создай:\n1) Шаблон проекта в Notion (разделы, статусы, поля)\n2) Шаблон еженедельного отчёта для клиента (автоматически заполняемый агентом)\n3) Скрипт ежемесячного звонка с клиентом (20 минут, цель — продление и upsell)\n4) Dashboard метрик агентства (что смотреть каждую неделю)",
+      "Help me build an operating system for my agency. Current state: [number of clients, team, tools]. Create:\n1) Project template in Notion (sections, statuses, fields)\n2) Weekly client report template (auto-filled by an agent)\n3) Monthly client call script (20 minutes, goal — renewal and upsell)\n4) Agency metrics dashboard (what to review every week)",
     steps: [
       "Выбери инструмент для трекинга (Notion рекомендуется)",
       "Настрой шаблон проекта по промпту",
@@ -458,7 +458,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "У меня контент-канал по [теме] с [X] подписчиков. Хочу расширить до медиа-портфолио. Помоги:\n1) Какие смежные ниши/темы подходят для новых каналов под мою аудиторию?\n2) Как настроить единую систему агентов для 3 каналов с минимальными изменениями\n3) Разная монетизация для каждого канала (реклама/подписка/ретейнеры)\n4) Контент-план для запуска нового канала с нуля за 30 дней",
+      "I have a content channel about [topic] with [X] subscribers. I want to expand into a media portfolio. Help me:\n1) What adjacent niches/topics are suitable for new channels for my audience?\n2) How to set up a unified agent system for 3 channels with minimal changes\n3) Different monetization for each channel (ads/subscriptions/retainers)\n4) Content plan for launching a new channel from scratch in 30 days",
     steps: [
       "Проведи аудит: что агенты делают хорошо в текущем канале?",
       "Выбери 1-2 смежные ниши для новых каналов",
@@ -508,7 +508,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "У меня медиа-портфолио: [список каналов, их аудитория, тематика]. Текущая монетизация: [что есть]. Помоги:\n1) Какие потоки монетизации подходят для моей аудитории лучше всего?\n2) Как настроить рекламный процесс через агента (получение запросов, оценка, ответ, учёт)\n3) Как создать цифровой продукт (курс/гайд) на основе лучшего контента за 30 дней\n4) Метрики медиа-бизнеса которые нужно отслеживать",
+      "I have a media portfolio: [list of channels, their audience, topics]. Current monetization: [what exists]. Help me:\n1) Which monetization streams are best suited for my audience?\n2) How to set up an ad sales process through an agent (receiving requests, evaluation, response, accounting)\n3) How to create a digital product (course/guide) based on the best content in 30 days\n4) Media business metrics to track",
     steps: [
       "Посчитай текущий доход по источникам",
       "Выбери 2 новых потока для запуска в этом месяце",
@@ -557,7 +557,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Я студент создал образовательный продукт на базе ИИ-агента: [описание]. Текущие метрики: [пользователи, доход, тема]. Помоги:\n1) Как оформить это как стартап (юридическая форма, документы)\n2) Какие акселераторы и гранты доступны для студентов в 2025-2026\n3) Питч-дек на 5 слайдов для университетского инкубатора\n4) Кого искать в команду (какие роли, где найти среди однокурсников)",
+      "I'm a student and I built an educational product based on an AI agent: [description]. Current metrics: [users, revenue, topic]. Help me:\n1) How to register this as a startup (legal form, documents)\n2) What accelerators and grants are available for students in 2025-2026\n3) A 5-slide pitch deck for a university incubator\n4) Who to look for on the team (what roles, where to find them among classmates)",
     steps: [
       "Зарегистрируй юридическое лицо (ИП или ООО с минимальными затратами)",
       "Открой бизнес-счёт отдельно от личного",
@@ -607,7 +607,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Мой EdTech стартап: [описание, метрики, команда]. Хочу привлечь [X] инвестиций за [Y] доли. Помоги:\n1) One-pager для первого контакта с инвестором (1 страница)\n2) Ответы на 10 самых частых вопросов EdTech инвесторов\n3) Где найти 20 потенциальных инвесторов в EdTech (имена, контакты, что их интересует)\n4) Red flags которые видят инвесторы в студенческих стартапах — как их избежать",
+      "My EdTech startup: [description, metrics, team]. I want to raise [X] in investment for [Y] equity. Help me:\n1) One-pager for initial contact with an investor (1 page)\n2) Answers to the 10 most common EdTech investor questions\n3) Where to find 20 potential EdTech investors (names, contacts, what interests them)\n4) Red flags investors see in student startups — how to avoid them",
     steps: [
       "Подготовь one-pager используя промпт",
       "Найди 20 потенциальных инвесторов",
@@ -661,7 +661,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "У меня аналитический продукт по [ниша]. Агент умеет: [список]. Текущая аудитория: [X подписчиков/пользователей]. Помоги:\n1) Три тарифа с ценами и чётким разграничением ценности\n2) Как технически настроить доставку аналитики по уровням (Telegram-боты, вебхуки)\n3) Лид-воронка: как конвертировать бесплатную аудиторию в платящих\n4) Метрики SaaS которые нужно отслеживать (MRR, Churn, LTV)",
+      "I have an analytics product in [niche]. The agent can: [list]. Current audience: [X subscribers/users]. Help me:\n1) Three pricing tiers with clear value differentiation\n2) How to technically set up analytics delivery by tier (Telegram bots, webhooks)\n3) Lead funnel: how to convert free audience into paying users\n4) SaaS metrics to track (MRR, Churn, LTV)",
     steps: [
       "Определи три уровня ценности твоей аналитики (что дать бесплатно, что платно)",
       "Создай три Telegram-чата (или канала) для разных тарифов",
@@ -715,7 +715,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "У меня инвест-клуб с трек-рекордом [X]% за [период]. Хочу привлечь новых участников. Помоги:\n1) Шаблон публичного отчёта о результатах (что показывать, что нет)\n2) Пост для канала: как объявить об открытии новых мест прозрачно\n3) Как масштабировать операционку: что делегировать помощнику, что агентам\n4) Следующий уровень через год: что должно измениться в структуре",
+      "I have an investment club with a track record of [X]% over [period]. I want to attract new members. Help me:\n1) Public results report template (what to show, what not to)\n2) Channel post: how to announce the opening of new spots transparently\n3) How to scale operations: what to delegate to an assistant, what to agents\n4) Next level in a year: what should change in the structure",
     steps: [
       "Подготовь первый публичный отчёт о результатах",
       "Опубликуй на канале — с комментарием о новых местах",
@@ -765,7 +765,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Я развиваю агентство автоматизации для продавцов на [маркетплейс]. Сейчас [X] клиентов, доход [Y]/мес. Хочу вырасти до [Z] клиентов, доход [W]/мес за [срок]. Помоги:\n1) Специализация: какую нишу товаров выбрать (анализ конкуренции на рынке агентств)\n2) Sales процесс: как найти первых 5 новых клиентов за месяц\n3) Что делегировать первому менеджеру по клиентам (описание роли)\n4) Как автоматизировать онбординг нового клиента-магазина",
+      "I'm growing an automation agency for sellers on [marketplace]. Currently [X] clients, revenue [Y]/month. I want to grow to [Z] clients, revenue [W]/month in [timeframe]. Help me:\n1) Specialization: which product niche to choose (competitive analysis of the agency market)\n2) Sales process: how to find the first 5 new clients in a month\n3) What to delegate to the first account manager (role description)\n4) How to automate onboarding of a new store client",
     steps: [
       "Выбери специализацию: маркетплейс + ниша товаров",
       "Обнови позиционирование (урок 4) — сузь до специализации",
@@ -815,7 +815,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Хочу запустить private label на [маркетплейс] в нише [категория]. Помоги:\n1) Критерии выбора ниши (чек-лист: объём/конкуренция/маржа)\n2) Анализ топ-5 конкурентов в нише: что мне нужно узнать о каждом\n3) Стратегия входа: цена, позиционирование, первые отзывы\n4) Агент-система для мониторинга и автоматического обновления контента",
+      "I want to launch a private label on [marketplace] in the [category] niche. Help me:\n1) Niche selection criteria (checklist: volume/competition/margin)\n2) Analysis of top 5 competitors in the niche: what I need to learn about each one\n3) Entry strategy: pricing, positioning, first reviews\n4) Agent system for monitoring and automatic content updates",
     steps: [
       "Запроси агента проанализировать 3-5 ниш по критериям",
       "Выбери нишу: не самая конкурентная, не самая тихая",
@@ -865,7 +865,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Я разработчик, хочу превратить мой агентный API [описание] в SaaS продукт. Сейчас: [метрики]. Помоги:\n1) Минимальный UI для SaaS (какие экраны нужны в первую очередь)\n2) Onboarding flow: как пользователь идёт от регистрации до первого результата за <5 минут\n3) Pricing page: как оформить планы чтобы максимизировать ARPU\n4) Customer success: что автоматизировать агентами (welcome, feature announcements, churn prevention)",
+      "I'm a developer, I want to turn my agent API [description] into a SaaS product. Current state: [metrics]. Help me:\n1) Minimum UI for SaaS (which screens are needed first)\n2) Onboarding flow: how the user goes from registration to first result in <5 minutes\n3) Pricing page: how to structure plans to maximize ARPU\n4) Customer success: what to automate with agents (welcome, feature announcements, churn prevention)",
     steps: [
       "Выбери стек и создай базовый UI (Lovable/v0 ускорит до нескольких часов)",
       "Настрой Stripe биллинг: минимум 2 плана",
@@ -915,7 +915,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Мой SaaS [описание] хочет привлечь enterprise клиентов. Текущие SMB метрики: [данные]. Помоги:\n1) Enterprise pitch deck (5 слайдов: проблема/решение/ROI/security/цена)\n2) Security FAQ: 10 вопросов которые задают enterprise IT-отделы + ответы\n3) Enterprise pricing: как структурировать годовые контракты\n4) Где найти первых enterprise лидов (отрасль: [ваша])",
+      "My SaaS [description] wants to attract enterprise clients. Current SMB metrics: [data]. Help me:\n1) Enterprise pitch deck (5 slides: problem/solution/ROI/security/pricing)\n2) Security FAQ: 10 questions enterprise IT departments ask + answers\n3) Enterprise pricing: how to structure annual contracts\n4) Where to find first enterprise leads (industry: [replace with your own])",
     steps: [
       "Добавь enterprise план с on-premise или dedicated опцией",
       "Подготовь security FAQ используя промпт",
@@ -965,7 +965,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Я веду performance агентство для [X] клиентов в нише [ниша]. Платформы: [FB/Google/VK/другое]. Помоги:\n1) Структура автоматического еженедельного отчёта (что включать, визуализация)\n2) Чек-лист проверки рекламного аккаунта (агент запускает ежедневно)\n3) Система A/B тестирования: как организовать и документировать гипотезы\n4) Onboarding нового клиента: что делать в первые 2 недели",
+      "I run a performance agency for [X] clients in the [niche] niche. Platforms: [FB/Google/VK/other]. Help me:\n1) Structure of an automatic weekly report (what to include, visualization)\n2) Ad account audit checklist (agent runs daily)\n3) A/B testing system: how to organize and document hypotheses\n4) New client onboarding: what to do in the first 2 weeks",
     steps: [
       "Настрой агента-ревьюера: ежедневный чек-лист аккаунтов",
       "Настрой агента-репортёра: автоматический недельный отчёт каждому клиенту",
@@ -1015,7 +1015,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Я маркетолог хочу перейти от исполнения к стратегическому консалтингу для [тип компаний]. Помоги:\n1) Какие консалтинговые продукты создать (аудит/стратегия/обучение)\n2) Как провести маркетинговый аудит компании за 1 день (чек-лист + агент для данных)\n3) Как позиционировать переход: «я не просто маркетолог, я CMO на аутсорсе»\n4) Как найти первых консалтинговых клиентов среди существующей сети",
+      "I'm a marketer and I want to transition from execution to strategic consulting for [company type]. Help me:\n1) What consulting products to create (audit/strategy/training)\n2) How to conduct a marketing audit of a company in 1 day (checklist + agent for data)\n3) How to position the transition: \"I'm not just a marketer, I'm an outsourced CMO\"\n4) How to find first consulting clients within my existing network",
     steps: [
       "Выбери 1-2 консалтинговых продукта для старта (аудит + ретейнер)",
       "Создай шаблон маркетингового аудита (агент собирает данные, ты интерпретируешь)",
@@ -1065,7 +1065,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Я строю HR-агентство специализирующееся на [ниша]. Хочу автоматизировать процесс найма через агентов. Помоги:\n1) Чек-лист скрининга резюме (10-15 критериев для моей ниши)\n2) Банк вопросов для интервью по компетенциям (5 компетенций × 3 вопроса)\n3) Шаблон отчёта для клиента (сравнение кандидатов)\n4) Как обосновать гонорар клиенту: «за что вы платите 15% оклада»",
+      "I'm building an HR agency specializing in [niche]. I want to automate the hiring process through agents. Help me:\n1) Resume screening checklist (10-15 criteria for my niche)\n2) Competency-based interview question bank (5 competencies x 3 questions)\n3) Client report template (candidate comparison)\n4) How to justify the fee to the client: \"what you're paying 15% of salary for\"",
     steps: [
       "Выбери нишу (IT / продажи / производство / другое)",
       "Создай систему скрининга: агент + чек-лист критериев",
@@ -1115,7 +1115,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Я HR-аутсорсер для компаний [размер]. Хочу автоматизировать: онбординг, документацию, пульс-опросы. Помоги:\n1) Онбординг чек-лист для нового сотрудника (агент отправляет автоматически по шагам)\n2) Шаблон пульс-опроса (5 вопросов, раз в месяц, анонимный)\n3) HR-документы которые агент может генерировать автоматически (трудовой договор, NDA, оффер)\n4) Pitch для малого бизнеса: «почему HR-аутсорсинг лучше штатного HR»",
+      "I'm an HR outsourcer for companies of [size]. I want to automate: onboarding, documentation, pulse surveys. Help me:\n1) Onboarding checklist for a new employee (agent sends automatically step by step)\n2) Pulse survey template (5 questions, once a month, anonymous)\n3) HR documents the agent can generate automatically (employment contract, NDA, offer letter)\n4) Pitch for small businesses: \"why HR outsourcing is better than an in-house HR\"",
     steps: [
       "Создай 3 пакета с чёткими ценами и составом",
       "Настрой онбординг-агента: автоматически ведёт нового сотрудника 2 недели",
@@ -1165,7 +1165,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Я хочу создать платное сообщество на тему [тема: жизнь с ИИ/продуктивность/личные финансы с агентами]. Аудитория: [кто]. Помоги:\n1) Ценностное предложение сообщества (за что люди платят каждый месяц?)\n2) Контент-план на первый месяц (что публиковать, как часто)\n3) Правила сообщества (5-7 пунктов которые создают культуру)\n4) Как автоматизировать модерацию и повторяющиеся задачи через агента",
+      "I want to create a paid community on the topic of [topic: life with AI/productivity/personal finance with agents]. Audience: [who]. Help me:\n1) Community value proposition (what are people paying for every month?)\n2) Content plan for the first month (what to publish, how often)\n3) Community rules (5-7 points that create culture)\n4) How to automate moderation and repetitive tasks through an agent",
     steps: [
       "Выбери формат (Telegram/Discord/Notion+TG)",
       "Создай ценностное предложение и лендинг",
@@ -1215,7 +1215,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Я хочу проводить коучинг [формат] на тему внедрения ИИ-агентов в жизнь. Клиенты: [кто]. Помоги:\n1) Структура первой коучинговой сессии (что узнать о клиенте, что настроить, как закончить)\n2) Диагностическая анкета перед сессией (10 вопросов)\n3) Как агент помогает мне как коучу (подготовка, заметки, follow-up)\n4) Оффер и цена для целевой аудитории",
+      "I want to offer coaching [format] on the topic of integrating AI agents into life. Clients: [who]. Help me:\n1) Structure of the first coaching session (what to learn about the client, what to set up, how to end)\n2) Diagnostic questionnaire before the session (10 questions)\n3) How an agent helps me as a coach (preparation, notes, follow-up)\n4) Offer and pricing for the target audience",
     steps: [
       "Выбери формат (разовая сессия / курс / группа)",
       "Создай диагностическую анкету — агент помогает её написать",
@@ -1265,7 +1265,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Помоги построить финансовую модель моего агентства. Текущие данные: Клиенты: [список с чеками]. Расходы: [команда, инструменты, маркетинг]. Помоги:\n1) Excel/Google Sheets шаблон финмодели (строки и формулы)\n2) Юнит-экономика: LTV, CAC, payback period\n3) Сценарии: что если потеряю одного крупного клиента? Что если возьму 3 новых?\n4) Сколько мне реально можно выводить каждый месяц без риска для бизнеса",
+      "Help me build a financial model for my agency. Current data: Clients: [list with prices]. Expenses: [team, tools, marketing]. Help me:\n1) Excel/Google Sheets financial model template (rows and formulas)\n2) Unit economics: LTV, CAC, payback period\n3) Scenarios: what if I lose one major client? What if I add 3 new ones?\n4) How much can I realistically withdraw each month without risking the business",
     steps: [
       "Собери все данные: доходы, расходы, клиенты за последние 3 месяца",
       "Создай Google Sheets модель по шаблону из промпта",
@@ -1315,7 +1315,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "Я прошёл курс ClawAcademy, мой трек: [трек]. Текущие результаты: [доход, клиенты, команда, система агентов]. Помоги:\n1) Аудит: что работает хорошо, что тормозит рост\n2) Топ-3 приоритета на следующие 90 дней\n3) Конкретные цели через 90 дней (числа, не абстракции)\n4) Что изменится в жизни когда я достигну этих целей — почему это важно?",
+      "I completed the ClawAcademy course, my track: [track]. Current results: [revenue, clients, team, agent system]. Help me:\n1) Audit: what's working well, what's slowing down growth\n2) Top 3 priorities for the next 90 days\n3) Specific goals in 90 days (numbers, not abstractions)\n4) What will change in my life when I achieve these goals — why does it matter?",
     steps: [
       "Заполни чек-лист выпускника — честно",
       "Используй промпт — получи 90-дневный план",
