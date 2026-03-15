@@ -15,6 +15,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [hashLoading, setHashLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [termsAgreed, setTermsAgreed] = useState(false);
 
   const decodeTelegramAuthResult = (encoded: string) => {
     const decoded = decodeURIComponent(encoded);
@@ -204,10 +205,28 @@ export default function LoginPage() {
           <TelegramLoginButton />
         </div>
 
+        {/* Terms checkbox */}
+        <div className="flex items-start gap-3 mb-4">
+          <input
+            type="checkbox"
+            id="terms-agree"
+            checked={termsAgreed}
+            onChange={(e) => setTermsAgreed(e.target.checked)}
+            className="mt-0.5 w-4 h-4 rounded border-zinc-600 bg-zinc-800 text-[#FF4422] focus:ring-[#FF4422] cursor-pointer shrink-0"
+          />
+          <label htmlFor="terms-agree" className="text-xs text-zinc-400 leading-relaxed cursor-pointer">
+            Я принимаю{" "}
+            <a href="/terms" target="_blank" className="text-[#FF4422] hover:underline">условия использования</a>
+            {" "}и{" "}
+            <a href="/privacy" target="_blank" className="text-[#FF4422] hover:underline">политику конфиденциальности</a>
+          </label>
+        </div>
+
         {/* Button 1: Telegram login */}
         <button
           onClick={handleTelegramClick}
-          className="w-full py-3.5 bg-[#229ED9] hover:bg-[#1e8dc4] rounded-xl flex items-center justify-center gap-3 text-white text-sm font-semibold transition-colors"
+          disabled={!termsAgreed}
+          className="w-full py-3.5 bg-[#229ED9] hover:bg-[#1e8dc4] rounded-xl flex items-center justify-center gap-3 text-white text-sm font-semibold transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <svg
             width="20"
@@ -231,7 +250,8 @@ export default function LoginPage() {
         {!showCodeForm ? (
           <button
             onClick={() => setShowCodeForm(true)}
-            className="w-full py-3.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-xl flex items-center justify-center gap-3 text-white text-sm font-semibold transition-colors"
+            disabled={!termsAgreed}
+            className="w-full py-3.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-xl flex items-center justify-center gap-3 text-white text-sm font-semibold transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <Image src="/junior-bot.png" width={28} height={28} alt="Junior" className="w-7 h-7 rounded-full" />
             Войти через @ClawAcademyBot
@@ -289,7 +309,9 @@ export default function LoginPage() {
         </div>
 
         {/* Wallet */}
-        <ConnectWalletButton />
+        <div className={!termsAgreed ? "opacity-40 pointer-events-none" : ""}>
+          <ConnectWalletButton />
+        </div>
       </div>
 
       {/* Back link */}
