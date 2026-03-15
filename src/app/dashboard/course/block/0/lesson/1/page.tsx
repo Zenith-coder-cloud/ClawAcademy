@@ -221,34 +221,6 @@ function Quiz() {
 export default function Block0Lesson1Page() {
   return (
     <main className="min-h-screen bg-[#0D0D0D]">
-      {/* Block Navigation */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-4">
-        <div className="flex items-center gap-2 flex-wrap">
-          <Link href="/dashboard" className="text-xs text-zinc-500 hover:text-white transition-colors mr-2">
-            ← Дашборд
-          </Link>
-          {[
-            { num: 0, href: "/dashboard/course/block/0/lesson/1" },
-            { num: 1, href: "/dashboard/course/block/1/lesson/1" },
-            { num: 2, href: "/dashboard/course/block/2/lesson/1" },
-            { num: 3, href: "/dashboard/course/block/3/lesson/1" },
-            { num: 4, href: "/dashboard/course/block/4/lesson/1" },
-          ].map((b) => (
-            <Link
-              key={b.num}
-              href={b.href}
-              className={`text-xs px-3 py-1 rounded-lg border transition-colors ${
-                b.num === 0
-                  ? "border-[#FF4422] text-[#FF4422]"
-                  : "border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500"
-              }`}
-            >
-              Блок {b.num}
-            </Link>
-          ))}
-        </div>
-      </div>
-
       {/* ── Hero ── */}
       <section className="relative w-full aspect-[16/7] md:aspect-[16/6]">
         <Image
@@ -281,7 +253,55 @@ export default function Block0Lesson1Page() {
         </div>
       </section>
 
-      <div className="max-w-4xl mx-auto px-4 py-10 flex flex-col gap-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 flex gap-8">
+        {/* ── Sidebar ── */}
+        <aside className="hidden md:block w-56 shrink-0">
+          <div className="sticky top-6 bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+            <Link href="/dashboard" className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-white transition-colors mb-3">
+              ← Дашборд
+            </Link>
+            <div className="grid grid-cols-3 gap-1 mb-3">
+              <Link href="/dashboard/course/block/0/lesson/1" title="Блок 0" className={"text-center text-xs py-1.5 rounded-lg border transition-colors " + (0 === 0 ? "border-[#FF4422] text-[#FF4422]" : "border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500")}>
+                0
+              </Link>
+              <Link href="/dashboard/course/block/1/lesson/1" title="Блок 1" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
+                1
+              </Link>
+              <Link href="/dashboard/course/block/2/lesson/1" title="Блок 2" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
+                2
+              </Link>
+              <Link href="/dashboard/course/block/3/lesson/1" title="Блок 3" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
+                3
+              </Link>
+              <Link href="/dashboard/course/block/4/lesson/1" title="Блок 4" className="text-center text-xs py-1.5 rounded-lg border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
+                4
+              </Link>
+            </div>
+            <p className="text-xs text-zinc-500 font-semibold uppercase mb-3">Блок 0</p>
+            <nav className="flex flex-col gap-1">
+              {[
+                { num: 1, title: "Что такое ИИ-агент", href: "/dashboard/course/block/0/lesson/1" },
+                { num: 2, title: "OpenClaw vs ChatGPT vs n8n", href: "/dashboard/course/block/0/lesson/2" },
+                { num: 3, title: "Реальные истории успеха", href: "/dashboard/course/block/0/lesson/3" },
+                { num: 4, title: "Карта пути Block 0–5", href: "/dashboard/course/block/0/lesson/4" },
+              ].map(l => (
+                <Link key={l.num} href={l.href}
+                  className={"flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors " +
+                    (1 === l.num
+                      ? "bg-[#FF4422]/10 text-[#FF4422] font-semibold"
+                      : "text-zinc-400 hover:text-white hover:bg-zinc-800")}>
+                  <span className={"w-5 h-5 rounded-full border flex items-center justify-center text-xs shrink-0 " +
+                    (1 === l.num ? "border-[#FF4422]" : "border-zinc-600")}>
+                    {l.num}
+                  </span>
+                  {l.title}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        </aside>
+
+        <div className="flex-1 min-w-0 flex flex-col gap-6">
         {/* ── Goals ── */}
         <section className="bg-zinc-900 rounded-xl p-6">
           <h2 className="text-2xl font-bold text-white mb-4">Цели урока</h2>
@@ -814,6 +834,7 @@ export default function Block0Lesson1Page() {
           >
             Следующий урок →
           </Link>
+        </div>
         </div>
       </div>
     </main>

@@ -280,6 +280,13 @@ export default function Home() {
       <footer className="border-t border-[#222] py-8 text-center text-[#888888] text-sm">
         <p>Claw Academy © 2026</p>
         <p className="mt-1">clawacademy.io</p>
+        <div className="flex items-center justify-center gap-4 mt-3">
+          <a href="/offer" className="hover:text-zinc-300 transition-colors">Оферта</a>
+          <span className="text-zinc-700">·</span>
+          <a href="/privacy" className="hover:text-zinc-300 transition-colors">Конфиденциальность</a>
+          <span className="text-zinc-700">·</span>
+          <a href="/terms" className="hover:text-zinc-300 transition-colors">Условия</a>
+        </div>
       </footer>
 
       <PaymentModal

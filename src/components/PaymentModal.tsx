@@ -62,6 +62,7 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
   const [cryptobotLoading, setCryptobotLoading] = useState(false);
   const [cryptobotPolling, setCryptobotPolling] = useState(false);
   const [initiatedAmount, setInitiatedAmount] = useState<string | null>(null);
+  const [agreedToOffer, setAgreedToOffer] = useState(false);
 
   const handleCopyAddress = useCallback(() => {
     navigator.clipboard.writeText(PAYMENT_ADDRESS);
@@ -415,7 +416,7 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
                 ) : (
                   <button
                     onClick={handleInitiatePayment}
-                    disabled={loading}
+                    disabled={loading || !agreedToOffer}
                     className="w-full py-3 rounded-xl text-sm font-semibold bg-[#e63329] text-white hover:bg-[#c92a22] transition-colors disabled:opacity-50"
                   >
                     {loading ? 'Загрузка...' : 'Далее'}
@@ -435,7 +436,7 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
                 {!cryptobotInvoiceUrl ? (
                   <button
                     onClick={handleCryptobotCreate}
-                    disabled={cryptobotLoading}
+                    disabled={cryptobotLoading || !agreedToOffer}
                     className="w-full py-3 rounded-xl text-sm font-semibold bg-[#e63329] text-white hover:bg-[#c92a22] transition-colors disabled:opacity-50"
                   >
                     {cryptobotLoading ? 'Создаём инвойс...' : 'Создать инвойс'}
@@ -466,6 +467,36 @@ export default function PaymentModal({ isOpen, onClose, initialTier }: PaymentMo
             )}
 
             {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
+
+            {/* Offer agreement */}
+            <label className="flex items-start gap-3 mt-5 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={agreedToOffer}
+                onChange={(e) => setAgreedToOffer(e.target.checked)}
+                className="mt-0.5 h-4 w-4 accent-[#e63329] shrink-0"
+              />
+              <span className="text-zinc-400 text-xs leading-relaxed">
+                Я принимаю условия{' '}
+                <a
+                  href="/offer"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#FF4422] hover:underline"
+                >
+                  публичной оферты
+                </a>{' '}
+                и{' '}
+                <a
+                  href="/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#FF4422] hover:underline"
+                >
+                  политики конфиденциальности
+                </a>
+              </span>
+            </label>
 
             <button
               onClick={() => { setStep(1); setError(null); resetPaymentState(); }}
