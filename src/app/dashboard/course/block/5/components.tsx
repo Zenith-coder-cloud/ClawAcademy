@@ -11,6 +11,7 @@ type TrackMeta = {
   id: TrackId;
   label: string;
   color: string;
+  description?: string;
 };
 
 export const TRACKS: Record<TrackId, TrackMeta> = {
@@ -18,61 +19,73 @@ export const TRACKS: Record<TrackId, TrackMeta> = {
     id: "freelancer",
     label: "🧑‍💼 Фрилансер",
     color: "#3B82F6",
+    description: "Работаешь на себя — строишь агентный доход как фрилансер",
   },
   business: {
     id: "business",
     label: "🏢 Бизнес",
     color: "#10B981",
+    description: "Владеешь бизнесом — автоматизируешь и масштабируешь через агентов",
   },
   content: {
     id: "content",
     label: "📢 Контент",
     color: "#8B5CF6",
+    description: "Ведёшь блог или канал — агенты создают и публикуют контент за тебя",
   },
   money: {
     id: "money",
     label: "💰 Заработок",
     color: "#F59E0B",
+    description: "Хочешь заработать на агентах — монетизируешь навыки через разные форматы",
   },
   student: {
     id: "student",
     label: "🎓 Студент",
     color: "#F59E0B",
+    description: "Учишься — агент помогает учиться быстрее и зарабатывать параллельно",
   },
   investor: {
     id: "investor",
     label: "💰 Инвестор",
     color: "#10B981",
+    description: "Инвестируешь — агенты мониторят рынки и анализируют проекты за тебя",
   },
   seller: {
     id: "seller",
     label: "🛍️ Продавец",
     color: "#EC4899",
+    description: "Продаёшь на маркетплейсах — агенты автоматизируют описания, мониторинг, отзывы",
   },
   developer: {
     id: "developer",
     label: "👨‍💻 Разработчик",
     color: "#06B6D4",
+    description: "Разработчик — агенты ускоряют code review, документацию, онбординг",
   },
   marketer: {
     id: "marketer",
     label: "📊 Маркетолог",
     color: "#F97316",
+    description: "Маркетолог — агенты делают аналитику, A/B тесты и отчёты автоматически",
   },
   hr: {
     id: "hr",
     label: "👥 HR / Рекрутер",
     color: "#A855F7",
+    description: "HR / рекрутер — агенты скринят резюме и ведут онбординг",
   },
   life: {
     id: "life",
     label: "🏠 Для жизни",
     color: "#84CC16",
+    description: "Для личной жизни — агенты планируют день, финансы, привычки",
   },
   all: {
     id: "all",
     label: "Все треки",
     color: "#FF4422",
+    description: "Для всех треков",
   },
 };
 
@@ -373,6 +386,9 @@ export function QuizBlock({
             className="text-left bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-300 hover:border-[#FF4422] hover:text-white transition-colors"
           >
             {option.label}
+            {TRACKS[option.id]?.description && (
+              <p className="text-xs text-zinc-500 mt-0.5 leading-tight">{TRACKS[option.id].description}</p>
+            )}
           </button>
         ))}
       </div>
