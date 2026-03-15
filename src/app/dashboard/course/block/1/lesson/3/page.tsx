@@ -210,7 +210,9 @@ export default function Block1Lesson3Page() {
           </div>
         </aside>
         <div className="flex-1 min-w-0 flex flex-col gap-8">
-        <Image src="/course/block1/lesson3/b1-l3-skills.png" alt="Skills" width={1280} height={720} className="w-full rounded-2xl object-cover" />
+        <div className="relative w-full rounded-2xl overflow-hidden" style={{ aspectRatio: '2752/1536' }}>
+          <Image src="/course/block1/lesson3/b1-l3-skills.png" alt="Skills" fill className="object-contain" priority />
+        </div>
         {/* ── Intro ── */}
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
           <p className="text-zinc-400 leading-relaxed">

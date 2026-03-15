@@ -276,13 +276,9 @@ export default function Block1Lesson2Page() {
         </aside>
 
         <div className="flex-1 min-w-0 flex flex-col gap-8">
-        <Image
-          src="/course/block1/lesson2/b1-l2-wizard.png"
-          alt="Первый Telegram-агент"
-          width={1280}
-          height={720}
-          className="w-full rounded-2xl object-cover"
-        />
+        <div className="relative w-full rounded-2xl overflow-hidden" style={{ aspectRatio: '2752/1536' }}>
+          <Image src="/course/block1/lesson2/b1-l2-wizard.png" alt="Первый Telegram-агент" fill className="object-contain" priority />
+        </div>
             <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
             <p className="text-zinc-400 leading-relaxed">
               OpenClaw поставляется с интерактивным визардом. Он сам запросит токен, настроит доступ и запустит демон. Тебе останется только написать боту первое сообщение.
