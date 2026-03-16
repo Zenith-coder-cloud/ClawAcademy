@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { QuizBlock, TRACKS, type TrackId } from "./components";
 
 function BlockProgress({ blockNum, total }: { blockNum: number; total: number }) {
   const [done, setDone] = useState(0);
@@ -130,15 +132,31 @@ function TrackBadge({ track }: { track: string }) {
 }
 
 export default function Block3Page() {
+  const router = useRouter();
   const [visitedLessons, setVisitedLessons] = useState<Set<number>>(new Set());
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    const stored = localStorage.getItem("block3_track") as TrackId | null;
+    if (stored && TRACKS[stored] && stored !== "all") {
+      router.replace("/dashboard/course/block/3/lesson/1");
+      return;
+    }
     const visited = new Set<number>();
     for (let i = 1; i <= 34; i++) {
       if (localStorage.getItem(`b3_lesson_${i}_visited`)) visited.add(i);
     }
     setVisitedLessons(visited);
-  }, []);
+    setReady(true);
+  }, [router]);
+
+  if (!ready) {
+    return (
+      <main className="min-h-screen bg-[#0D0D0D] text-zinc-200 flex items-center justify-center">
+        <p className="text-zinc-500">Загрузка...</p>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#0D0D0D] text-zinc-200">
@@ -189,7 +207,20 @@ export default function Block3Page() {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
         <BlockProgress blockNum={3} total={34} />
-        {/* Description + CTA */}
+        {/* Track picker */}
+        <div className="mb-8">
+          <h2 className="text-xl font-bold text-white mb-2">Выбери свой трек</h2>
+          <p className="text-zinc-400 text-sm mb-6">
+            Выбери направление — получишь персональный маршрут по блоку
+          </p>
+          <QuizBlock onTrackChange={(track) => {
+            if (track) {
+              router.push("/dashboard/course/block/3/lesson/1");
+            }
+          }} />
+        </div>
+
+        {/* CTA */}
         <div className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800 mb-8">
           <Link
             href="/dashboard/course/block/3/lesson/1"
