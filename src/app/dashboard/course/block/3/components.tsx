@@ -479,32 +479,32 @@ const quizOptions: QuizOption[] = [
   {
     id: "investor",
     label: "💰 Инвестиции и анализ проектов — мониторинг, due diligence",
-    nextLesson: 23,
+    nextLesson: 21,
   },
   {
     id: "seller",
     label: "🛍️ Продажи товаров — описания, листинги, мониторинг конкурентов",
-    nextLesson: 25,
+    nextLesson: 21,
   },
   {
     id: "developer",
     label: "👨‍💻 Разработку и код — code review, рефакторинг, документация",
-    nextLesson: 27,
+    nextLesson: 21,
   },
   {
     id: "marketer",
     label: "📊 Маркетинг и аналитику — отчёты, A/B тесты, кампании",
-    nextLesson: 29,
+    nextLesson: 21,
   },
   {
     id: "hr",
     label: "👥 HR и рекрутинг — скрининг кандидатов, онбординг",
-    nextLesson: 31,
+    nextLesson: 21,
   },
   {
     id: "life",
     label: "🏠 Личную жизнь — планирование дня, финансы, привычки",
-    nextLesson: 33,
+    nextLesson: 21,
   },
 ];
 
@@ -598,13 +598,7 @@ const SECTIONS_B3 = [
   { label: "Контент", range: [12, 13] },
   { label: "Заработок", range: [14, 15] },
   { label: "Продвинутые", range: [16, 20] },
-  { label: "Студент", range: [21, 22] },
-  { label: "Инвестор", range: [23, 24] },
-  { label: "Продавец", range: [25, 26] },
-  { label: "Разработчик", range: [27, 28] },
-  { label: "Маркетолог", range: [29, 30] },
-  { label: "HR", range: [31, 32] },
-  { label: "Для жизни", range: [33, 34] },
+  { label: "Применение", range: [21, 21] },
 ];
 
 export function SectionProgressBarB3({ currentLesson }: { currentLesson: number }) {

@@ -17,7 +17,7 @@ import {
   TRACKS,
 } from "./components";
 import type { TrackId } from "./components";
-import { getLessonById, TOTAL_LESSONS } from "./data/lessons";
+import { getLessonById, TOTAL_LESSONS, type TrackVariant } from "./data/lessons";
 
 /* ── sidebar lesson links ───────────────────────────────────── */
 const sidebarLinks = [
@@ -41,20 +41,7 @@ const sidebarLinks = [
   { num: 18, title: "Границы агента" },
   { num: 19, title: "Секреты и ключи" },
   { num: 20, title: "Капстоун" },
-  { num: 21, title: "Студент: обучение" },
-  { num: 22, title: "Студент: экзамены" },
-  { num: 23, title: "Инвестор: мониторинг" },
-  { num: 24, title: "Инвестор: анализ" },
-  { num: 25, title: "Продавец: описания" },
-  { num: 26, title: "Продавец: конкуренты" },
-  { num: 27, title: "Разработчик: review" },
-  { num: 28, title: "Разработчик: доки" },
-  { num: 29, title: "Маркетолог: отчёты" },
-  { num: 30, title: "Маркетолог: A/B" },
-  { num: 31, title: "HR: скрининг" },
-  { num: 32, title: "HR: онбординг" },
-  { num: 33, title: "Жизнь: планирование" },
-  { num: 34, title: "Жизнь: финансы" },
+  { num: 21, title: "Применение в треке" },
 ];
 
 /* ── next-by-track map for lessons 3 and 7 ─────────────────── */
@@ -62,13 +49,13 @@ const nextByTrack: Record<string, { href: string; label: string }> = {
   freelancer: { href: "/dashboard/course/block/3/lesson/8", label: "Урок 8: Фрилансер →" },
   business: { href: "/dashboard/course/block/3/lesson/10", label: "Урок 10: Бизнес →" },
   content: { href: "/dashboard/course/block/3/lesson/12", label: "Урок 12: Контент →" },
-  student: { href: "/dashboard/course/block/3/lesson/21", label: "Урок 21: Студент →" },
-  investor: { href: "/dashboard/course/block/3/lesson/23", label: "Урок 23: Инвестор →" },
-  seller: { href: "/dashboard/course/block/3/lesson/25", label: "Урок 25: Продавец →" },
-  developer: { href: "/dashboard/course/block/3/lesson/27", label: "Урок 27: Разработчик →" },
-  marketer: { href: "/dashboard/course/block/3/lesson/29", label: "Урок 29: Маркетолог →" },
-  hr: { href: "/dashboard/course/block/3/lesson/31", label: "Урок 31: HR →" },
-  life: { href: "/dashboard/course/block/3/lesson/33", label: "Урок 33: Для жизни →" },
+  student: { href: "/dashboard/course/block/3/lesson/21", label: "Урок 21: Применение →" },
+  investor: { href: "/dashboard/course/block/3/lesson/21", label: "Урок 21: Применение →" },
+  seller: { href: "/dashboard/course/block/3/lesson/21", label: "Урок 21: Применение →" },
+  developer: { href: "/dashboard/course/block/3/lesson/21", label: "Урок 21: Применение →" },
+  marketer: { href: "/dashboard/course/block/3/lesson/21", label: "Урок 21: Применение →" },
+  hr: { href: "/dashboard/course/block/3/lesson/21", label: "Урок 21: Применение →" },
+  life: { href: "/dashboard/course/block/3/lesson/21", label: "Урок 21: Применение →" },
 };
 
 /* ── Celebration overlay ────────────────────────────────────── */
@@ -143,6 +130,110 @@ function TroubleshootSection({ items }: { items: { q: string; a: string }[] }) {
         )}
       </div>
     </section>
+  );
+}
+
+/* ── Track Variant Tabs ─────────────────────────────────────── */
+const VARIANT_TRACK_ORDER: TrackId[] = ["student", "investor", "seller", "developer", "marketer", "hr", "life"];
+
+function TrackVariantTabs({
+  variants,
+  lessonId,
+}: {
+  variants: { [trackId: string]: TrackVariant };
+  lessonId: number;
+}) {
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("block3_track");
+      if (stored && stored !== "all" && variants[stored]) return stored;
+    }
+    return VARIANT_TRACK_ORDER.find((t) => variants[t]) || Object.keys(variants)[0];
+  });
+
+  const variant = variants[activeTab];
+  if (!variant) return null;
+
+  return (
+    <div className="flex flex-col gap-8">
+      {/* Tabs */}
+      <div className="flex flex-wrap gap-2">
+        {VARIANT_TRACK_ORDER.filter((t) => variants[t]).map((trackId) => {
+          const meta = TRACKS[trackId];
+          if (!meta) return null;
+          const isActive = trackId === activeTab;
+          return (
+            <button
+              key={trackId}
+              onClick={() => setActiveTab(trackId)}
+              className={
+                "px-4 py-2 rounded-xl text-sm font-medium border transition-colors " +
+                (isActive
+                  ? "border-[#FF4422] text-[#FF4422] bg-[#FF4422]/10"
+                  : "border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500")
+              }
+            >
+              {meta.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Variant title */}
+      <div className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+        <h2 className="text-2xl font-semibold text-white">{variant.title}</h2>
+      </div>
+
+      {/* Case */}
+      <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+        <h2 className="text-2xl font-semibold text-white mb-4">Кейс</h2>
+        <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-5 text-zinc-300 space-y-2">
+          {variant.caseItems.map((item) => (
+            <p key={item}>{item}</p>
+          ))}
+        </div>
+      </section>
+
+      {/* Info Blocks */}
+      {variant.infoBlocks && variant.infoBlocks.length > 0 && (
+        <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+          <h2 className="text-2xl font-semibold text-white mb-4">Как это работает</h2>
+          <div className="space-y-4">
+            {variant.infoBlocks.map((block) => (
+              <div
+                key={block.title}
+                className="bg-zinc-950 border border-zinc-800 rounded-xl p-5"
+              >
+                <h3 className="text-white font-semibold mb-2">{block.title}</h3>
+                <p className="text-zinc-400 leading-relaxed whitespace-pre-line">{block.text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Prompt */}
+      {variant.prompt && (
+        <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+          <h2 className="text-2xl font-semibold text-white mb-4">Готовый промпт</h2>
+          <PromptCopyBlock code={variant.prompt} />
+        </section>
+      )}
+
+      {/* Checklist */}
+      <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+        <h2 className="text-2xl font-semibold text-white mb-4">Чеклист</h2>
+        <Checklist
+          storageKey={`block3_lesson${lessonId}_${activeTab}_checklist`}
+          items={variant.checklist}
+        />
+      </section>
+
+      {/* Troubleshooting */}
+      {variant.troubleshoot.length > 0 && (
+        <TroubleshootSection items={variant.troubleshoot} />
+      )}
+    </div>
   );
 }
 
@@ -331,90 +422,97 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
             <p className="text-zinc-400 leading-relaxed whitespace-pre-line">{lesson.whyNeeded}</p>
           </section>
 
-          {/* Quiz (lesson 3 only) */}
-          {isQuizLesson && (
-            <QuizBlock
-              onTrackChange={(t) => setSelectedTrack(t)}
-            />
-          )}
+          {/* Track Variant Tabs (lesson 21) */}
+          {lesson.trackVariants ? (
+            <TrackVariantTabs variants={lesson.trackVariants} lessonId={lesson.id} />
+          ) : (
+            <>
+              {/* Quiz (lesson 3 only) */}
+              {isQuizLesson && (
+                <QuizBlock
+                  onTrackChange={(t) => setSelectedTrack(t)}
+                />
+              )}
 
-          {/* Case */}
-          {!isQuizLesson && (
-            <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
-              <h2 className="text-2xl font-semibold text-white mb-4">{lesson.caseTitle}</h2>
-              <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-5 text-zinc-300 space-y-2">
-                {lesson.caseItems.map((item) => (
-                  <p key={item}>{item}</p>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Capabilities (optional) */}
-          {lesson.capabilities && lesson.capabilities.length > 0 && (
-            <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
-              <h2 className="text-2xl font-semibold text-white mb-4">Что ты получишь</h2>
-              <div className="grid md:grid-cols-2 gap-3 text-zinc-300">
-                {lesson.capabilities.map((item) => (
-                  <div
-                    key={item}
-                    className="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3"
-                  >
-                    {item}
+              {/* Case */}
+              {!isQuizLesson && (
+                <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+                  <h2 className="text-2xl font-semibold text-white mb-4">{lesson.caseTitle}</h2>
+                  <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-5 text-zinc-300 space-y-2">
+                    {lesson.caseItems.map((item) => (
+                      <p key={item}>{item}</p>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </section>
-          )}
+                </section>
+              )}
 
-          {/* Info Blocks (optional) */}
-          {lesson.infoBlocks && lesson.infoBlocks.length > 0 && (
-            <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
-              <h2 className="text-2xl font-semibold text-white mb-4">Как это работает</h2>
-              <div className="space-y-4">
-                {lesson.infoBlocks.map((block) => (
-                  <div
-                    key={block.title}
-                    className="bg-zinc-950 border border-zinc-800 rounded-xl p-5"
-                  >
-                    <h3 className="text-white font-semibold mb-2">{block.title}</h3>
-                    <p className="text-zinc-400 leading-relaxed whitespace-pre-line">{block.text}</p>
+              {/* Capabilities (optional) */}
+              {lesson.capabilities && lesson.capabilities.length > 0 && (
+                <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+                  <h2 className="text-2xl font-semibold text-white mb-4">Что ты получишь</h2>
+                  <div className="grid md:grid-cols-2 gap-3 text-zinc-300">
+                    {lesson.capabilities.map((item) => (
+                      <div
+                        key={item}
+                        className="bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3"
+                      >
+                        {item}
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </section>
-          )}
+                </section>
+              )}
 
-          {/* Prompt */}
-          {lesson.prompt && (
-            <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
-              <h2 className="text-2xl font-semibold text-white mb-4">Готовый промпт</h2>
-              <PromptCopyBlock
-                instruction={lesson.promptInstruction}
-                code={lesson.prompt}
-                example={lesson.promptExample}
-              />
-            </section>
-          )}
+              {/* Info Blocks (optional) */}
+              {lesson.infoBlocks && lesson.infoBlocks.length > 0 && (
+                <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+                  <h2 className="text-2xl font-semibold text-white mb-4">Как это работает</h2>
+                  <div className="space-y-4">
+                    {lesson.infoBlocks.map((block) => (
+                      <div
+                        key={block.title}
+                        className="bg-zinc-950 border border-zinc-800 rounded-xl p-5"
+                      >
+                        <h3 className="text-white font-semibold mb-2">{block.title}</h3>
+                        <p className="text-zinc-400 leading-relaxed whitespace-pre-line">{block.text}</p>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
 
-          {/* Steps */}
-          <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
-            <h2 className="text-2xl font-semibold text-white mb-4">Пошаговая настройка</h2>
-            <LessonSteps steps={lesson.steps} />
-          </section>
+              {/* Prompt */}
+              {lesson.prompt && (
+                <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+                  <h2 className="text-2xl font-semibold text-white mb-4">Готовый промпт</h2>
+                  <PromptCopyBlock
+                    instruction={lesson.promptInstruction}
+                    code={lesson.prompt}
+                    example={lesson.promptExample}
+                  />
+                </section>
+              )}
 
-          {/* Checklist */}
-          <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
-            <h2 className="text-2xl font-semibold text-white mb-4">Чеклист</h2>
-            <Checklist
-              storageKey={`block3_lesson${lesson.id}_checklist`}
-              items={lesson.checklist}
-            />
-          </section>
+              {/* Steps */}
+              <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+                <h2 className="text-2xl font-semibold text-white mb-4">Пошаговая настройка</h2>
+                <LessonSteps steps={lesson.steps} />
+              </section>
 
-          {/* Troubleshooting */}
-          {lesson.troubleshoot.length > 0 && (
-            <TroubleshootSection items={lesson.troubleshoot} />
+              {/* Checklist */}
+              <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
+                <h2 className="text-2xl font-semibold text-white mb-4">Чеклист</h2>
+                <Checklist
+                  storageKey={`block3_lesson${lesson.id}_checklist`}
+                  items={lesson.checklist}
+                />
+              </section>
+
+              {/* Troubleshooting */}
+              {lesson.troubleshoot.length > 0 && (
+                <TroubleshootSection items={lesson.troubleshoot} />
+              )}
+            </>
           )}
 
           {/* BlockCompleteCard (lesson 20 only) */}
