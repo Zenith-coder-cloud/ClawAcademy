@@ -225,6 +225,17 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
                 isRecommended={recommended === lesson.track}
               />
             )}
+            {lesson.track && (
+              <button
+                onClick={() => {
+                  localStorage.removeItem("block2_track");
+                  window.location.href = `/dashboard/course/block/2`;
+                }}
+                className="text-xs text-zinc-500 hover:text-zinc-300 underline transition-colors ml-2"
+              >
+                сменить трек
+              </button>
+            )}
           </div>
           <p className="text-zinc-400 text-lg">{lesson.subtitle}</p>
 
