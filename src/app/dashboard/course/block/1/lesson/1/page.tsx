@@ -354,11 +354,45 @@ export default function Block1Lesson1Page() {
           />
         </div>
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
-                    <p className="text-zinc-400 leading-relaxed">
+          <p className="text-zinc-400 leading-relaxed mb-6">
             OpenClaw — это gateway между тобой и AI-агентами. Он запускается на
             твоём компьютере или сервере, слушает сообщения из Telegram и
             выполняет задачи. Выбери свою ОС ниже и следуй шагам.
           </p>
+
+          {/* Что ты устанавливаешь */}
+          <h2 className="text-xl font-semibold text-white mb-4">Что ты сейчас установишь</h2>
+          <p className="text-zinc-400 leading-relaxed mb-4">OpenClaw состоит из трёх частей:</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            {[
+              { icon: "🧠", title: "Gateway", desc: "Мозг системы. Запускается в фоне, принимает сообщения из Telegram/WhatsApp, передаёт агенту, возвращает ответ." },
+              { icon: "📁", title: "Workspace", desc: "Папка с твоей памятью. Все настройки агента хранятся здесь в обычных текстовых файлах. Можно открыть в любом редакторе." },
+              { icon: "🔗", title: "CLI (openclaw)", desc: "Команды в терминале. Через них ты запускаешь, останавливаешь и настраиваешь систему." },
+            ].map((item) => (
+              <div key={item.title} className="bg-zinc-800 rounded-xl p-4 border border-zinc-700">
+                <div className="text-2xl mb-2">{item.icon}</div>
+                <div className="text-white font-semibold mb-1">{item.title}</div>
+                <div className="text-zinc-400 text-sm leading-relaxed">{item.desc}</div>
+              </div>
+            ))}
+          </div>
+          <p className="text-zinc-400 text-sm mb-6">Установочный скрипт создаёт всё три за один шаг. После установки ты запустишь своего первого агента за 5 минут.</p>
+
+          {/* Дисклеймер */}
+          <div className="bg-amber-950/40 border border-amber-700/50 rounded-xl p-5">
+            <div className="flex items-start gap-3">
+              <span className="text-amber-400 text-xl shrink-0">⚠️</span>
+              <div>
+                <p className="text-amber-300 font-semibold mb-2">Прочитай перед установкой</p>
+                <ul className="text-amber-200/80 text-sm leading-relaxed space-y-2">
+                  <li>• <strong>Ответственность.</strong> Устанавливая OpenClaw, ты берёшь на себя полную ответственность за программное обеспечение на своём устройстве. Авторы курса не несут ответственности за последствия установки или использования.</li>
+                  <li>• <strong>Доступ к файлам.</strong> OpenClaw — локальная программа с доступом к файловой системе твоего компьютера. Агент сможет читать и записывать файлы в рамках настроенных прав.</li>
+                  <li>• <strong>Сохрани важные данные.</strong> Перед установкой сделай бэкап важных файлов или используй чистую машину / отдельный аккаунт. Это стандартная практика при установке любого нового ПО.</li>
+                  <li>• <strong>Open source.</strong> Код OpenClaw открыт — ты можешь проверить его на GitHub перед установкой.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </section>
 
         <section className="bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-800">
