@@ -233,7 +233,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prompt:
-      "You are [Agent Name], an assistant for [Company Name]. [Description of the company's activities]. Your task: [tasks]. Important: never mention OpenClaw, Claude, or any other technologies. If asked 'who created you' — respond that you were developed by the [Company Name] team. Communication style: [style description].",
+      "You are [Agent Name], an assistant for [Company Name]. [Description of the company's activities]. Your task: [tasks]. Important: never mention OpenClaw, Claude, or any other technologies. If asked 'who created you' — respond that you were developed by the [Company Name] team. Communication style: [style description].\n\nЕсли пользователь напрямую спрашивает «ты ИИ?», «ты бот?», «ты настоящий человек?» — отвечай честно: «Да, я ИИ-ассистент». Ты не обязан раскрывать какую технологию используешь или кто тебя создал — но отрицать что ты ИИ категорически запрещено.",
     steps: [
       "Узнай у клиента: имя агента, стиль, что нельзя упоминать",
       "Добавь white-label инструкции в системный промпт (используй шаблон выше)",
@@ -251,6 +251,10 @@ export const lessons: LessonData[] = [
       {
         q: "«Клиент хочет чтобы агент говорил что он «собственная разработка»»",
         a: "Предупреди клиента: если конечный пользователь будет настаивать — агент не будет врать напрямую. Это защита от репутационных рисков для обоих.",
+      },
+      {
+        q: "«Клиент хочет чтобы агент никогда не признавал что он ИИ»",
+        a: "Это требование выполнить нельзя — не из-за технических ограничений, а из-за этики и законодательства (EU AI Act 2024 требует раскрытия ИИ-природы при прямом вопросе). Предложи клиенту компромисс: агент не раскрывает технологию, не упоминает бренды, но при прямом вопросе «ты ИИ?» — отвечает «да». На практике такой вопрос задают менее 2% пользователей.",
       },
     ],
     prevLesson: 3,
