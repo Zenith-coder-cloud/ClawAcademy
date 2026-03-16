@@ -590,6 +590,64 @@ export function QuizBlock({
   );
 }
 
+/* ── TroubleshootSearch (accordion + search) ─────────────── */
+export function TroubleshootSearch({ items }: { items: { q: string; a: string }[] }) {
+  const [query, setQuery] = useState("");
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+
+  const filtered = query.trim()
+    ? items.filter(
+        (item) =>
+          item.q.toLowerCase().includes(query.toLowerCase()) ||
+          item.a.toLowerCase().includes(query.toLowerCase())
+      )
+    : items;
+
+  return (
+    <section className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
+      <div className="px-6 pt-5 pb-4 border-b border-zinc-800">
+        <h2 className="text-lg font-semibold text-white mb-3">🔧 Проблемы и решения</h2>
+        <div className="relative">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Поиск по проблемам..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg pl-9 pr-4 py-2 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500"
+          />
+        </div>
+      </div>
+      <div className="divide-y divide-zinc-800/60">
+        {filtered.length === 0 ? (
+          <p className="text-zinc-500 text-sm text-center py-6">Ничего не найдено</p>
+        ) : (
+          filtered.map((item, idx) => (
+            <div key={idx} className="bg-zinc-800 rounded-xl border border-zinc-700 mx-4 my-2">
+              <button
+                onClick={() => setOpenIdx(openIdx === idx ? null : idx)}
+                className="w-full flex items-center justify-between px-5 py-4 text-left"
+              >
+                <span className="text-sm font-medium text-white">{item.q}</span>
+                <span className="text-xs text-zinc-500 shrink-0">
+                  {openIdx === idx ? "▲" : "▼"}
+                </span>
+              </button>
+              {openIdx === idx && (
+                <div className="px-5 pb-4 text-sm text-zinc-400 leading-relaxed">
+                  {item.a}
+                </div>
+              )}
+            </div>
+          ))
+        )}
+      </div>
+    </section>
+  );
+}
+
 /* ── Section Progress Bar B3 ──────────────────────────────── */
 const SECTIONS_B3 = [
   { label: "Основы", range: [1, 7] },

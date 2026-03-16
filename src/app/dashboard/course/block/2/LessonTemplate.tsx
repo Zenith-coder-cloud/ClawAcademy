@@ -13,6 +13,7 @@ import {
   TrackBadge,
   TrackChoiceCards,
   TRACKS,
+  TroubleshootSearch,
 } from "./components";
 import type { TrackId as ComponentTrackId } from "./components";
 import { getLessonById, TOTAL_LESSONS } from "./data/lessons";
@@ -123,54 +124,6 @@ function LessonCelebration({ lessonNum, total }: { lessonNum: number; total: num
 }
 
 /* ── Main LessonTemplate component ──────────────────────────── */
-function TroubleshootSection({ items }: { items: string[] }) {
-  const [query, setQuery] = useState("");
-  const [openIdx, setOpenIdx] = useState<number | null>(null);
-
-  const filtered = query.trim()
-    ? items.filter((line) => line.toLowerCase().includes(query.toLowerCase()))
-    : items;
-
-  return (
-    <section className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
-      <div className="px-6 pt-5 pb-4 border-b border-zinc-800">
-        <h2 className="text-lg font-semibold text-white mb-3">🔧 Проблемы и решения</h2>
-        <div className="relative">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input
-            type="text"
-            placeholder="Найти проблему..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg pl-9 pr-4 py-2 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500"
-          />
-        </div>
-      </div>
-      <div className="overflow-y-auto max-h-72 divide-y divide-zinc-800/60">
-        {filtered.length === 0 ? (
-          <p className="text-zinc-500 text-sm text-center py-6">Ничего не найдено</p>
-        ) : (
-          filtered.map((line, idx) => (
-            <div key={idx} className="px-6 py-3">
-              <button
-                onClick={() => setOpenIdx(openIdx === idx ? null : idx)}
-                className="w-full flex items-center justify-between text-left gap-3"
-              >
-                <span className="text-sm font-medium text-white whitespace-pre-line">{line}</span>
-                <span className="text-xs text-zinc-500 shrink-0">
-                  {openIdx === idx ? "Скрыть" : "Показать"}
-                </span>
-              </button>
-            </div>
-          ))
-        )}
-      </div>
-    </section>
-  );
-}
-
 export default function LessonTemplate({ lessonId }: { lessonId: number }) {
   const lesson = getLessonById(lessonId);
   const router = useRouter();
@@ -210,6 +163,28 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
   return (
     <main className="min-h-screen bg-[#0D0D0D] text-zinc-200">
       {showCelebration && <LessonCelebration lessonNum={lesson.id} total={TOTAL_LESSONS} />}
+      {/* ── Block Nav Bar ──────────────────────────────────── */}
+      <nav className="bg-zinc-950 border-b border-zinc-900 py-2 px-4">
+        <div className="max-w-5xl mx-auto flex items-center gap-4 overflow-x-auto scrollbar-none text-sm">
+          <Link href="/dashboard" className="text-zinc-400 hover:text-white transition-colors shrink-0">← Дашборд</Link>
+          <span className="text-zinc-700">|</span>
+          {[0, 1, 2, 3, 4, 5].map((n) => (
+            <Link
+              key={n}
+              href={n === 0 ? "/dashboard/course/block/0/lesson/1" : `/dashboard/course/block/${n}`}
+              className={
+                "shrink-0 px-2 py-1 transition-colors " +
+                (n === 2
+                  ? "text-[#FF4422] border-b-2 border-[#FF4422]"
+                  : "text-zinc-400 hover:text-white")
+              }
+            >
+              Блок {n}
+            </Link>
+          ))}
+        </div>
+      </nav>
+
       {/* ── Header ────────────────────────────────────────── */}
       <section className="border-b border-zinc-900">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -434,7 +409,7 @@ export default function LessonTemplate({ lessonId }: { lessonId: number }) {
 
           {/* Troubleshooting */}
           {lesson.troubleshoot.length > 0 && (
-            <TroubleshootSection items={lesson.troubleshoot} />
+            <TroubleshootSearch items={lesson.troubleshoot} />
           )}
 
           {/* BlockCompleteCard (optional) */}

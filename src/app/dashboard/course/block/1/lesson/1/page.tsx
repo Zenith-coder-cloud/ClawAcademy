@@ -286,6 +286,19 @@ export default function Block1Lesson1Page() {
 
   return (
     <main className="min-h-screen bg-[#0D0D0D] text-zinc-200">
+      {/* ── Block Nav Bar ── */}
+      <nav className="bg-zinc-950 border-b border-zinc-900 py-2 px-4">
+        <div className="max-w-5xl mx-auto flex items-center gap-4 overflow-x-auto scrollbar-none text-sm">
+          <Link href="/dashboard" className="text-zinc-400 hover:text-white transition-colors shrink-0">← Дашборд</Link>
+          <span className="text-zinc-700">|</span>
+          {[0, 1, 2, 3, 4, 5].map((n) => (
+            <Link key={n} href={n === 0 ? "/dashboard/course/block/0/lesson/1" : `/dashboard/course/block/${n}`} className={"shrink-0 px-2 py-1 transition-colors " + (n === 1 ? "text-[#FF4422] border-b-2 border-[#FF4422]" : "text-zinc-400 hover:text-white")}>
+              Блок {n}
+            </Link>
+          ))}
+        </div>
+      </nav>
+
       <section className="border-b border-zinc-900">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <p className="text-[#FF4422] text-sm font-semibold mb-2">
