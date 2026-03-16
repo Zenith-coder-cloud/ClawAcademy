@@ -661,8 +661,7 @@ export const lessons: LessonData[] = [
       },
     ],
     prevLesson: 11,
-    nextLesson: null,
-    completionTrackLabel: "Block 4: Продай своего агента — все 30 уроков пройдены",
+    nextLesson: 13,
   },
 
   // ─── LESSON 13 ─────────────────────────────────────────────
@@ -1566,7 +1565,8 @@ export const lessons: LessonData[] = [
       },
     ],
     prevLesson: 29,
-    nextLesson: 10,
+    nextLesson: null,
+    completionTrackLabel: "Block 4: Продай своего агента — все 30 уроков пройдены",
   },
 ];
 
