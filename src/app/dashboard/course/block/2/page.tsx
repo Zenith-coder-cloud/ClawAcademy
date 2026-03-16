@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 function BlockProgress({ blockNum, total }: { blockNum: number; total: number }) {
@@ -319,18 +320,32 @@ function LessonCard({
 }
 
 export default function Block2IndexPage() {
+  const router = useRouter();
   const [recommendedTrack, setRecommendedTrack] = useState<TrackId | null>(null);
   const [visitedLessons, setVisitedLessons] = useState<Set<number>>(new Set());
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("block2_track") as TrackId | null;
-    if (stored && TRACKS[stored]) setRecommendedTrack(stored);
+    if (stored && TRACKS[stored]) {
+      router.replace("/dashboard/course/block/2/lesson/1");
+      return;
+    }
     const visited = new Set<number>();
     for (let i = 1; i <= 26; i++) {
       if (localStorage.getItem(`b2_lesson_${i}_visited`)) visited.add(i);
     }
     setVisitedLessons(visited);
-  }, []);
+    setReady(true);
+  }, [router]);
+
+  if (!ready) {
+    return (
+      <main className="min-h-screen bg-[#0D0D0D] text-zinc-200 flex items-center justify-center">
+        <p className="text-zinc-500">Загрузка...</p>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#0D0D0D] text-zinc-200">
@@ -391,7 +406,12 @@ export default function Block2IndexPage() {
           <p className="text-zinc-400 text-sm mb-6">
             Ответь на 2 вопроса — получишь персональный маршрут по блоку
           </p>
-          <QuizBlock onTrackChange={setRecommendedTrack} />
+          <QuizBlock onTrackChange={(track) => {
+            setRecommendedTrack(track);
+            if (track) {
+              router.push("/dashboard/course/block/2/lesson/1");
+            }
+          }} />
           {recommendedTrack && (
             <p className="mt-4 text-zinc-400 text-sm">
               ✅ Твой трек: <span className="text-white font-semibold">{TRACKS[recommendedTrack]?.label}</span> — уроки для тебя подсвечены ниже
